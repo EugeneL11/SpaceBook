@@ -19,6 +19,8 @@ type User struct {
 func main() {
 	// Using Gin for the server:
 	server := gin.Default()
+	server.ForwardedByClientIP = true
+	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
 	// config := cors.DefaultConfig()
 	// config.AllowOrigins = []string{URLs Go here}
 	server.GET("/ping", pong)
