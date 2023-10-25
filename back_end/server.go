@@ -1,8 +1,11 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 	"net/http"
 	"strconv"
 )
@@ -16,20 +19,100 @@ type User struct {
 	Name string `json:"name"`
 }
 
+const (
+	host     = "localhost" // replace with your PostgreSQL host
+	port     = 5432        // PostgreSQL default port
+	user     = "postgres"  // replace with your PostgreSQL username
+	password = ""          // replace with your PostgreSQL password
+	dbname   = "test"      // replace with your PostgreSQL database name
+)
+
+const connStr = "user=" + user + " password=" + password + " dbname=" + dbname + " sslmode=disable"
+
+var postgres *sql.DB
+
 func main() {
 	// Using Gin for the server:
 	server := gin.Default()
 	server.ForwardedByClientIP = true
 	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
-	// config := cors.DefaultConfig()
-	// config.AllowOrigins = []string{URLs Go here}
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"}
+
+	postgres, err := sql.Open("postgres", connStr)
+	if err != nil {
+		panic(err)
+	}
+	defer postgres.Close()
+
+	err = postgres.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	// Use a prepared statement to prevent SQL injection
+	// Execute the prepared statement with user input
+	server.GET("/postgresTest", testPostgres)
 	server.GET("/ping", pong)
 	server.PUT("/num")
-	server.Use(cors.Default()) // This allows all origins
-	// server.Use(cors.New(config))
+	// server.Use(cors.Default()) // This allows all origins
+	server.Use(cors.New(config))
 	server.GET("/num/:num1/:num2", sum)
 	server.POST("/user", double)
 	server.Run(PORT_NO)
+}
+
+func testInsert() {
+	stmt, err := postgres.Prepare("INSERT INTO test3 (t) VALUES (4)")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec()
+}
+
+func testDelete() {
+	// stmt, err := postgres.Prepare("DELETE FROM test3 WHERE t = 1")
+}
+
+func testPostgres(ctx *gin.Context) {
+	stmt, err := postgres.Prepare("SELECT * FROM test3")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var val int
+		err := rows.Scan(&val)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("%d\n", val)
+		ctx.JSON(http.StatusOK, gin.H{
+			"value": val,
+		})
+	}
+}
+
+func postgresTest(ctx *gin.Context) {
+	const (
+		host     = "localhost" // replace with your PostgreSQL host
+		port     = 5432        // PostgreSQL default port
+		user     = "kevon"     // replace with your PostgreSQL username
+		password = ""          // replace with your PostgreSQL password
+		dbname   = "test"      // replace with your PostgreSQL database name
+	)
+
+	const connStr = "user=" + user + " password=" + password + " dbname=" + dbname + " sslmode=disable"
+
 }
 
 func double(ctx *gin.Context) {
