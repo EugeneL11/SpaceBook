@@ -102,19 +102,6 @@ func testPostgres(ctx *gin.Context) {
 	}
 }
 
-func postgresTest(ctx *gin.Context) {
-	const (
-		host     = "localhost" // replace with your PostgreSQL host
-		port     = 5432        // PostgreSQL default port
-		user     = "kevon"     // replace with your PostgreSQL username
-		password = ""          // replace with your PostgreSQL password
-		dbname   = "test"      // replace with your PostgreSQL database name
-	)
-
-	const connStr = "user=" + user + " password=" + password + " dbname=" + dbname + " sslmode=disable"
-
-}
-
 func double(ctx *gin.Context) {
 	var inputUser User
 	if err := ctx.ShouldBindJSON(&inputUser); err != nil {
