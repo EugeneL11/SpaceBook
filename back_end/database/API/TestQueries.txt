@@ -1,0 +1,18 @@
+!!THESE QUERIES CAN BE USED FOR BOTH CASSANDRA AND POSTGRE FOR TESTING PURPOSES!!
+
+New table for testing, bad idea to update primary keys
+Create Table Basic(key int PRIMARY KEY, value int NOT NULL);
+
+Using variables instead of hard coded values now
+May need to ask ChatGPT to fix the syntax of these
+
+
+Insert Into Basic (key,value) VALUES (x,y)
+
+Select * From Basic Where key = x
+
+Update Basic Set value = y Where key = x
+
+Delete From Basic Where value = w
+
+Select key From Basic Where value < x And value > y
