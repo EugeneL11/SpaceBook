@@ -1,7 +1,13 @@
 import { React, useState } from "react";
 
 function OtherProfile(props) {
-    return (<div>This is the Other Profile component</div>);
+    const userID = props.userID
+    const goBackScreen = props.goBackScreen
+    return (<div className="flex flex-col">
+        <h1>This is the Other Profile component</h1>
+        <h2> The user being viewed is {userID}</h2>
+        <button onClick={goBackScreen}> Go Back to the Screen you came from</button>
+    </div>);
 
 }
 

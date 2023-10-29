@@ -1,7 +1,13 @@
 import { React, useState } from "react";
 
 function Login(props) {
-    return (<div>This is the Login component</div>);
+    const toggleHomepage = props.toggleHomepage
+    const toggleRegister = props.toggleRegister
+    return (<div className="flex flex-col">
+        <h1>This is the Login component</h1>
+        <button onClick = {toggleRegister}>Go to Register</button>
+        <button onClick={toggleHomepage}> Go to Homepage</button>
+    </div>);
 
 }
 

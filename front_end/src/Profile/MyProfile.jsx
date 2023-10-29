@@ -1,7 +1,15 @@
 import { React, useState } from "react";
 
 function MyProfile(props) {
-    return (<div>This is the My Profile component</div>);
+    const toggleFriendsList = props.toggleFriendsList
+    const toggleSettings = props.toggleSettings
+    const toggleHomepage = props.toggleHomepage
+    return (<div className="flex flex-col">
+        <h1>This is the My Profile component</h1>
+        <button onClick={toggleSettings}>Go to Settings</button>
+        <button onClick={toggleFriendsList}>Go to Friends List</button>
+        <button onClick={toggleHomepage}>Go to Homepage</button>
+    </div>);
 
 }
 
