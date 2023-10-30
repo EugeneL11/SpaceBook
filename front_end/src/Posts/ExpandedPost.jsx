@@ -1,11 +1,64 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 
 function ExpandedPost(props) {
+    const data = {
+        userName: "Kevin",
+        caption: "This is a post",
+        image: "https://i.imgur.com/1w3o6Uo.jpg",
+        comments: [
+            {
+                Commenter: "Kevins SQL key",
+                Comment: "Way to Go!!",
+                Profile: "https://i.imgur.com/1w3o6Uo.jpg",
+            },
+            {
+                Commenter: "Victors SQL key",
+                Comment: "Stop making Go puns",
+                Profile: "https://i.imgur.com/1w3o6Uo.jpg",
+            },
+        ],
+    };
+    const [post, setPost] = useState(null);
+    const [userComment, setuserComment] = useState("");
+    const getPost = async () => {
+        // ask Go
+        setPost(data);
+    };
+    useEffect(() => {
+        getPost();
+    }, []);
+    const makeComment = () => {};
     return (
-        <div class="lg flex justify-center items-center relative border border-white border-solid bg-red-500">
-            <button class="absolute top-0 left-0">&larr; Prev Page</button>
-            <div class="md container">Hi</div>
-        </div>
+        <>
+            {post == null ? null : (
+                <div className="lg flex justify-center items-center relative border border-white border-solid bg-red-500">
+                    <button className="absolute top-0 left-0">&larr; Prev Page</button>
+                    <div className="md container left-12 relative">
+                        <div>{post.userName}</div>
+
+                        <div>{post.caption}</div>
+                        <img src={post.image}></img>
+                        <div>
+                            <img src={post.image}></img>
+                            <label>Add Comment</label>
+                            <input
+                                type="text"
+                                value={userComment}
+                                onChange={(e) => setuserComment(e.target.value)}
+                                className="text-black"></input>
+                        </div>
+                        {userComment}
+                        {post.comments.map((comment, index) => (
+                            <div className="grid m-10" key={index}>
+                                <img src={comment.Profile} className="aspect-square rounded-full"></img>
+                                <div>{comment.Commenter}</div>
+                                <div>{comment.Comment}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </>
     );
 }
 
