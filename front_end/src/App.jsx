@@ -1,5 +1,3 @@
-import logo from "./logo.svg";
-import "./App.css";
 import FetchTest from "./FetchTest";
 import Background from "./Background/background.jsx";
 
