@@ -14,9 +14,9 @@ function App() {
             </h1> */}
             {/* <FetchTest/> */}
 
-            <Login></Login>
-            {/* <DMList></DMList>
-            <DMMessage></DMMessage> */}
+            {/* <Login></Login> */}
+            {/* <DMList></DMList> */}
+            <DMMessage></DMMessage>
         </>
     );
 }

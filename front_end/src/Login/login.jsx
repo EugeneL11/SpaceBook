@@ -3,7 +3,6 @@ import { React, useState } from "react";
 function Login(props) {
     return (
     <div class="flex flex-col items-center">
-
         <h1 class="text-6xl sm:text-7xl pt-16 pb-16">SpaceBook</h1>
 
         <div class="bg-white text-black text-center text-xl p-10 sm:p-14 rounded-md">
