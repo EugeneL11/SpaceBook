@@ -1,16 +1,15 @@
-import FetchTest from "./FetchTest";
+import FetchTest from "./FetchTest.jsx";
 import Background from "./Background/background.jsx";
-import ExpandedPost from "./Posts/ExpandedPost.jsx";
 
 function App() {
     return (
         <>
-            <ExpandedPost />
-            {/* <h1 className="text-3xl font-bold underline">
+            <Background></Background>
+            <h1 className="text-3xl font-bold underline">
                 Hey guys! This was styled with Tailwind CSS!
                 <br /> <br /> - Omar
-            </h1> */}
-            {/* <FetchTest/> */}
+            </h1>
+            <FetchTest />
         </>
     );
 }
