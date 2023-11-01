@@ -13,7 +13,10 @@ import (
 const PORT_NO = ":8080"
 
 // Managing proxies: https://pkg.go.dev/github.com/gin-gonic/gin#section-readme
-// CORS: https://github.com/gin-contrib/cors
+// TODO - Isolate queries to their own funcs with parameters
+// Then call these queries in the route handler funcs to test functionality of queries
+// Move route handlers and maybe queries to their own files (ex. routes.go, queries.go)
+
 type User struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -37,8 +40,9 @@ func main() {
 	server.ForwardedByClientIP = true
 	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000"}
-
+	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8080", "*"}
+	server.Use(cors.New(config))
+	// server.Use(cors.Default()) // This allows all origins
 	postgres, err := sql.Open("postgres", connStr)
 	if err != nil {
 		panic(err)
@@ -50,20 +54,51 @@ func main() {
 		panic(err)
 	}
 
-	// Use a prepared statement to prevent SQL injection
-	// Execute the prepared statement with user input
 	server.GET("/postgresTest", testPostgres)
 	server.GET("/ping", pong)
 	server.PUT("/num")
-	// server.Use(cors.Default()) // This allows all origins
-	server.Use(cors.New(config))
+
 	server.GET("/num/:num1/:num2", sum)
 	server.POST("/user", double)
 	server.Run(PORT_NO)
 }
 
-func testInsert() {
-	stmt, err := postgres.Prepare("INSERT INTO test3 (t) VALUES (4)")
+func testInsert(val int) {
+	stmt, err := postgres.Prepare("INSERT INTO test3 (t) VALUES ($1)")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(val)
+}
+
+func testSelect() {
+	stmt, err := postgres.Prepare("SELECT * FROM test3 WHERE t = 1")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var val int
+		err := rows.Scan(&val)
+		// If multiple columns => rows.Scan(&val1, &val2, &val3)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("%d\n", val)
+	}
+}
+
+func testUpdate() {
+	stmt, err := postgres.Prepare("UPDATE test3 SET t = 2 WHERE t = 1")
 	if err != nil {
 		panic(err)
 	}
@@ -72,8 +107,35 @@ func testInsert() {
 	_, err = stmt.Exec()
 }
 
-func testDelete() {
-	// stmt, err := postgres.Prepare("DELETE FROM test3 WHERE t = 1")
+func testDelete(e int) {
+	stmt, err := postgres.Prepare("DELETE FROM test3 WHERE t = ")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+}
+
+func testConditionalSelect() {
+	stmt, err := postgres.Prepare("SELECT * FROM test3 WHERE t < 5 AND t > 0")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var val int
+		err := rows.Scan(&val)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("%d\n", val)
+	}
 }
 
 func testPostgres(ctx *gin.Context) {

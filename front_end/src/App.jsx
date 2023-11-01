@@ -1,5 +1,6 @@
-import FetchTest from "./FetchTest";
+import FetchTest from "./FetchTest.jsx";
 import Background from "./Background/background.jsx";
+import MyProfile from "./Profile/MyProfile";
 import Login from "./Login/login";
 import DMList from "./Messages/DMList.jsx";
 import DMMessage from "./Messages/DMMessage.jsx";
@@ -17,8 +18,5 @@ function App() {
             <Login></Login>
             {/* <DMList></DMList> */}
             {/* <DMMessage></DMMessage> */}
-        </>
-    );
-}
 
 export default App;
