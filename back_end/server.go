@@ -13,7 +13,9 @@ import (
 const PORT_NO = ":8080"
 
 // Managing proxies: https://pkg.go.dev/github.com/gin-gonic/gin#section-readme
-// CORS: https://github.com/gin-contrib/cors
+// TODO - Isolate queries to their own funcs with parameters
+// Then call these queries in the route handler funcs to test functionality of queries
+// Move route handlers and maybe queries to their own files (ex. routes.go, queries.go)
 
 type User struct {
 	ID   string `json:"id"`
