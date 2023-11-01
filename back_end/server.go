@@ -72,8 +72,68 @@ func testInsert() {
 	_, err = stmt.Exec()
 }
 
+func testSelect() {
+	stmt, err := postgres.Prepare("SELECT * FROM test3 WHERE t = 1")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var val int
+		err := rows.Scan(&val)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("%d\n", val)
+	}
+}
+
+func testUpdate() {
+	stmt, err := postgres.Prepare("UPDATE test3 SET t = 2 WHERE t = 1")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec()
+}
+
 func testDelete() {
-	// stmt, err := postgres.Prepare("DELETE FROM test3 WHERE t = 1")
+	stmt, err := postgres.Prepare("DELETE FROM test3 WHERE t = 1")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+}
+
+func testConditionalSelect() {
+	stmt, err := postgres.Prepare("SELECT * FROM test3 WHERE t < 5 AND t > 0")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var val int
+		err := rows.Scan(&val)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("%d\n", val)
+	}
 }
 
 func testPostgres(ctx *gin.Context) {
