@@ -15,4 +15,4 @@ Update Basic Set value = y Where key = x
 
 Delete From Basic Where value = w
 
-Select key From Basic Where value < x And value > y
+Select key From Basic Where value < x AND value > y

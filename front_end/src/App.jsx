@@ -1,4 +1,4 @@
-import FetchTest from "./FetchTest";
+import FetchTest from "./FetchTest.jsx";
 import Background from "./Background/background.jsx";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
                 Hey guys! This was styled with Tailwind CSS!
                 <br /> <br /> - Omar
             </h1>
-            {/* <FetchTest/> */}
+            <FetchTest />
         </>
     );
 }

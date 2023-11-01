@@ -14,6 +14,7 @@ const PORT_NO = ":8080"
 
 // Managing proxies: https://pkg.go.dev/github.com/gin-gonic/gin#section-readme
 // CORS: https://github.com/gin-contrib/cors
+
 type User struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -37,8 +38,9 @@ func main() {
 	server.ForwardedByClientIP = true
 	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000"}
-
+	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8080", "*"}
+	server.Use(cors.New(config))
+	// server.Use(cors.Default()) // This allows all origins
 	postgres, err := sql.Open("postgres", connStr)
 	if err != nil {
 		panic(err)
@@ -50,26 +52,23 @@ func main() {
 		panic(err)
 	}
 
-	// Use a prepared statement to prevent SQL injection
-	// Execute the prepared statement with user input
 	server.GET("/postgresTest", testPostgres)
 	server.GET("/ping", pong)
 	server.PUT("/num")
-	// server.Use(cors.Default()) // This allows all origins
-	server.Use(cors.New(config))
+
 	server.GET("/num/:num1/:num2", sum)
 	server.POST("/user", double)
 	server.Run(PORT_NO)
 }
 
-func testInsert() {
-	stmt, err := postgres.Prepare("INSERT INTO test3 (t) VALUES (4)")
+func testInsert(val int) {
+	stmt, err := postgres.Prepare("INSERT INTO test3 (t) VALUES ($1)")
 	if err != nil {
 		panic(err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec()
+	_, err = stmt.Exec(val)
 }
 
 func testSelect() {
@@ -88,6 +87,7 @@ func testSelect() {
 	for rows.Next() {
 		var val int
 		err := rows.Scan(&val)
+		// If multiple columns => rows.Scan(&val1, &val2, &val3)
 		if err != nil {
 			panic(err)
 		}
@@ -105,8 +105,8 @@ func testUpdate() {
 	_, err = stmt.Exec()
 }
 
-func testDelete() {
-	stmt, err := postgres.Prepare("DELETE FROM test3 WHERE t = 1")
+func testDelete(e int) {
+	stmt, err := postgres.Prepare("DELETE FROM test3 WHERE t = ")
 	if err != nil {
 		panic(err)
 	}
