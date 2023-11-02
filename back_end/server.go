@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/gocql/gocql"
 	_ "github.com/lib/pq"
 	"net/http"
 	"strconv"
@@ -23,6 +24,7 @@ type User struct {
 	Name string `json:"name"`
 }
 
+// Connecting PostgreSQL
 const (
 	host     = "localhost" // replace with your PostgreSQL host
 	port     = 5432        // PostgreSQL default port
@@ -33,7 +35,8 @@ const (
 
 const connStr = "user=" + user + " password=" + password + " dbname=" + dbname + " sslmode=disable"
 
-// var postgres *sql.DB
+// Connecting CassandraDB (NoSQL)
+const addr = "127.0.0.1"
 
 func main() {
 	// Using Gin for the server, and settings for server:
@@ -52,11 +55,22 @@ func main() {
 		}
 		defer postgres.Close()
 
-		err = postgres.Ping()
+		ctx.Set("postgres", postgres)
+		ctx.Next()
+	})
+
+	// Connecting to CassandraDB:
+	server.Use(func(ctx *gin.Context) {
+		cluster := gocql.NewCluster(addr)
+		cluster.Keyspace = "sb_cassandra" // Name subject to change
+		cluster.Consistency = gocql.Quorum
+
+		session, err := cluster.CreateSession()
 		if err != nil {
 			panic(err)
 		}
-		ctx.Set("postgres", postgres)
+		defer session.Close()
+		ctx.Set("cassandra", session)
 		ctx.Next()
 	})
 
@@ -75,6 +89,16 @@ func main() {
 	server.Run(PORT_NO)
 }
 
+// Expect handler to pass in Cassandra session using ctx.MustGet("cassandra").(*gocql.Session)
+func testCassSelect(session *gocql.Session) {
+	var val int
+	if err := session.Query("SELECT * FROM test3 WHERE t = 1").Scan(&val); err != nil {
+		panic(err)
+	}
+	fmt.Println(val)
+}
+
+// Expect handler to use ctx.MustGet("postgres").(*sql.DB) and pass in session
 func testInsert(val string, postgres *sql.DB) {
 	fmt.Println("Go!", postgres)
 	stmt, err := postgres.Prepare("INSERT INTO Users (full_name,email,password) VALUES ($1,$2,22)")
@@ -87,6 +111,7 @@ func testInsert(val string, postgres *sql.DB) {
 		panic(err)
 	}
 }
+
 func testInsertHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	val := ctx.Param("val")
