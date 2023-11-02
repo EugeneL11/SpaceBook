@@ -1,11 +1,14 @@
 import { React, useState } from "react";
-
+import {userID} from "../Static.js"
 function Login(props) {
+    const toggleHomepage = props.toggleHomepage
+    const toggleRegister = props.toggleRegister
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
     const loginAction = () =>{
         //ask backend
+        toggleHomepage()
     }
 
     return (
@@ -25,7 +28,7 @@ function Login(props) {
             <button class="bg-purple-200 px-7 py-3 mt-12 rounded-lg" onClick={loginAction}>Log In</button>
         </div>
 
-        <a class="text-xl mt-12">Sign Up</a>
+        <button class="text-xl mt-12" onClick={toggleRegister}>Sign Up</button>
     </div>
     );
 

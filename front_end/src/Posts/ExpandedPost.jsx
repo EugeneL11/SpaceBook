@@ -1,6 +1,12 @@
+import {admin} from "../Static.js"
 import { React, useState, useEffect } from "react";
-
 function ExpandedPost(props) {
+    const postID = props.postID
+    const exampleFriends = ["Kevin", "Omar" , "Raine", "Eugene"]
+    const toggleHomepage = props.toggleHomepage
+    const toggleOtherProfile = props.toggleOtherProfile
+    const togglePost = () => props.toggleExpandPost(postID)
+
     const data = {
         userName: "Kevin",
         caption: "This is a post",
