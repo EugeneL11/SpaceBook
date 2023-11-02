@@ -47,10 +47,9 @@ function App() {
     hideNavBar();
     setScreen(<Register toggleHomepage={showHomeScreen} toggleLogin = {showLoginScreen}/>)
   }
-  
   function showHomeScreen(){
     showNavBar();
-    setScreen(<Homepage toggleExpandPost = {expandPost}/>)
+    setScreen(<Homepage toggleExpandPost = {expandPost} toggleOtherProfile ={showOtherProfile} toggleHomePage={showHomeScreen}/>)
   }
   function showNewPost(){
     showNavBar();

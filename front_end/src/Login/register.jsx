@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-
+import {userID} from "../Static.js"
 function Register(props) {
     const toggleLogin = props.toggleLogin
     const toggleHomepage = props.toggleHomepage

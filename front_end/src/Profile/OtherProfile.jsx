@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-
+import {admin} from '../Static.js'
 function OtherProfile(props) {
     const userID = props.userID
     const goBackScreen = props.goBackScreen

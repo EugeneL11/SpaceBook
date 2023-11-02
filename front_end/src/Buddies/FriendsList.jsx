@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-
+import {userID} from "../Static.js"
 function FriendsList(props) {
     const exampleFriends = ["Kevin", "Omar" , "Raine", "Eugene"]
     const toggleMyProfile = props.toggleMyProfile

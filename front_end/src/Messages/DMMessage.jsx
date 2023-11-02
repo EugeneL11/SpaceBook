@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-
+import {userID} from "../Static.js"
 function DMMessage(props) {
     const friendID = props.friendID
     /*const toggleDMMessage = props.toggleDMMessage(friendID)*/

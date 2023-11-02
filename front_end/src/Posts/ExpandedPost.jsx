@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-
+import {admin} from "../Static.js"
 function ExpandedPost(props) {
     const postID = props.postID
     const exampleFriends = ["Kevin", "Omar" , "Raine", "Eugene"]
