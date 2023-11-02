@@ -11,12 +11,12 @@ function DMController(props) {
     }
     function toggleDMMessage(friendID){
         console.log("Whastup")
-        setDMstate(<DMMessage friendID={friendID} toggleDMList={toggleDMList} toggleOtherProfile={toggleOtherProfile}/>)
+        setDMstate(<DMMessage friendID={friendID} toggleDMList={toggleDMList} toggleOtherProfile={toggleOtherProfile} toggleDMMessage={toggleDMMessage}/>)
     }
     function toggleOtherProfile(userID,backEvent){
         setDMstate(<OtherProfile userID = {userID} goBackScreen = {backEvent}/>)
     }
-    return (<div>{DMstate}{/* toggleDMMessage={toggleDMMessage}*/}</div>);
+    return (<div>{DMstate}{/* */}</div>);
 
 }
 

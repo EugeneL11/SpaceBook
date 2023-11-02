@@ -3,7 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/gin-contrib/cors"
+	//"github.com/gin-contrib/cors"
+	"github.com/rs/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 	"net/http"
@@ -30,14 +31,20 @@ const (
 const connStr = "user=" + user + " password=" + password + " dbname=" + dbname + " sslmode=disable"
 
 var postgres *sql.DB
-
+//func Cors() gin.HandlerFunc {
+	//return func(c *gin.Context) {
+		//cors.Default().Handler(c.Writer, c.Request)
+		//c.Next()
+	//}
+//}
 func main() {
 	// Using Gin for the server:
 	server := gin.Default()
-	server.ForwardedByClientIP = true
-	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000"}
+	server.Use(cors.Default())
+	//server.ForwardedByClientIP = true
+	//server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
+	//config := cors.DefaultConfig()
+	//config.AllowOrigins = []string{"http://localhost:3000"}
 
 	postgres, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -49,14 +56,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+	
 	// Use a prepared statement to prevent SQL injection
 	// Execute the prepared statement with user input
 	server.GET("/postgresTest", testPostgres)
 	server.GET("/ping", pong)
 	server.PUT("/num")
 	// server.Use(cors.Default()) // This allows all origins
-	server.Use(cors.New(config))
+	//server.Use(cors.New(config))
 	server.GET("/num/:num1/:num2", sum)
 	server.POST("/user", double)
 	server.Run(PORT_NO)

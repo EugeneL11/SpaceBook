@@ -15,25 +15,23 @@ import ExpandedPost from './Posts/ExpandedPost';
 import DMController from './Messages/DMController';
 import Navbar from './Navbar/navbar';
 function App() {
-  const [navBar,setNavBar] = useState(null)
+  
+  const [navBar,setNavBar] = useState(false)
   const [screen, setScreen] = useState(<Login toggleHomepage = {showHomeScreen} toggleRegister = {showRegisterScreen}/>);
+  const clickHandlers = {
+    toggleProfile : showMyProfile,
+    toggleNewPost : showNewPost,
+    toggleDMList : showDMList,
+    toggleSearchUser : showSearchUser,
+    toggleNotifications : showNotifications,
+    toggleHomepage : showHomeScreen
+  }
   const showNavBar = () =>{
-    if(navBar === null){
-      const clickHandlers = {
-        toggleProfile : showMyProfile,
-        toggleNewPost : showNewPost,
-        toggleDMList : showDMList,
-        toggleSearchUser : showSearchUser,
-        toggleNotifications : showNotifications,
-        toggleHomepage : showHomeScreen
-      }
-      setNavBar(<Navbar clickHandlers ={clickHandlers}/>)
-    }
+    setNavBar(true)
+
   }
   const hideNavBar = () =>{
-    if(navBar !== null){
-      setNavBar(null)
-    }
+    setNavBar(false)
   }
   function showOtherProfile(personID, backEvent){
     showNavBar();
@@ -56,7 +54,7 @@ function App() {
     setScreen(<NewPost toggleHomepage={showHomeScreen}/>)
   }
   function expandPost(postID){
-    showNavBar();
+    hideNavBar();
     setScreen(<ExpandedPost postID = {postID} toggleHomepage={showHomeScreen} toggleOtherProfile= {showOtherProfile} toggleExpandPost={expandPost}/>)
   }
   function showDMList(){
@@ -77,7 +75,7 @@ function App() {
   }
   return (
     <div>
-      {navBar}
+      {navBar ? <Navbar clickHandlers={clickHandlers}/> : null}
       {screen}
     </div>
   )

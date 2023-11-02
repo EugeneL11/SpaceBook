@@ -3,7 +3,7 @@ import { React, useState } from "react";
 function FetchTest() {
     const [sum, setSum] = useState(0);
 
-    fetch("http://localhost:8080/postgresTest").then((res) => {
+    fetch("http://localhost:8080/num").then((res) => {
         res.json().then((result) => {
             setSum(result.value);
         });
