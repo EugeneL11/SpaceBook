@@ -1,5 +1,4 @@
-import logo from './logo.svg';
-import './App.css';
+
 import FetchTest from './FetchTest'
 
 import { useState, useTransition } from 'react';
