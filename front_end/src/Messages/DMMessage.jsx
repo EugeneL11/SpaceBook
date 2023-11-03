@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import { React, useState, useEffect} from "react";
 import backPic from './back.png';
 import {userID} from "../Static.js"

@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-package gin
+package main
 
 import (
 	"net/http"
