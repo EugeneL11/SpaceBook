@@ -1,16 +1,16 @@
 import { React, useState } from "react";
 
 function NavbarIcon(props) {
+
+    let label = "hover:after:content-[\'" + props.label + "\']"
+
     return (
         <div 
             onClick={props.click}
             className={`flex flex-col hover:-translate-y-1 transition-all ease-in-out align-middle justify-center cursor-pointer 
-            text-black hover:after:text-xs hover:after:text-center ${props.label}`}
+            text-black hover:after:text-xs hover:after:text-center ${label}`}
         >
-            <img
-                src={props.image}
-                className="w-12 scale-50"
-            />
+            <img src={props.image} className="w-12 scale-50"/>
         </div>
     )
 }
@@ -32,11 +32,11 @@ function Navbar(props) {
         </div>
 
         <div className="flex flex-row md:items-center">
-            <NavbarIcon image="./cp.png" label="hover:after:content-['New_Post']" click={toggleNewPost}/>
-            <NavbarIcon image="./search.png" label="hover:after:content-['Search']" click={toggleSearchUser}/>
-            <NavbarIcon image="./orbit.png" label="hover:after:content-['Requests']" click={toggleNotifications}/>
-            <NavbarIcon image="./wormhole.png" label="hover:after:content-['Messages']" click={toggleDMList}/>
-            <NavbarIcon image="./profile.png" label="hover:after:content-['Profile']" click={toggleProfile}/>
+            <NavbarIcon image="./cp.png" label="New_Post" click={toggleNewPost}/>
+            <NavbarIcon image="./search.png" label="Search" click={toggleSearchUser}/>
+            <NavbarIcon image="./orbit.png" label="Requests" click={toggleNotifications}/>
+            <NavbarIcon image="./wormhole.png" label="Messages" click={toggleDMList}/>
+            <NavbarIcon image="./profile.png" label="Profile" click={toggleProfile}/>
         </div>
 
     </div>
