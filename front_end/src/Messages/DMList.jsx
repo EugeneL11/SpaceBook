@@ -1,7 +1,10 @@
 import { React, useState,useEffect } from "react";
+import {userID} from "../Static.js"
 import pPic from './pp.png';
 
 function DMList(props) {
+    const toggleHomepage = props.toggleHomepage
+    const toggleDMMessage = props.toggleDMMessage
 
     const examplefriends = [
         {username:"rainethhh", 
@@ -31,9 +34,8 @@ function DMList(props) {
         </div>
 
         <div class="flex-1 overflow-y-auto flex flex-col">
-            //only displays when connected with the backend
             {msgs ? msgs.map((msgObject, index) => (
-                <div key = {index} class="bg-purple-300 flex py-6 pl-20 pr-18 border-2 border-purple-700">
+                <div  onClick = {() => {toggleDMMessage(msgObject.username)}} key = {index} class="bg-purple-300 flex py-6 pl-20 pr-18 border-2 border-purple-700">
                     <img src={pPic} class="pr-12 w-28" alt="a placeholder profile picture"></img>
                     <div>
                         <div class="font-bold text-xl pb-4">{msgObject.username}</div>
@@ -104,4 +106,4 @@ function DMList(props) {
 
 }
 
-export default DMList;
+export default DMList
