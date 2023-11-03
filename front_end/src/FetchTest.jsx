@@ -3,6 +3,7 @@ import { React, useState } from "react";
 function FetchTest() {
     const [sum, setSum] = useState(0);
 
+
     const user = {
         ID: "1",
         Name: "John",
