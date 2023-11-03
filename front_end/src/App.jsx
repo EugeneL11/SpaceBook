@@ -76,7 +76,7 @@ function App() {
   return (
     <div>
       {navBar ? <Navbar clickHandlers={clickHandlers}/> : null}
-      {screen}
+      <div className='mt-20'>{screen}</div>
     </div>
   )
 }
