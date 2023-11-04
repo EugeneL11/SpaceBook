@@ -16,7 +16,7 @@ export default function Planet() {
         <OrbitControls enablePan={false} enableZoom={false} rotateSpeed={0.2}/>
         <ambientLight intensity={30} />
 
-        <primitive ref={earthRef} object={model.scene}  scale={0.006} />
+        <primitive ref={earthRef} object={model.scene} scale={0.006} />
       </>
     );
 }
