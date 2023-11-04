@@ -9,16 +9,16 @@ function DMList(props) {
     const examplefriends = [
         {username:"rainethhh", 
         msg:"Yes I agree, it really does feel like that"},
-        {username:"rainethhh", 
-        msg:"Yes I agree, it really does feel like that"},
-        {username:"rainethhh", 
-        msg:"Yes I agree, it really does feel like that"},
-        {username:"rainethhh", 
-        msg:"Yes I agree, it really does feel like that"},
-        {username:"rainethhh", 
-        msg:"Yes I agree, it really does feel like that"},
-        {username:"rainethhh", 
-        msg:"Yes I agree, it really does feel like that"} 
+        {username:"kingJames", 
+        msg:"Appreciate it!!!"},
+        {username:"Gene", 
+        msg:"See ya"},
+        {username:"kevonosdiaz", 
+        msg:"Go Go Go Go Go"},
+        {username:"duppy", 
+        msg:"just grabbing a bakechef, be rigth there"},
+        {username:"vicGPT", 
+        msg:"The most optimal algorithm would be O(n log n)"} 
         ]
     
     const [msgs, setMsgs] = useState(null)
@@ -47,7 +47,7 @@ function DMList(props) {
             )) : null}
             
 
-            <div class="bg-purple-300 flex py-6 pl-20 pr-18 border-2 border-purple-700">
+            {/* <div class="bg-purple-300 flex py-6 pl-20 pr-18 border-2 border-purple-700">
                 <img src={pPic} class="pr-12 w-28" alt="a placeholder profile picture"></img>
                 <div>
                     <div class="font-bold text-xl pb-4">kingJames</div>
@@ -95,7 +95,7 @@ function DMList(props) {
                         The most optimal algorithm would be O(n log n)
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
 
         <div class="bg-purple-700 text-center text-white text-xl p-3">

@@ -76,7 +76,7 @@ function App() {
   return (
     <div>
       {navBar ? <Navbar clickHandlers={clickHandlers}/> : null}
-      <div className='mt-20'>{screen}</div>
+      <div className='{navbar ? ‘mt-20’ : ‘mt-2’}'>{screen}</div>
     </div>
   )
 }
