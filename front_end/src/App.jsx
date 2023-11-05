@@ -13,6 +13,7 @@ import OtherProfile from './Profile/OtherProfile';
 import ExpandedPost from './Posts/ExpandedPost';
 import DMController from './Messages/DMController';
 import Navbar from './Navbar/navbar';
+import Background from './Background/background';
 
 function App() {
   
@@ -75,6 +76,7 @@ function App() {
   }
   return (
     <div>
+      <Background className="!-z-20"/>
       {navBar ? <Navbar clickHandlers={clickHandlers}/> : null}
       <div className={navBar ? 'mt-20' : 'mt=0'}>{screen}</div>
     </div>
