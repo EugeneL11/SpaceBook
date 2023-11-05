@@ -12,8 +12,8 @@ import Notifcations from './Buddies/Notifications';
 import OtherProfile from './Profile/OtherProfile';
 import ExpandedPost from './Posts/ExpandedPost';
 import DMController from './Messages/DMController';
-import NavBar from './Navbar/navbar';
-import Background from './Background/background'
+import Navbar from './Navbar/navbar';
+import Background from './Background/background';
 
 function App() {
   
@@ -64,7 +64,11 @@ function App() {
   }
   function showMyProfile(){
     showNavBar();
-    setScreen(<ProfileController toggleLogin={showLoginScreen} toggleHomepage = {showHomeScreen}/>)
+    setScreen(null);
+    // set timeout of 1 ms
+    setTimeout(() => {
+      setScreen(<ProfileController toggleLogin={showLoginScreen} toggleHomepage = {showHomeScreen}/>)
+    }, 1);
   }
   function showSearchUser(){
     showNavBar();
@@ -76,9 +80,9 @@ function App() {
   }
   return (
     <div>
-    
-      {navBar ? <NavBar clickHandlers={clickHandlers}/> : null}
-      <div className='{navbar ? ‘mt-20’ : ‘mt-2’}'>{screen}</div>
+      <Background className="!-z-20"/>
+      {navBar ? <Navbar clickHandlers={clickHandlers}/> : null}
+      <div className={navBar ? 'mt-20' : 'mt=0'}>{screen}</div>
     </div>
   )
 }
