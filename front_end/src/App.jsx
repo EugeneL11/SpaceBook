@@ -64,7 +64,11 @@ function App() {
   }
   function showMyProfile(){
     showNavBar();
-    setScreen(<ProfileController toggleLogin={showLoginScreen} toggleHomepage = {showHomeScreen}/>)
+    setScreen(null);
+    // set timeout of 1 ms
+    setTimeout(() => {
+      setScreen(<ProfileController toggleLogin={showLoginScreen} toggleHomepage = {showHomeScreen}/>)
+    }, 1);
   }
   function showSearchUser(){
     showNavBar();
