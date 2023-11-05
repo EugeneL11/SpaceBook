@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 
 function PlanetCanvas () {
     return (
-    <Canvas className="cursor-pointer"
+    <Canvas className="cursor-pointer mt-5 md:mt-0"
         // camera={{ position: [0, 0, 1], fov: 50 }}
         >
         <Planet/>
@@ -38,9 +38,10 @@ function MyProfile(props) {
 
 
         { user ? 
-        <div className="flex flex-row justify-center align-middle">
+        <div className="flex flex-col lg:flex-row justify-center align-middle">
 
-            <div className="flex flex-col w-80">
+    
+            <div className="flex flex-col ml-5 mr-5 lg:ml-0 lg:mr-0 lg:w-80">
 
                 <div className="flex flex-row mb-4">
 
@@ -70,8 +71,8 @@ function MyProfile(props) {
 
 
             <div>
-            <PlanetCanvas/>
-        </div>
+                <PlanetCanvas/>
+            </div>
 
         </div>: null}
 
