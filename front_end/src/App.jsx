@@ -12,7 +12,8 @@ import Notifcations from './Buddies/Notifications';
 import OtherProfile from './Profile/OtherProfile';
 import ExpandedPost from './Posts/ExpandedPost';
 import DMController from './Messages/DMController';
-import Navbar from './Navbar/navbar';
+import NavBar from './Navbar/navbar';
+import Background from './Background/background'
 
 function App() {
   
@@ -75,7 +76,8 @@ function App() {
   }
   return (
     <div>
-      {navBar ? <Navbar clickHandlers={clickHandlers}/> : null}
+    
+      {navBar ? <NavBar clickHandlers={clickHandlers}/> : null}
       <div className='{navbar ? ‘mt-20’ : ‘mt-2’}'>{screen}</div>
     </div>
   )
