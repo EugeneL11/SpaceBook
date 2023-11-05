@@ -30,19 +30,14 @@ function DMList(props) {
 
     return (
     <div class="flex flex-col items-center min-h-screen">
-        <Background/>
-        <div class="bg-gray-600 text-center text-white text-lg p-3">
-            navBar
-        </div>
-
-        <div class="bg-neutral-700 bg-opacity-75 text-black text-center text-xl m-14 p-6 sm:p-8 rounded-xl w-2/3 min-w-fit">
+        <div class="bg-neutral-700 bg-opacity-90 text-black text-center text-xl m-14 md:p-6 p-2 rounded-xl w-2/3 min-w-fit">
             <div class="flex-1 overflow-y-auto flex flex-col">
                 {msgs ? msgs.map((msgObject, index) => (
-                    <div  onClick = {() => {toggleDMMessage(msgObject.username)}} key = {index} class="bg-purple-200 flex py-6 pl-20 pr-18 border-2 m-2 border-purple-700 rounded-xl">
-                        <img src={pPic} class="pr-12 w-28" alt="a placeholder profile picture"></img>
+                    <div  onClick = {() => {toggleDMMessage(msgObject.username)}} key = {index} class="bg-purple-200 flex py-4 md:py-6 px-6 md:px-12 border-2 m-2 border-purple-700 rounded-xl">
+                        <img src={pPic} class="pr-12 w-28 object-contain h-auto" alt="a placeholder profile picture"></img>
                         <div>
                             <div class="font-bold text-xl pb-4">{msgObject.username}</div>
-                            <div class="text-lg ml-10">
+                            <div class="text-lg ml-10 truncate">
                                 {msgObject.msg}
                             </div>
                         </div>

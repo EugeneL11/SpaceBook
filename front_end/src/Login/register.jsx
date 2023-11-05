@@ -16,10 +16,10 @@ function Register(props) {
 
     return (
     <div class="flex flex-col items-center">
-        <h1 class="text-6xl sm:text-6xl pt-14 pb-14">SpaceBook</h1>
+        <h1 class="text-6xl sm:text-6xl pt-12 pb-10">SpaceBook</h1>
 
-        <div class="bg-white text-black text-center text-lg p-8 sm:px-12 rounded-md w-1/3 min-w-fit">
-            <h4 class="text-3xl mb-6">Welcome!</h4>
+        <div class="bg-white text-black text-center text-lg p-6 sm:px-12 rounded-md w-1/3 min-w-fit">
+            <h4 class="text-3xl mb-2">Welcome!</h4>
             <div class="w-full">
                 <label for="username" class="block text-left">Full Name</label>
                 <input class="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Enter Full Name" type="text" value={fullName} onChange={e => setName(e.target.value)}></input>
@@ -36,7 +36,7 @@ function Register(props) {
                 <label for="password" class="block text-left">Password</label>
                 <input class="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Enter Password" type="text" value={password} onChange={e => setPassword(e.target.value)}></input>
             </div>
-            <button class="bg-purple-200 px-7 py-3 mt-10 rounded-lg" onClick={registerAction}>Sign Up</button>
+            <button class="bg-purple-200 px-7 py-3 mt-6 rounded-lg" onClick={registerAction}>Sign Up</button>
         </div>
 
         <button class="text-xl mt-12" onClick={toggleLogin}>Log In</button>
