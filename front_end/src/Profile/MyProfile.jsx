@@ -5,7 +5,9 @@ import { Canvas } from "@react-three/fiber";
 
 function PlanetCanvas () {
     return (
-    <Canvas className="cursor-pointer">
+    <Canvas className="cursor-pointer"
+        // camera={{ position: [0, 0, 1], fov: 50 }}
+        >
         <Planet/>
     </Canvas>
     )
@@ -19,7 +21,8 @@ function MyProfile(props) {
     const duppy = {
         username: "Duppy", 
         homePlanet: "Earth",
-        pfp: "./ayylmao.webp"
+        pfp: "./ayylmao.webp",
+        bio: "My unmatched perspicacity coupled with sheer indefitigability makes me a feared opponent in any realm of human endeavor.\n https://okhan.me"
     }
     const [user, setUser] = useState(null)
     
@@ -31,17 +34,15 @@ function MyProfile(props) {
     return (
         <div className="flex flex-col">
 
-        <button className="mb-5" onClick={toggleHomepage}>Go to Homepage</button>
+        <button className="mb-5 w-fit ml-6 text-xl" onClick={toggleHomepage}> {'<--'} </button>
 
 
         { user ? 
         <div className="flex flex-row justify-center align-middle">
 
-            <div className="flex flex-col">
+            <div className="flex flex-col w-80">
 
-                
-
-                <div className="flex flex-row align-middle justify-center">
+                <div className="flex flex-row mb-4">
 
                     <img src={user.pfp} alt="My Profile Picture" className="w-20 aspect-square rounded-full"/>
 
@@ -52,8 +53,17 @@ function MyProfile(props) {
 
                 </div>
 
-                <button onClick={toggleSettings}>Go to Settings</button>
-                <button onClick={toggleFriendsList}>Go to Friends List</button>
+                <p className="mb-4">{user.bio}</p>
+
+                <button onClick={toggleSettings} className="flex flex-row cursor-pointer ">
+                    <img src="./gear.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
+                    <p>Edit profile settings</p>
+                </button>
+
+                <button onClick={toggleFriendsList} className="flex flex-row cursor-pointer ">
+                    <img src="./sun.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
+                    <p>View orbit buddies</p>
+                </button>
 
             </div>
 
