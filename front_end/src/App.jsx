@@ -60,7 +60,11 @@ function App() {
   }
   function showDMList(){
     showNavBar();
-    setScreen(<DMController toggleHomePage = {showHomeScreen}/>)
+    setScreen(null);
+    setTimeout(()=>{
+      setScreen(<DMController toggleHomePage = {showHomeScreen}/>)
+    },0)
+    
   }
   function showMyProfile(){
     showNavBar();
@@ -68,7 +72,7 @@ function App() {
     // set timeout of 1 ms
     setTimeout(() => {
       setScreen(<ProfileController toggleLogin={showLoginScreen} toggleHomepage = {showHomeScreen}/>)
-    }, 1);
+    }, 0);
   }
   function showSearchUser(){
     showNavBar();
