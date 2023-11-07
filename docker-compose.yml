@@ -1,0 +1,51 @@
+version: "3"
+services:
+    client:
+        image: react-app
+        volumes:
+            - ./front_end:/app
+        working_dir: /app
+        ports:
+            - "3000:3000"
+        command: npm start
+    server:
+        build:
+            context: ./back_end
+            dockerfile: ./back_end/Dockerfile
+        image: go-server
+        volumes:
+            - ./back_end:/app
+        working_dir: /app
+        ports:
+            - "8080:8080"
+        depends_on:
+            - postgres
+            - cassandra
+        command: go run server.go
+    postgres:
+        image: postgres:latest # Just use from Docker Hub
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=postgres
+        container_name: postgres
+        volumes:
+            - postgres-data:/var/lib/postgres/data
+    cassandra:
+        image: cassandra:latest # Just use from Docker Hub
+        ports:
+            - "9042:9042"
+        environment:
+            - CASSANDRA_CLUSTER_NAME=cassandra
+            - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+            - CASSANDRA_DC=datacenter1
+            - CASSANDRA_RACK=rack1
+            - CASSANDRA_ENDPOINT=
+        volumes:
+            - cassandra-data:/var/lib/cassandra/data
+        container_name: cassandra
+volumes:
+    postgres-data: {}
+    cassandra-data: {}
