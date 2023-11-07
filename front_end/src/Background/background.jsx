@@ -10,17 +10,17 @@ export default function Background() {
         "#000000",
     ];
   
-    const count = 500;
+    const count = 300;
 
     return (
-        <div className="h-screen w-screen fixed">
-        <Canvas>
+        <div className="h-screen w-screen fixed !-z-20">
+        <Canvas className="!-z-20">
     
             <Sparkles
                 /** Number of particles (default: 100) */
                 count={count}
                 /** Speed of particles (default: 1) */
-                speed={0.5}
+                speed={1}
                 /** Opacity of particles (default: 1) */
                 // opacity?: number | Float32Array
                 /** Color of particles (default: 100) */
@@ -31,9 +31,10 @@ export default function Background() {
                 scale={10}
                 /** Movement factor (default: 1) */
                 // noise?: number | [number, number, number] | THREE.Vector3 | Float32Array
+                className="!-z-20"
             />
 
-            <Stars radius={1} depth={50} count={5000} factor={4} saturation={0} fade speed={5} />
+            <Stars radius={1} depth={50} count={1000} factor={5} saturation={0} fade speed={5} className="!-z-20"/>
 
         </Canvas>  
         </div>
