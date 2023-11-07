@@ -1,4 +1,5 @@
 import { React, useState } from "react";
+import backPic from '../images/back.png';
 
 function Settings(props) {
     const toggleLogin = props.toggleLogin
@@ -7,10 +8,9 @@ function Settings(props) {
     <div className="flex flex-col items-center">
         <div class=" flex flex-col bg-white text-black text-start text-lg m-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
             <h1 class="text-center text-3xl py-4">Settings</h1>
+            <img onClick={toggleMyProfile} src={backPic} alt="a back arrow button" class="w-10 cursor-pointer"></img>
 
-            <button class="w-fit self-center" onClick={toggleMyProfile}>Back</button>
-
-            <label class="">Change Username: </label>
+            <label class="mt-6">Change Username: </label>
             <input class="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Enter New Username" type="text"></input>
         
             <div class="mt-6">Change Profile Picture: </div>

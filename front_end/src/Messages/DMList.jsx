@@ -1,6 +1,6 @@
 import { React, useState,useEffect } from "react";
 import {userID} from "../Static.js"
-import pPic from './pp.png';
+import pPic from '../images/pp.png';
 import Background from '../Background/background'
 
 function DMList(props) {
