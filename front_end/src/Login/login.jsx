@@ -23,7 +23,7 @@ function Login(props) {
             </div>
             <div class="w-full mt-8">
                 <label for="password" class="block mb-2 text-left">Password</label>
-                <input class="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Enter Password" type="text" value={password} onChange={e => setPassword(e.target.value)}></input>
+                <input class="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Enter Password" type="password" value={password} onChange={e => setPassword(e.target.value)}></input>
             </div>
             <button class="bg-purple-200 px-7 py-3 mt-10 rounded-lg" onClick={loginAction}>Log In</button>
         </div>

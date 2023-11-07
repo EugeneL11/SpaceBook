@@ -34,7 +34,7 @@ function Register(props) {
             </div>
             <div class="w-full mt-4">
                 <label for="password" class="block text-left">Password</label>
-                <input class="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Enter Password" type="text" value={password} onChange={e => setPassword(e.target.value)}></input>
+                <input class="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Enter Password" type="password" value={password} onChange={e => setPassword(e.target.value)}></input>
             </div>
             <button class="bg-purple-200 px-7 py-3 mt-6 rounded-lg" onClick={registerAction}>Sign Up</button>
         </div>
