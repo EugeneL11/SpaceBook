@@ -3,12 +3,13 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/gocql/gocql"
 	_ "github.com/lib/pq"
-	"net/http"
-	"strconv"
 )
 
 const PORT_NO = ":8080"
@@ -26,39 +27,48 @@ type User struct {
 
 // Connecting PostgreSQL
 const (
-	host     = "localhost" // replace with your PostgreSQL host
-	port     = 5432        // PostgreSQL default port
-	user     = "postgres"  // replace with your PostgreSQL username
-	password = ""          // replace with your PostgreSQL password
-	dbname   = "postgres"  // replace with your PostgreSQL database name
+	host     = "postgres" // service name in docker-compose.yml
+	port     = 5432       // PostgreSQL default port
+	user     = "postgres" // replace with your PostgreSQL username
+	password = "postgres" // replace with your PostgreSQL password
+	dbname   = "postgres" // replace with your PostgreSQL database name
 )
 
-const connStr = "user=" + user + " password=" + password + " dbname=" + dbname + " sslmode=disable"
+const connStr = "user=" + user + " password=" + password + " dbname=" + dbname + " host=" + host + " sslmode=disable"
 
 // Connecting CassandraDB (NoSQL)
-const addr = "127.0.0.1"
+const addr = "cassandra"
 
 func main() {
 	// Using Gin for the server, and settings for server:
 	server := gin.Default()
 	server.ForwardedByClientIP = true
-	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
+	server.SetTrustedProxies([]string{"127.0.0.1", "client"}) // Add any other needed IPs
 	config := cors.DefaultConfig()
+
 	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8080", "*"}
 	server.Use(cors.New(config))
 
+	// db, err := sql.Open("postgres", connStr)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// // initialize(db)
+	// defer db.Close()
+
 	// Connecting to postgres:
-	server.Use(func(ctx *gin.Context) {
-		postgres, err := sql.Open("postgres", connStr)
-		if err != nil {
-			panic(err)
-		}
-		defer postgres.Close()
+	// server.Use(func(ctx *gin.Context) {
+	// 	postgres, err := sql.Open("postgres", connStr)
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// 	fmt.Printf("Go Postgres! %v\n", postgres)
+	// 	// initialize(postgres)
+	// 	defer postgres.Close()
+	// 	ctx.Set("postgres", postgres)
 
-		ctx.Set("postgres", postgres)
-		ctx.Next()
-	})
-
+	// 	ctx.Next()
+	// })
 	// Connecting to CassandraDB:
 	server.Use(func(ctx *gin.Context) {
 		cluster := gocql.NewCluster(addr)
@@ -75,7 +85,6 @@ func main() {
 	})
 
 	// One-time setup of DB:
-	// initialize(postgres)
 
 	// Route handlers for API endpoints:
 	server.Handler()
