@@ -16,9 +16,9 @@ function Register(props) {
 
     return (
     <div class="flex flex-col items-center">
-        <h1 class="text-6xl sm:text-6xl pt-12 pb-10">SpaceBook</h1>
+        <h1 class="text-6xl py-11">SpaceBook</h1>
 
-        <div class="bg-white text-black text-center text-lg p-6 sm:px-12 rounded-md w-1/3 min-w-fit">
+        <div class="bg-white text-black text-center text-lg p-6 sm:px-12 rounded-md w-3/4 sm:w-1/2 lg:w-2/5 xl:w-1/3 min-w-fit">
             <h4 class="text-3xl mb-2">Welcome!</h4>
             <div class="w-full">
                 <label for="username" class="block text-left">Full Name</label>
