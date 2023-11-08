@@ -17,6 +17,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.top-50-percent{
+  top: 50px;
+}
+.left-85-percent{
+  left: 85%;
+}
 
 @tailwind base;
 @tailwind components;
