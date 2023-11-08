@@ -10,29 +10,25 @@ import (
 	"github.com/gocql/gocql"
 )
 
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
+/*
+	func Double(ctx *gin.Context) {
+		var inputUser User
+		if err := ctx.ShouldBindJSON(&inputUser); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-func Double(ctx *gin.Context) {
-	var inputUser User
-	if err := ctx.ShouldBindJSON(&inputUser); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		newID := inputUser.ID + inputUser.ID
+		newName := inputUser.Name + inputUser.Name
+
+		responseUser := User{
+			ID:   newID,
+			Name: newName,
+		}
+
+		ctx.JSON(http.StatusOK, responseUser)
 	}
-
-	newID := inputUser.ID + inputUser.ID
-	newName := inputUser.Name + inputUser.Name
-
-	responseUser := User{
-		ID:   newID,
-		Name: newName,
-	}
-
-	ctx.JSON(http.StatusOK, responseUser)
-}
-
+*/
 func Pong(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "pong",
