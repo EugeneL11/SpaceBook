@@ -13,6 +13,8 @@ function PlanetCanvas () {
 
 function Post(props) {
     const imageCount = props.post.images.length;
+    const toggleOtherProfile = props.toggleOtherProfile;
+    const expandPost = props.expandPost;
     const [imageNum,setImageNum] = useState(0)
     const toggleNextImage = () =>{
         const nextImage = imageNum + 1;

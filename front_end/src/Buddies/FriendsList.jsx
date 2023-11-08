@@ -1,8 +1,11 @@
 import { React, useState,useEffect } from "react";
 
 function Friend(props) {
-    const removeFriendEvent = () => {props.removeFriend(props.username)}
-    const othersProfileEvent = () => {props.othersProfile(props.username)}
+    const removeFriendEvent = () => {
+        props.removeFriend(props.username)
+    }
+    const othersProfileEvent = props.toggleOtherProfile
+    console.log(othersProfileEvent)
     return (
         <div className="flex flex-row bg-blue-500 h-20 w-1/2 justify-between rounded-md">
             {/* <div className="inline-block m-1">
@@ -14,7 +17,7 @@ function Friend(props) {
                 <p>{props.username}</p>
             </div> */}
 
-            <div className="flex items-center">
+            <div onClick = {othersProfileEvent} className="flex items-center">
                 <img 
                     src={props.user_pic_url}
                     alt={props.username} 
@@ -55,11 +58,28 @@ function Friend(props) {
 function FriendsList(props) {
     const [friends, setFriends] = useState(null)
 
+    const toggleMyProfile = props.toggleMyProfile
+    const toggleFriendsList = props.toggleFriendsList
+    const toggleOtherProfile = props.toggleOtherProfile
     useEffect(() =>{
         const friendstest = [{
         username: "Gene",
         user_pic_url: "./jupiter.jpg"
-    }] // placeholder for back-end data
+        },
+        {
+            username: "Raine",
+            user_pic_url: "./jupiter.jpg"
+        },
+        {
+            username: "Omar",
+            user_pic_url: "./jupiter.jpg"
+        },
+        {
+            username: "Kevin",
+            user_pic_url: "./jupiter.jpg"
+        },
+
+    ] // placeholder for back-end data
 
         // ask back-end for friends list
         setFriends(friendstest)
@@ -73,19 +93,22 @@ function FriendsList(props) {
     }
     
     return (
-        <div className="flex-col">
-            {friends ? friends.map(
-                (friend, index) => (
-                    <div className="flex flex-col items-center">
-                        <Friend 
-                            key={index}
-                            username={friend.username} 
-                            user_pic_url={friend.user_pic_url}
-                            removeFriend = {removeFriend}
-                        ></Friend>
-                    </div>
-                )
-            ) : null}
+        <div>
+            <button onClick={toggleMyProfile}> Back</button>
+            <div className="flex-col">
+                {friends ? friends.map(
+                    (friend, index) => (
+                        <div key={index} className="flex flex-col items-center mb-4">
+                            <Friend 
+                                username={friend.username} 
+                                user_pic_url={friend.user_pic_url}
+                                removeFriend = {removeFriend}
+                                toggleOtherProfile = {() => {toggleOtherProfile(friend.username,toggleFriendsList)}}
+                            ></Friend>
+                        </div>
+                    )
+                ) : null}
+            </div>
         </div>
     );
 }
