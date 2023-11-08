@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -13,9 +12,6 @@ import (
 const PORT_NO = ":8080"
 
 // Managing proxies: https://pkg.go.dev/github.com/gin-gonic/gin#section-readme
-// TODO - Isolate queries to their own funcs with parameters
-// Then call these queries in the route handler funcs to test functionality of queries
-// Move route handlers and maybe queries to their own files (ex. routes.go, queries.go)
 // TODO Get postgres variable into all handlers
 
 // Connecting PostgreSQL
@@ -61,10 +57,11 @@ func main() {
 
 		ctx.Next()
 	})
+
 	// Connecting to CassandraDB:
 	server.Use(func(ctx *gin.Context) {
 		cluster := gocql.NewCluster(addr)
-		cluster.Keyspace = "sb_cassandra" // Name subject to change
+		cluster.Keyspace = "cassandra"
 		cluster.Consistency = gocql.Quorum
 
 		session, err := cluster.CreateSession()
@@ -76,133 +73,5 @@ func main() {
 		ctx.Next()
 	})
 
-	// One-time setup of DB:
-
-	// Route handlers for API endpoints:
-	server.Handler()
-	// server.GET("/postgresTest", testPostgres)
-
 	server.Run(PORT_NO)
 }
-
-// Expect handler to pass in Cassandra session using ctx.MustGet("cassandra").(*gocql.Session)
-func testCassSelect(session *gocql.Session) {
-	var val int
-	if err := session.Query("SELECT * FROM test3 WHERE t = 1").Scan(&val); err != nil {
-		panic(err)
-	}
-	fmt.Println(val)
-}
-
-// Expect handler to use ctx.MustGet("postgres").(*sql.DB) and pass in session
-func testInsert(val string, postgres *sql.DB) {
-	fmt.Println("Go!", postgres)
-	stmt, err := postgres.Prepare("INSERT INTO Users (full_name,email,password) VALUES ($1,$2,22)")
-	if err != nil {
-		panic(err)
-	}
-	_, err2 := stmt.Exec(val, val)
-	fmt.Println("Go2!")
-	if err2 != nil {
-		panic(err)
-	}
-}
-
-func testInsertHandler(ctx *gin.Context) {
-	postgres := ctx.MustGet("postgres").(*sql.DB)
-	val := ctx.Param("val")
-	fmt.Println(val, "Go!")
-	testInsert(val, postgres)
-
-}
-
-// func testSelect() {
-// 	stmt, err := postgres.Prepare("SELECT * FROM test3 WHERE t = 1")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer stmt.Close()
-
-// 	rows, err := stmt.Query()
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer rows.Close()
-
-// 	for rows.Next() {
-// 		var val int
-// 		err := rows.Scan(&val)
-// 		// If multiple columns => rows.Scan(&val1, &val2, &val3)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		fmt.Printf("%d\n", val)
-// 	}
-// }
-
-// func testUpdate() {
-// 	stmt, err := postgres.Prepare("UPDATE test3 SET t = 2 WHERE t = 1")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer stmt.Close()
-
-// 	_, err = stmt.Exec()
-// }
-
-// func testDelete(e int) {
-// 	stmt, err := postgres.Prepare("DELETE FROM test3 WHERE t = ")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer stmt.Close()
-// }
-
-// func testConditionalSelect() {
-// 	stmt, err := postgres.Prepare("SELECT * FROM test3 WHERE t < 5 AND t > 0")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer stmt.Close()
-
-// 	rows, err := stmt.Query()
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer rows.Close()
-
-// 	for rows.Next() {
-// 		var val int
-// 		err := rows.Scan(&val)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		fmt.Printf("%d\n", val)
-// 	}
-// }
-
-// func testPostgres(ctx *gin.Context) {
-// 	stmt, err := postgres.Prepare("SELECT * FROM test3")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer stmt.Close()
-
-// 	rows, err := stmt.Query()
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer rows.Close()
-
-// 	for rows.Next() {
-// 		var val int
-// 		err := rows.Scan(&val)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		fmt.Printf("%d\n", val)
-// 		ctx.JSON(http.StatusOK, gin.H{
-// 			"value": val,
-// 		})
-// 	}
-// }

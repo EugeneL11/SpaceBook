@@ -1,12 +1,12 @@
 package main
 
 import "github.com/gin-gonic/gin"
-import "github.com/EugeneL11/SpaceBook/back_end/handlers"
+import "github.com/EugeneL11/SpaceBook/handlers"
 
 func setupRoutes(server *gin.Engine) {
-	server.GET("/ping", handlers.pong)
-	server.PUT("/num")
-	server.GET("/num/:num1/:num2", handlers.sum)
-	server.GET("/testInsert/:val", testInsertHandler)
-	server.POST("/user", handlers.double)
+	server.GET("/ping", handlers.Pong)
+	server.GET("/num/:num1/:num2", handlers.Sum)
+	server.GET("/testInsert/:val", handlers.TestInsertHandler)
+	server.POST("/user", handlers.Double)
+	// server.GET("/postgresTest", TestPostgres)
 }
