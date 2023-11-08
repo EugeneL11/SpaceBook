@@ -13,6 +13,30 @@ function PlanetCanvas () {
     )
 }
 
+function Post() {
+    return(
+        <div className="flex flex-col w-5/12 mx-auto mb-5 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
+
+            <div className="flex flex-row p-3 justify-between">
+                <div className="flex flex-row justify-center align-middle ">
+                    <img src="./ayylmao.webp" alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
+                    <p className="ml-2 mt-2">Duppy</p>
+                </div>
+                <p className="mr-2 mt-2">1h</p>
+            </div>
+
+
+
+            <p className="mt-2 pl-5"> Finally leaving this planet lmao 😂</p>
+
+            <img src="./swag.jpg" className="m-4" alt="" />
+
+
+        </div>
+
+    )
+}
+
 function MyProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
@@ -22,7 +46,7 @@ function MyProfile(props) {
         username: "Duppy", 
         homePlanet: "Earth",
         pfp: "./ayylmao.webp",
-        bio: "My unmatched perspicacity coupled with sheer indefitigability makes me a feared opponent in any realm of human endeavor.\n https://okhan.me"
+        bio: "My unmatched perspicacity coupled with sheer indefitigability makes me a feared opponent in any planet in this solar system.\n https://okhan.me"
     }
     const [user, setUser] = useState(null)
     
@@ -36,18 +60,19 @@ function MyProfile(props) {
 
         <button className="mb-5 w-fit ml-6 text-xl" onClick={toggleHomepage}> {'<--'} </button>
 
-
         { user ? 
-        <div className="flex flex-col lg:flex-row justify-center align-middle">
+        
+        <div className="flex flex-col justify-center align-middle">
 
+        <div className="flex flex-col lg:flex-row justify-center align-middle mb-14">
     
             <div className="flex flex-col ml-5 mr-5 lg:ml-0 lg:mr-0 lg:w-80">
 
-                <div className="flex flex-row mb-4">
+                <div className="flex flex-row mb-4 align-middle">
 
                     <img src={user.pfp} alt="My Profile Picture" className="w-20 aspect-square rounded-full"/>
 
-                    <div className="flex flex-col ml-4">
+                    <div className="flex flex-col ml-4 justify-center align-middle">
                         <p>{user.username}</p>
                         <p>from {user.homePlanet}</p>
                     </div>
@@ -74,7 +99,17 @@ function MyProfile(props) {
                 <PlanetCanvas/>
             </div>
 
+
+            </div>
+
+            <Post/>
+            <Post/>
+            <Post/>
+
+
+
         </div>: null}
+
 
     </div>
         
