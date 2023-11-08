@@ -53,22 +53,22 @@ func main() {
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
-	// // initialize(db)
+	// initialize(db)
 	// defer db.Close()
 
 	// Connecting to postgres:
-	// server.Use(func(ctx *gin.Context) {
-	// 	postgres, err := sql.Open("postgres", connStr)
-	// 	if err != nil {
-	// 		panic(err)
-	// 	}
-	// 	fmt.Printf("Go Postgres! %v\n", postgres)
-	// 	// initialize(postgres)
-	// 	defer postgres.Close()
-	// 	ctx.Set("postgres", postgres)
+	server.Use(func(ctx *gin.Context) {
+		postgres, err := sql.Open("postgres", connStr)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("Go Postgres! %v\n", postgres)
+		// initialize(postgres)
+		defer postgres.Close()
+		ctx.Set("postgres", postgres)
 
-	// 	ctx.Next()
-	// })
+		ctx.Next()
+	})
 	// Connecting to CassandraDB:
 	server.Use(func(ctx *gin.Context) {
 		cluster := gocql.NewCluster(addr)
