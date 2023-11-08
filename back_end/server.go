@@ -32,11 +32,11 @@ func main() {
 	// Using Gin for the server, and settings for server:
 	server := gin.Default()
 	server.ForwardedByClientIP = true
-	server.SetTrustedProxies([]string{"127.0.0.1", "client"}) // Add any other needed IPs
+	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
 	setupRoutes(server)
 	config := cors.DefaultConfig()
 
-	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8080", "*"}
+	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8080", "http://client"}
 	server.Use(cors.New(config))
 
 	// db, err := sql.Open("postgres", connStr)

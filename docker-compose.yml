@@ -27,7 +27,7 @@ services:
         depends_on:
             - postgres
             - cassandra
-        command: go run server.go script.go
+        command: go run .
     postgres:
         image: postgres:15.4 # Just use from Docker Hub
         restart: always
