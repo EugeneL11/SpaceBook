@@ -7,7 +7,11 @@ services:
         working_dir: /app
         ports:
             - "3000:3000"
+        networks:
+            - spacebook
         command: npm start
+        depends_on:
+            - server
     server:
         build:
             context: ./back_end
@@ -18,25 +22,34 @@ services:
         working_dir: /app
         ports:
             - "8080:8080"
+        networks:
+            - spacebook
         depends_on:
             - postgres
             - cassandra
-        command: go run server.go
+        command: go run server.go script.go
     postgres:
-        image: postgres:latest # Just use from Docker Hub
+        image: postgres:15.4 # Just use from Docker Hub
+        restart: always
         ports:
-            - "5432:5432"
+            - "5433:5432"
+        networks:
+            - spacebook
         environment:
             - POSTGRES_USER=postgres
             - POSTGRES_PASSWORD=postgres
             - POSTGRES_DB=postgres
+            - PGHOST=postgres
         container_name: postgres
         volumes:
-            - postgres-data:/var/lib/postgres/data
+            - /var/lib/postgres/data:/var/lib/postgres/data
     cassandra:
-        image: cassandra:latest # Just use from Docker Hub
+        image: cassandra:4.1.3 # Just use from Docker Hub
+        restart: always
         ports:
             - "9042:9042"
+        networks:
+            - spacebook
         environment:
             - CASSANDRA_CLUSTER_NAME=cassandra
             - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
@@ -44,8 +57,17 @@ services:
             - CASSANDRA_RACK=rack1
             - CASSANDRA_ENDPOINT=
         volumes:
-            - cassandra-data:/var/lib/cassandra/data
+            - /var/lib/cassandra/data:/var/lib/cassandra/data
         container_name: cassandra
-volumes:
-    postgres-data: {}
-    cassandra-data: {}
+    # adminer:
+    #     image: adminer
+    #     restart: always
+    #     ports:
+    #         # - "5432:5432"
+    #         - "8081:8080"
+    #     networks:
+    #         - spacebook
+
+networks:
+    spacebook:
+        driver: bridge
