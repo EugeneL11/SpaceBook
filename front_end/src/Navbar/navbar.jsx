@@ -21,7 +21,7 @@ function Navbar(props) {
     const toggleNotifications = props.clickHandlers.toggleNotifications;
 
     return (
-    <div className="flex flex-row justify-around bg-gradient-to-r from-indigo-300 to-purple-300 fixed w-screen h-16 top-0">
+    <div className="flex flex-row justify-around bg-gradient-to-r from-indigo-300 to-purple-300 fixed w-screen h-16 top-0 z-50">
 
         <div onClick={toggleHomepage} className="flex flex-row items-center hover:scale-90 transition-all ease-in-out align-middle cursor-pointer">
             <img src="./logo.png" className="w-12"/>

@@ -1,14 +1,17 @@
 # Use an official Go runtime as the base image
-FROM golang:1.20-alpine
+FROM golang:1.21.2
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy your Go application source code into the container
-COPY . /app
+# Pre-copy/cache the go.mod and go.sum files to avoid re-downloading dependencies
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
 
-# Copy Go package dependencies
-COPY ../go.* ./
+# Copy your Go application source code into the container (at /app)
+COPY . .
+
+ENV PORT=8080
 
 # Build your Go application
 RUN go build -o server
