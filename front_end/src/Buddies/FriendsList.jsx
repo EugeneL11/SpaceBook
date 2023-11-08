@@ -1,35 +1,53 @@
 import { React, useState,useEffect } from "react";
 
 function Friend(props) {
-    const UNORBIT_IMG_URL = ""
-    const WORMHOLE_IMG_URL = ""
     const removeFriendEvent = () => {props.removeFriend(props.username)}
+    const othersProfileEvent = () => {props.othersProfile(props.username)}
     return (
-        <div class="flex-row">
-            <div class="inline-block m-1">
+        <div className="flex flex-row bg-blue-500 h-20 w-1/2 justify-between rounded-md">
+            {/* <div className="inline-block m-1">
                 <img
-                    class="rounded-lg w-20 h-20 sr-only"
+                    className="rounded-lg w-20 h-20"
                     src={props.user_pic_url}
                     alt={props.username} 
                 ></img>
                 <p>{props.username}</p>
-            </div>
-            <div class="unorbit-btn inline-block m-1" onClick={removeFriendEvent}>
+            </div> */}
+
+            <div className="flex items-center">
                 <img 
-                    class="sr-only"
+                    src={props.user_pic_url}
+                    alt={props.username} 
+                    className="w-12 h-12 rounded-full aspect-square p-2"
+                ></img>
+                <p className="text-lg">{props.username}</p>
+            </div>
+
+            <div 
+                onClick={removeFriendEvent}
+                className="w-24 flex flex-col hover:-translate-y-1 transition-all ease-in-out items-center justify-center cursor-pointer 
+                text-black hover:after:text-xs hover:after:text-center hover:after:content-['Unorbit']"
+            >
+                <img src="./remove-friend.png" className="w-8 h-8"/>
+            </div>
+
+            {/* <div className="inline-block m-1" onClick={removeFriendEvent}>
+                <img 
+                    className="sr-only"
                     src={UNORBIT_IMG_URL}
                     alt="unorbit"
                 ></img>
                 <p>unorbit</p>
-            </div>
-            <div class="launch-wormhole-btn inline-block m-1">
+            </div> */}
+
+            {/* <div className="inline-block m-1">
                 <img
-                    class="sr-only"
+                    className="sr-only"
                     src={WORMHOLE_IMG_URL}
                     alt="launch wormhole"
                 ></img>
                 <p>launch wormhole</p>
-            </div>
+            </div> */}
         </div>
     );
 }
@@ -40,7 +58,7 @@ function FriendsList(props) {
     useEffect(() =>{
         const friendstest = [{
         username: "Gene",
-        user_pic_url: "/assets/user0-pfp.jpg"
+        user_pic_url: "./jupiter.jpg"
     }] // placeholder for back-end data
 
         // ask back-end for friends list
@@ -55,10 +73,10 @@ function FriendsList(props) {
     }
     
     return (
-        <div class="flex-col">
+        <div className="flex-col">
             {friends ? friends.map(
                 (friend, index) => (
-                    <div>
+                    <div className="flex flex-col items-center">
                         <Friend 
                             key={index}
                             username={friend.username} 

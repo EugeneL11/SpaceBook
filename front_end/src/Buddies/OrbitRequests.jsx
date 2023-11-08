@@ -6,26 +6,26 @@ function OrbitRequest(props) {
     const denyRequestEvent = () => {props.denyRequest(props.username)}
 
     return (
-        <div class="flex-row">
-            <div class="inline-block m-1">
+        <div className="flex-row">
+            <div className="inline-block m-1">
                 <img
-                    class="rounded-lg w-20 h-20 sr-only"
+                    className="rounded-lg w-20 h-20 sr-only"
                     src={props.user_pic_url}
                     alt={props.username} 
                 ></img>
                 <p>{props.username}</p>
             </div>
-            <div class="accept-request-btn inline-block m-1" onClick={acceptRequestEvent}>
+            <div className="inline-block m-1" onClick={acceptRequestEvent}>
                 <img 
-                    class="sr-only"
+                    className="sr-only"
                     src={ACCEPT_REQUEST_IMG_URL}
                     alt="accept request"
                 ></img>
                 <p>accept</p>
             </div>
-            <div class="deny-request-btn inline-block m-1" onClick={denyRequestEvent}>
+            <div className="inline-block m-1" onClick={denyRequestEvent}>
                 <img
-                    class="sr-only"
+                    className="sr-only"
                     src={DENY_REQUEST_IMG_URL}
                     alt="deny request"
                 ></img>
@@ -65,7 +65,7 @@ function OrbitRequests(props) {
     }
     
     return (
-        <div class="flex-col">
+        <div className="flex-col">
             {requests ? requests.map(
                 (request, index) => (
                     <div>
