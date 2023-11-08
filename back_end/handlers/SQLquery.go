@@ -39,7 +39,7 @@ func TestSelect(val string, postgres *sql.DB) []User {
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query()
+	rows, err := stmt.Query(val)
 	if err != nil {
 		panic(err)
 	}
