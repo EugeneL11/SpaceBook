@@ -1,5 +1,5 @@
 import { React, useState, useEffect} from "react";
-import backPic from './back.png';
+import backPic from '../images/back.png';
 import {userID} from "../Static.js"
 function DMMessage(props) {
     const friendID = props.friendID
