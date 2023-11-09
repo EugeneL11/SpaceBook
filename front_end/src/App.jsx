@@ -14,6 +14,7 @@ import ExpandedPost from './Posts/ExpandedPost';
 import DMController from './Messages/DMController';
 import Navbar from './Navbar/navbar';
 import Background from './Background/background';
+import FriendsList from './Buddies/FriendsList';
 
 function App() {
   
@@ -77,6 +78,11 @@ function App() {
   function showSearchUser(){
     showNavBar();
     setScreen(<SearchUsers toggleSearchUser={showSearchUser} toggleOtherProfile={showOtherProfile} toggleHomepage = {showHomeScreen}/>)
+  }
+  function showFriendsList() {
+    // victor fix
+    hideNavBar();
+    setScreen(<FriendsList toggleOtherProfile = {showOtherProfile} toggleHomepage = {showHomeScreen}/>)
   }
   function showNotifications(){
     showNavBar();
