@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -35,7 +36,7 @@ func main() {
 	server.ForwardedByClientIP = true
 	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
 	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8080", "http://client", "https://localhost:8080"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8080", "http://client", "https://client", "https://localhost:8080"},
 		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "DELETE", "OPTIONS", "HEAD"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-CSRF-Token"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -78,5 +79,13 @@ func main() {
 		ctx.Next()
 	})
 
-	server.Run(PORT_NO)
+	// certPath := "/etc/ssl/certs/localhost.crt"
+	// keyPath := "/etc/ssl/private/localhost.key"
+
+	err := server.Run(PORT_NO)
+	if err != nil {
+		fmt.Println("Did not Go!")
+		panic(err)
+	}
+
 }
