@@ -6,8 +6,12 @@ function Login(props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const loginAction = () =>{
+    const loginAction = async() => {
         //ask backend
+        const result = await fetch("http://localhost:8080/ping")
+        
+        const res = await result.json()
+        console.log(res)
         toggleHomepage()
     }
 
