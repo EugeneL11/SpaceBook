@@ -3,8 +3,9 @@ import { React, useState } from "react";
 function NewPost(props) {
     const toggleHomepage = props.toggleHomepage
 
-    // const imageCount = props.post.images.length;
+    // IDK how to do this stuff properly so imma just wait for Victor to fix it (thanks Victor)
 
+    // const imageCount = props.post.images.length;
     // const [imageNum,setImageNum] = useState(0)
     // const toggleNextImage = () =>{
     //     const nextImage = imageNum + 1;
@@ -19,26 +20,26 @@ function NewPost(props) {
         <div className="flex flex-col items-center">
             <button className="mb-5 w-fit ml-6 text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
 
-            <div class=" flex flex-col bg-white text-black text-start text-lg m-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
+            <div class="flex flex-col bg-white text-black text-start text-lg m-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
             <div class="flex justify-between items-center">
                 <h1 class="text-center text-3xl py-4">New Post</h1>
             </div>
 
-            <label class="mt-6">Write a caption </label>
+            <label class=" mt-3 lg:mt-6">Write a caption </label>
             <textarea class="form-textarea border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" rows="3" placeholder="Write a caption..."></textarea>
         
             <div class="mt-6">Add images </div>
             <input type="file" class="form-input text-sm"></input>
 
-            <div className="relative w-100 h-100 mt-5">
+            <div className="relative w-100 h-100 mt-5 border-black border-2">
                 {/* {imageNum > 0 ? 
                     // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl top-52 z-40 cursor-pointer hover:text-purple-400" onClick={togglePrevImage}> {"←"} </div> : null
                     <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-10 translate-y-10 rotate-180" onClick={togglePrevImage} /> : null
                 } */}
 
-                <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-5 -translate-y-20 rotate-180" onClick={toggleHomepage} /> 
+                <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-5 -translate-y-16 rotate-180" onClick={toggleHomepage} /> 
                 <img src="./swag.jpg" className="h-80 object-contain ml-auto mr-auto" alt="" />
-                <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-5 -translate-y-20"  onClick={toggleHomepage}/>
+                <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-5 -translate-y-16"  onClick={toggleHomepage}/>
 
 
                 {/* {imageNum < imageCount - 1 ? 
@@ -54,7 +55,7 @@ function NewPost(props) {
 
 
 
-            <button class="bg-purple-300 px-7 py-3 mt-6 w-fit self-center rounded-lg">Post</button>
+            <button class="bg-purple-300 px-7 py-3 mt-6 w-fit self-center rounded-lg">Post!</button>
 
         </div>
 
