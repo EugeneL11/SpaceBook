@@ -1,9 +1,15 @@
-version: "3"
 services:
     client:
         image: react-app
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+            - WATCHPACK_POLLING=true
+            - WDS_SOCKET_PORT=3000
         volumes:
+            - /app/node_modules
             - ./front_end:/app
+            # - ./auth/localhost.crt:/etc/ssl/certs/localhost.crt
+            # - ./auth/localhost.key:/etc/ssl/private/localhost.key
         working_dir: /app
         ports:
             - "3000:3000"
@@ -13,12 +19,12 @@ services:
         depends_on:
             - server
     server:
-        build:
-            context: ./back_end
-            dockerfile: ./back_end/Dockerfile
         image: go-server
         volumes:
             - ./back_end:/app
+            # - ./auth/localhost.crt:/etc/ssl/certs/localhost.crt
+            # - ./auth/localhost.key:/etc/ssl/private/localhost.key
+
         working_dir: /app
         ports:
             - "8080:8080"
@@ -60,14 +66,6 @@ services:
         volumes:
             - cassandra-data:/var/lib/cassandra/data
         container_name: cassandra
-    # adminer:
-    #     image: adminer
-    #     restart: always
-    #     ports:
-    #         # - "5432:5432"
-    #         - "8081:8080"
-    #     networks:
-    #         - spacebook
 
 volumes:
     postgres-data: {}
