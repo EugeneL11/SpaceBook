@@ -24,3 +24,7 @@ docker-compose down
 docker-compose exec postgres psql -U postgres -d postgres
 
 # From here you can use \{command} such as '\dt' to list tables
+
+# To access Cassandra Shell (cqlsh), perform a similar command to the previous one
+
+docker-compose exec cassandra cqlsh cassandra
