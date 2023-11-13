@@ -1,59 +1,38 @@
 CREATE TABLE Post(
-    postID UUID PRIMARY KEY
+    postID int PRIMARY KEY
     title varchar(20),
     authourID int,
-    imagePaths list<varchar(50)>,
-    videoPaths list<varchar(50)>,
-    caption varchar(300),
+    imagePaths list<varchar(60)>,
+    caption varchar(2000),
     likes set<int>,
-    date_posted date
-
-    commenters list<int>
-    comments list<varchar(200)>
-    comment_times list<dates>
+    date_posted date,
+    comments set<int>,
+    numberLikes int,
+    numberComments int
 )
-/* Should I create a new table just for comments? 
-After getting the postID we have to requery the comments table and thats gonna be more overhead*/
-CREATE TABLE DMBasic(
+
+CREATE TABLE DMTABLE(
     user1 int,
     user2 int,
-
-    messages list<varchar(1000)>
-    senders list<int>
-    time_sent list<date>
-
+    messageChunks list<int>,
     PRIMARY KEY (user1, user2)
 )
-CREATE TABLE DMGroup(
-    groupID UUID PRIMARY KEY
-    members list<int>
 
-    messages list<varchar(1000)>
-    senders list<int>
-    time_sent list<date>
-)
-/* Same problem as above, but alot more scalability considerations*/
-
-
-
-/* We can store a subset of dms and comments in separate table. 
-Excellent for the user and very scalable but a lot more technical and heavy on our full stack. 
-We would store 50 or so comments/dms in each list so that we can load only the comments/dms necessary
-Andddd theres concurrency/race condition issues we need to handle.... not that hard though
-*/
 CREATE TABLE DMSUBSET(
-    groupID UUID,
-    subsetID UUID PRIMARY KEY
-
-    messages list<varchar(1000)>
-    senders list<int>
-    time_sent list<date>
+    subsetID int PRIMARY KEY,
+    messages list<varchar(1000)>,
+    senders list<int>,
+    time_sent list<date>,
 )
-CREATE TABLE COMMENTSUBSET(
-    commentID UUID,
-    subsetID UUID PRIMARY KEY
+CREATE TABLE COMMENT(
+    commentID int PRIMARY KEY,
+    commenter int,
+    content varchar(400),
+    time date,
+)
 
-    commenters list<int>
-    comments list<varchar(200)>
-    comment_times list<dates>
+CREATE TABLE WORMHOLE(
+    user1 int,
+    user2 int,
+    messages list<varchar(1000)>,
 )

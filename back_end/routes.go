@@ -12,4 +12,7 @@ func setupRoutes(server *gin.Engine) {
 	server.GET("/testInsert/:val", handlers.TestInsertHandler)
 	//server.POST("/user", handlers.Double)
 	// server.GET("/postgresTest", TestPostgres)
+
+	server.GET("/login/:username/:password", handlers.LoginHandler)
+	server.GET("/register/:email/:password/:fullname/:username", handlers.RegisterHandler)
 }

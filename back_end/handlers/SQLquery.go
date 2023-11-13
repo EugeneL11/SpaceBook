@@ -5,17 +5,6 @@ import (
 	"fmt"
 )
 
-type User struct {
-	User_id              int    `json:"id"`
-	Full_name            string `json:"full_name"`
-	User_name            string `json:"user_name"`
-	Email                string `json:"email"`
-	Password             int    `json:"password"`
-	Home_planet          string `json:"planet"`
-	Profile_picture_path string `json:"profile_picture_path"`
-	Admin                bool   `json:"bool"`
-}
-
 // Expect handler to use ctx.MustGet("postgres").(*sql.DB) and pass in session
 func TestInsert(val string, postgres *sql.DB) bool {
 	fmt.Println("Go!", postgres)
@@ -72,33 +61,32 @@ func UpdateUser(Home_planet, string, email string, full_name string, postgres *s
 	}
 
 }
-func LoginCorrect(email string, password string, postgres *sql.DB) *User {
+func LoginCorrect(email string, password string, postgres *sql.DB, user *User) bool {
 	//hashedPassword := hash(password);
-	hashedPassword := 0
-	stmt, err := postgres.Prepare("Select * from USER WHERE user_name = $1 AND password = $2")
+	hashedPassword := 44
+	stmt, err := postgres.Prepare("Select * from Users WHERE user_name = $1 AND password = $2")
 	if err != nil {
-		panic(err)
+		return false
 	}
 	defer stmt.Close()
 
 	rows, err2 := stmt.Query(email, hashedPassword)
 	if err2 != nil {
-		panic(err)
+		return false
 	}
 	defer rows.Close()
 	if rows.Next() {
-		var newUser User
-		err := rows.Scan(&newUser.User_id, &newUser.Full_name, &newUser.User_name,
-			&newUser.Email, &newUser.Password, &newUser.Home_planet, &newUser.Profile_picture_path, &newUser.Admin)
+		err := rows.Scan(&user.User_id, &user.Full_name, &user.User_name,
+			&user.Email, &user.Password, &user.Home_planet, &user.Profile_picture_path, &user.Admin)
 		if err != nil {
-			panic(err)
+			return false
 		} else {
-			return &newUser
+			return false
 		}
 
+	} else {
+		return false
 	}
-	return nil
-
 }
 func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) bool {
 	stmt, err := postgres.Prepare("Select * from Orbit_Requests WHERE requester_id = $1 AND requested_buddy_id = $2")
@@ -146,19 +134,79 @@ func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) bool {
 		defer stmt.Close()
 
 		_, err2 = stmt.Exec(sender_id, receiver_id)
-		if err2 != nil {
-			return false
-		}
-		return true
+
+		return err2 == nil
+
 	}
 }
-func RegisterUser(postgres *sql.DB) User {
-	var user User
-	return user
+func RegisterUser(fullName string, password string, email string, username string, postgres *sql.DB, user *User) string {
+	stmt, err := postgres.Prepare("SELECT * FROM Users WHERE email = $1")
+	if err != nil {
+		return "unable to connect to db"
+	}
+	defer stmt.Close()
+	rows, err2 := stmt.Query(email)
+
+	if err2 != nil {
+		return "unable to connect to db"
+	}
+
+	if rows.Next() {
+		return "email taken"
+	}
+	stmt, err = postgres.Prepare("SELECT * FROM Users WHERE user_name = $1")
+	if err != nil {
+		return "unable to connect to db"
+	}
+	defer stmt.Close()
+
+	rows, err2 = stmt.Query(username)
+	if err2 != nil {
+		return "unable to connect to db"
+	}
+
+	if rows.Next() {
+		return "user name taken"
+	}
+	//hashedPassword := hash(password)
+	hashedPassword := 22
+	stmt, err = postgres.Prepare(`
+    INSERT INTO Users (full_name, user_name, email, password, home_planet, profile_picture_path, isAdmin)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)`)
+	if err != nil {
+		return "unable to connect to db"
+	}
+	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "default", false)
+	// TODO: extract userid from table you just made
+	if err != nil {
+		return "unable to connect to db"
+	}
+	stmt, err = postgres.Prepare("SELECT user_id FROM Users WHERE email = $1")
+	if err != nil {
+		return "unable to connect to db"
+	}
+	rows, err = stmt.Query(email)
+	if err != nil {
+		return "unable to connect to db"
+	}
+	if rows.Next() {
+		err = rows.Scan(&user.User_id)
+		if err != nil {
+			return "unable to connect to db"
+		}
+	}
+	user.Full_name = fullName
+	user.User_name = username
+	user.Home_planet = "Earth"
+	user.Profile_picture_path = "Default"
+	user.Email = email
+	user.Admin = false
+
+	return "no error"
 }
 
 func DeleteUser(user_id int, postgres *sql.DB) bool {
-	stmt, err := postgres.Prepare("DELETE FROM USER WHERE user_id = $1")
+	stmt, err := postgres.Prepare("DELETE FROM Users WHERE user_id = $1")
 	if err != nil {
 		panic(err)
 	}
