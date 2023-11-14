@@ -37,8 +37,9 @@ function SearchUsers(props) {
 
     return (
         <div className="flex flex-col justify-start items-center space-y-4">
-            <h1>This is the Search Users component</h1>
-            <button onClick={toggleHomepage}>Go to Homepage Screen</button>
+            <div className="flex flex-start w-full">
+                <button className="mb-5 w-fit ml-6 text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
+            </div>
             <div className="flex w-1/2">
                 <input 
                     type="text" 

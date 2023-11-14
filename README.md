@@ -8,3 +8,7 @@ While in development stage, localhost and HTTP are being used for testing, and H
 ### Sources
 
 Navbar icons are sourced from https://icons8.com/
+
+More Images:
+https://www.pexels.com/photo/high-definition-photo-of-jupiter-13229275/
+https://www.pexels.com/photo/planet-earth-87651/
