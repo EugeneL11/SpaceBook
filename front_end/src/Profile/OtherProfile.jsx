@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import {userID} from "../Static.js"
+import {userID, admin} from "../Static.js"
 import Planet from "./Planet.jsx";
 import { Canvas } from "@react-three/fiber";
 
@@ -55,7 +55,7 @@ function Post(props) {
 function OtherProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
-    const toggleHomepage = props.toggleHomepage
+    const back = props.goBackScreen
 
     const duppy = {
         username: "Rainethhh", 
@@ -80,11 +80,14 @@ function OtherProfile(props) {
          // ask back end for post
          setPosts(examplePosts);
     }, [])
-
+    const removeUser = () =>{
+        // ask back end
+        back();
+    }
     return (
         <div className="flex flex-col">
 
-        <button className="mb-5 w-fit ml-6 text-3xl hover:text-purple-300" onClick={props.goBackScreen}> {'←'} </button>
+        <button className="mb-5 w-fit ml-6 text-3xl hover:text-purple-300" onClick={back}> {'←'} </button>
 
         { user ? 
         

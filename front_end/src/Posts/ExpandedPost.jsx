@@ -27,7 +27,10 @@ function ExpandedPost(props) {
 
     const [userComment, setuserComment] = useState("");
     const makeComment = () => {};
-
+    const removePost = () =>{
+        // ask back end
+        toggleHomepage();
+    }
     return (
     <>
     {post === null ? <div></div> : (
