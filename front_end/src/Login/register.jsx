@@ -8,10 +8,33 @@ function Register(props) {
     const [email, setEmail] = useState("")
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
+    const [errorMessage, setError] = useState(null)
     const registerAction = () => {
         //ask backend
-        toggleHomepage()
+        const localhost = "http://localhost:8080"
+        
+        const path = `/register/${encodeURIComponent(email)}/${encodeURIComponent(password)}/${encodeURIComponent(fullName)}/${encodeURIComponent(username)}`
+        fetch(`${localhost}${path}`).then(res => { res.json().then(data =>{
+            if(data.error === "email already in use"){
+                setError(data.error)
+            }
+            else if(data.error ==="unable to create account at this time"){
+                setError(data.error)
+            }
+            else if(data.error === "user name not availible"){
+                setError(data.error)
+            }
+            else{
+                userID = data.id
+                console.log(userID)
+                toggleHomepage()
+            }
+        })})
+        /*
+        const path = "/testInsert/val"
+        fetch(`${localhost}${path}`).then(res => {res.json().then(data =>{
+            console.log(data)
+        })})*/
     }
 
     return (
@@ -40,7 +63,7 @@ function Register(props) {
         </div>
 
         <button class="text-xl mt-12" onClick={toggleLogin}>Log In</button>
-    
+        <h1>{errorMessage}</h1>
     </div>
     );
 
