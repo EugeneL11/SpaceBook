@@ -8,7 +8,7 @@ import Homepage from './Homepage/homepage';
 import NewPost from './Posts/NewPost';
 import ProfileController from './Profile/ProfileController';
 import SearchUsers from './Buddies/SearchUsers';
-import Notifcations from './Buddies/Notifications';
+import Notifications from './Buddies/Notifications';
 import OtherProfile from './Profile/OtherProfile';
 import ExpandedPost from './Posts/ExpandedPost';
 import DMController from './Messages/DMController';
@@ -86,7 +86,7 @@ function App() {
   }
   function showNotifications(){
     showNavBar();
-    setScreen(<Notifcations toggleNotifications ={showNotifications} toggleHomepage ={showHomeScreen} toggleOtherProfile ={showOtherProfile}/>)
+    setScreen(<Notifications toggleNotifications ={showNotifications} toggleHomepage ={showHomeScreen} toggleOtherProfile ={showOtherProfile}/>)
   }
   return (
     <div>

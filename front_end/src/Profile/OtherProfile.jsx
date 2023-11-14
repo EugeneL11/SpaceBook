@@ -6,7 +6,7 @@ import { Canvas } from "@react-three/fiber";
 function PlanetCanvas () {
     return (
     <Canvas className="cursor-pointer mt-5 md:mt-0">
-        <Planet/>
+        <Planet planet="venus"/>
     </Canvas>
     )
 }
@@ -108,13 +108,13 @@ function OtherProfile(props) {
                 <p className="mb-4">{user.bio}</p>
 
                 <button onClick={toggleSettings} className="flex flex-row cursor-pointer mb-3 hover:text-purple-300">
-                    <img src="./gear.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
-                    <p>Edit profile settings</p>
+                    <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
+                    <p>Request orbit buddy</p>
                 </button>
 
                 <button onClick={toggleFriendsList} className="flex flex-row cursor-pointer hover:text-purple-300">
-                    <img src="./sun.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
-                    <p>View orbit buddies</p>
+                    <img src="./whitehole.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
+                    <p>Launch wormhole chat</p>
                 </button>
 
             </div>
