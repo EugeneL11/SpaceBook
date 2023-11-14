@@ -64,7 +64,6 @@ function Login(props) {
                 Sign Up
             </button>
         </div>
->>>>>>> c2c2caae838a020be4a57e28b199d52618c85972
     );
 }
 
