@@ -2,11 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/gocql/gocql"
 	_ "github.com/lib/pq"
 )
 
@@ -35,14 +35,13 @@ func main() {
 	server.ForwardedByClientIP = true
 	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
 	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8080", "http://client", "https://localhost:8080"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8080", "http://client", "https://client", "https://localhost:8080"},
 		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "DELETE", "OPTIONS", "HEAD"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-CSRF-Token"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-	setupRoutes(server)
 
 	// db, err := sql.Open("postgres", connStr)
 	// if err != nil {
@@ -55,28 +54,36 @@ func main() {
 	server.Use(func(ctx *gin.Context) {
 		postgres, err := sql.Open("postgres", connStr)
 		if err != nil {
+			fmt.Println("Failed to connect to postgres")
 			panic(err)
 		}
 		defer postgres.Close()
 		ctx.Set("postgres", postgres)
-
 		ctx.Next()
 	})
+	/*
+		// Connecting to CassandraDB:
+		server.Use(func(ctx *gin.Context) {
+			cluster := gocql.NewCluster(addr)
+			cluster.Keyspace = "cassandra"
+			cluster.Consistency = gocql.Quorum
 
-	// Connecting to CassandraDB:
-	server.Use(func(ctx *gin.Context) {
-		cluster := gocql.NewCluster(addr)
-		cluster.Keyspace = "cassandra"
-		cluster.Consistency = gocql.Quorum
+			session, err := cluster.CreateSession()
+			if err != nil {
+				panic(err)
+			}
+			defer session.Close()
+			ctx.Set("cassandra", session)
+			ctx.Next()
+		})
+	*/
+	// certPath := "/etc/ssl/certs/localhost.crt"
+	// keyPath := "/etc/ssl/private/localhost.key"
+	setupRoutes(server)
+	err := server.Run(PORT_NO)
+	if err != nil {
+		fmt.Println("Did not Go!")
+		panic(err)
+	}
 
-		session, err := cluster.CreateSession()
-		if err != nil {
-			panic(err)
-		}
-		defer session.Close()
-		ctx.Set("cassandra", session)
-		ctx.Next()
-	})
-
-	server.Run(PORT_NO)
 }
