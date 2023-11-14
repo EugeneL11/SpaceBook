@@ -84,7 +84,7 @@ function OtherProfile(props) {
     return (
         <div className="flex flex-col">
 
-        <button className="mb-5 w-fit ml-6 text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
+        <button className="mb-5 w-fit ml-6 text-3xl hover:text-purple-300" onClick={props.goBackScreen}> {'←'} </button>
 
         { user ? 
         

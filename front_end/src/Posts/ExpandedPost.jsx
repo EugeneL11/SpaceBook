@@ -8,55 +8,59 @@ function ExpandedPost(props) {
     const toggleOtherProfile = props.toggleOtherProfile
     const togglePost = () => props.toggleExpandPost(postID)
 
-    const data = {
-        userName: "Kevin",
-        caption: "This is a post",
-        image: "https://i.imgur.com/1w3o6Uo.jpg",
-        comments: [
-            {
-                Commenter: "Kevins SQL key",
-                Comment: "Way to Go!!",
-                Profile: "https://i.imgur.com/1w3o6Uo.jpg",
-            },
-            {
-                Commenter: "Victors SQL key",
-                Comment: "Stop making Go puns",
-                Profile: "https://i.imgur.com/1w3o6Uo.jpg",
-            },
-        ],
-    };
     const [post, setPost] = useState(null);
-    const [userComment, setuserComment] = useState("");
-    const getPost = async () => {
-        // ask Go
-        setPost(data);
+    const examplePost = {
+        postId: 5,
+        authorId: 6,
+        username: "Duppy",
+        pfp : "./ayylmao.webp",
+        caption: "Finally leaving this planet lmao 😂",
+        date: "Nov 7th",
+        images: ["./swag.jpg", "./ayylmao.webp"],
+        comments: [{username: "duppy", content: "I don't give up that easily", id: 5}, {username: "kevon", content: "Go to the Sun, it's got a warmer climate", id: 6}]
     };
+
     useEffect(() => {
-        getPost();
+         // ask back end for post
+         setPost(examplePost);
     }, []);
+
+    const [userComment, setuserComment] = useState("");
     const makeComment = () => {};
+
     return (
-    <div className="flex flex-col items-center">
-        <button className="mb-5 w-fit ml-10 mt-5 mr-auto text-5xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
-        <div className="flex flex-col bg-white text-black text-start text-lg m-5 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
-            <div className="flex flex-row justify-between items-center mt-8">
-                <div className="flex flex-row justify-center items-center align-middle">
-                    <img src="" alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
-                    <p className="ml-4">Eugene</p>
+    <>
+    {post === null ? <div></div> : (
+        <div className="flex flex-col items-center">
+            <button className="mb-5 w-fit ml-10 mt-5 mr-auto text-5xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
+            <div className="flex flex-col bg-white text-black text-start text-lg m-5 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
+                <div className="flex flex-row justify-between items-center mt-8">
+                    <div className="flex flex-row justify-center items-center align-middle">
+                        <img src="" alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
+                        <p className="ml-4">{post.username}</p>
+                    </div>
+                    <p className="">Nov. 14th</p>
                 </div>
-                <p className="">Nov. 14th</p>
-            </div>
-            <p className="mt-10">This is the caption......</p>
-            <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
-                <img src={pPic} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
-            </div>
-            <div className="flex flex-col w-full bg-purple-200 rounded-xl p-2 my-5">
-                <div className="w-full bg-purple-400 rounded-lg p-2 my-2">Add comment...</div>
-                <div className="w-full bg-purple-400 rounded-lg p-2 my-2">I don't give up that easily</div>
-                <div className="w-full bg-purple-400 rounded-lg p-2 my-2">Go to the Sun, it's got a warmer climate</div>
+                <p className="mt-10">This is the caption......</p>
+                <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
+                    <img src={pPic} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
+                </div>
+                <div className="flex flex-col w-full bg-purple-200 rounded-xl p-2 my-5">
+                    <div className="w-full bg-purple-400 rounded-lg p-2 my-2">Add comment...</div>
+                    <div className="w-full bg-purple-400 rounded-lg p-2 my-2">I don't give up that easily</div>
+                    <div className="w-full bg-purple-400 rounded-lg p-2 my-2">Go to the Sun, it's got a warmer climate</div>
+                    {post.comments.map((comment ,index) => (
+                        <div key = {index}>
+                            {comment.username}
+                        </div>)
+                    )}
+                </div>
             </div>
         </div>
-    </div>
+    )}
+    </>
+    )
+
 
         // <>
         //     {post == null ? null : (
@@ -88,7 +92,6 @@ function ExpandedPost(props) {
         //         </div>
         //     )}
         // </>
-    );
 }
 
 export default ExpandedPost;
