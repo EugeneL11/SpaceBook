@@ -19,11 +19,13 @@ function Post(props) {
     return(
         <div className="flex flex-col w-5/12 mx-auto mb-10 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
             <div className="relative w-100 h-100">
-            {imageNum > 0 ? 
-                <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl top-52 z-40 cursor-pointer hover:text-purple-400" onClick={togglePrevImage}> {"←"} </div> : null}
-            {imageNum < imageCount - 1 ? 
-                <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl cursor-pointer left-85-percent top-52 z-40 hover:text-purple-400" onClick={toggleNextImage}> {"→"} </div> : null}
-                </div>
+                {imageNum > 0 ?
+                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-10 translate-y-10 rotate-180" onClick={togglePrevImage} /> : null
+                }
+                {imageNum < imageCount - 1 ? 
+                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-10 translate-y-10"  onClick={toggleNextImage}/> : null
+                }        
+            </div>
             <div className="flex flex-row p-3 justify-between">
                 <div onClick={() => toggleOtherProfile(props.post.userID, toggleHomePage)} className="flex flex-row justify-center align-middle pl-2 pt-2 ">
                     <img src={props.post.pfp} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
