@@ -5,14 +5,25 @@ function Login(props) {
     const toggleRegister = props.toggleRegister;
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
+    const [errorMessage, setError] = useState("")
     const loginAction = async () => {
         //ask backend
-        const result = await fetch("http://localhost:8080/ping");
+        if(username == "" || password == ""){
+            setError("Actually put something in the text fields you jerk")
+        }
+        const result = await fetch(`http://localhost:8080/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`);
 
-        const res = await result.json();
-        console.log(res);
-        toggleHomepage();
+        const data = await result.json();
+        console.log(data)
+        if(data.error == "unable to find User"){
+            setError("username or password incorrect")
+        }
+        else{
+            userID = data.id
+            console.log(userID)
+            toggleHomepage();
+        }
+        
     };
 
     return (
@@ -47,7 +58,7 @@ function Login(props) {
                     Log In
                 </button>
             </div>
-
+            <h1>{errorMessage}</h1>
             <button class="text-xl mt-12" onClick={toggleRegister}>
                 Sign Up
             </button>

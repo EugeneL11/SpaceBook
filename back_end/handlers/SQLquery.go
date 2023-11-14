@@ -63,7 +63,7 @@ func UpdateUser(Home_planet, string, email string, full_name string, postgres *s
 }
 func LoginCorrect(email string, password string, postgres *sql.DB, user *User) bool {
 	//hashedPassword := hash(password);
-	hashedPassword := 44
+	hashedPassword := 22
 	stmt, err := postgres.Prepare("Select * from Users WHERE user_name = $1 AND password = $2")
 	if err != nil {
 		return false
@@ -78,11 +78,7 @@ func LoginCorrect(email string, password string, postgres *sql.DB, user *User) b
 	if rows.Next() {
 		err := rows.Scan(&user.User_id, &user.Full_name, &user.User_name,
 			&user.Email, &user.Password, &user.Home_planet, &user.Profile_picture_path, &user.Admin)
-		if err != nil {
-			return false
-		} else {
-			return false
-		}
+		return err == nil
 
 	} else {
 		return false
@@ -121,10 +117,7 @@ func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) bool {
 			receiver_id = temp
 		}
 		_, err2 = stmt.Exec(sender_id, receiver_id)
-		if err2 != nil {
-			return false
-		}
-		return true
+		return err2 == nil
 
 	} else {
 		stmt, err = postgres.Prepare("Insert Into Orbit_Requests (requester_id,requested_buddy_id) Values ($1,$2)")

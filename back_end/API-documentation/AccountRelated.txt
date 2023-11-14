@@ -20,3 +20,17 @@ no error - successful, all the other fields should be correctly filled out
 
 To login:
 use path:
+/login/username/password
+will return a json object 
+{
+	"error":                "unable to find User",
+	"id":                   "null",
+	"username":             "null",
+	"admin":                "null",
+	"full_name":            "null",
+	"Email":                "null",
+	"Home_planet":          "null",
+	"Profile_picture_path": "null",
+}
+either error is "unable to find User" or "no error!"
+The rest of the fields are filled out properly if no error 
