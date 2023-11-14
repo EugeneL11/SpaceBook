@@ -35,36 +35,43 @@ function ExpandedPost(props) {
     }, []);
     const makeComment = () => {};
     return (
-        <>
-            {post == null ? null : (
-                <div className="lg flex justify-center items-center relative border border-white border-solid bg-red-500">
-                    <button className="absolute top-0 left-0">&larr; Prev Page</button>
-                    <div className="md container left-12 relative">
-                        <div>{post.userName}</div>
+    <div className="flex flex-col items-center">
+        <button className="mb-5 w-fit ml-10 mt-5 mr-auto text-5xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
+        <div className="flex flex-col bg-white text-black text-start text-lg m-5 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
 
-                        <div>{post.caption}</div>
-                        <img src={post.image}></img>
-                        <div>
-                            <img src={post.image}></img>
-                            <label>Add Comment</label>
-                            <input
-                                type="text"
-                                value={userComment}
-                                onChange={(e) => setuserComment(e.target.value)}
-                                className="text-black"></input>
-                        </div>
-                        {userComment}
-                        {post.comments.map((comment, index) => (
-                            <div className="grid m-10" key={index}>
-                                <img src={comment.Profile} className="aspect-square rounded-full"></img>
-                                <div>{comment.Commenter}</div>
-                                <div>{comment.Comment}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </>
+        </div>
+    </div>
+
+        // <>
+        //     {post == null ? null : (
+        //         <div className="lg flex justify-center items-center relative border border-white border-solid bg-red-500">
+        //             <button className="absolute top-0 left-0">&larr; Prev Page</button>
+        //             <div className="md container left-12 relative">
+        //                 <div>{post.userName}</div>
+
+        //                 <div>{post.caption}</div>
+        //                 <img src={post.image}></img>
+        //                 <div>
+        //                     <img src={post.image}></img>
+        //                     <label>Add Comment</label>
+        //                     <input
+        //                         type="text"
+        //                         value={userComment}
+        //                         onChange={(e) => setuserComment(e.target.value)}
+        //                         className="text-black"></input>
+        //                 </div>
+        //                 {userComment}
+        //                 {post.comments.map((comment, index) => (
+        //                     <div className="grid m-10" key={index}>
+        //                         <img src={comment.Profile} className="aspect-square rounded-full"></img>
+        //                         <div>{comment.Commenter}</div>
+        //                         <div>{comment.Comment}</div>
+        //                     </div>
+        //                 ))}
+        //             </div>
+        //         </div>
+        //     )}
+        // </>
     );
 }
 
