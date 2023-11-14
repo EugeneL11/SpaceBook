@@ -24,3 +24,11 @@ docker-compose down
 docker-compose exec postgres psql -U postgres -d postgres
 
 # From here you can use \{command} such as '\dt' to list tables
+
+# From here you can use \{command} such as '\dt' to list tables
+
+For initial setup: Go to the SQL-tables.txt in the back_end/database folder and executes all the CREATE commands in the order they appear
+
+# To access Cassandra Shell (cqlsh), perform a similar command to the previous one
+
+docker-compose exec cassandra cqlsh cassandra
