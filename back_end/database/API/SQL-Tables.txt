@@ -7,7 +7,8 @@ CREATE TABLE Users (
     password bigint NOT NULL,  
     home_planet planet,
     profile_picture_path varchar(70),
-    isAdmin bool
+    isAdmin bool,
+    bio varchar(2000)
 );
 
 CREATE TABLE Orbit_Buddies (

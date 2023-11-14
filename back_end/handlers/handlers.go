@@ -10,6 +10,8 @@ import (
 	"github.com/gocql/gocql"
 )
 
+// TODO gotta separate JSON afterwards
+
 func LoginHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	username := ctx.Param("username")
@@ -40,6 +42,7 @@ func LoginHandler(ctx *gin.Context) {
 		})
 	}
 }
+
 func RegisterHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	username := ctx.Param("username")
@@ -48,7 +51,7 @@ func RegisterHandler(ctx *gin.Context) {
 	email := ctx.Param("email")
 	var user User
 	result := RegisterUser(fullName, password, email, username, postgres, &user)
-	if result == "unable to connect to db" {
+	if result == "unable to connect to db" || result == "unable to hash password" {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error":                "unable to create account at this time",
 			"id":                   "null",
