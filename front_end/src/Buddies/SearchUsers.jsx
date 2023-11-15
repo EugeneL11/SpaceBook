@@ -57,7 +57,7 @@ function SearchUsers(props) {
             </div>
             {samplePeople.map(
                 (person, index) => (
-                    person.username.includes(searchTerm) ? 
+                    person.username.toLowerCase().includes(searchTerm.toLowerCase()) ? 
                     <Person
                         key={index}
                         username={person.username} 
