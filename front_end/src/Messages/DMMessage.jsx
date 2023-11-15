@@ -7,23 +7,29 @@ function DMMessage(props) {
     const toggleOtherProfile = () => props.toggleOtherProfile(friendID,toggleDMMessage)
     const toggleDMList = props.toggleDMList
     const exampleDMs = [
-        {sender:"Eugene",
+        {sender:userID,
         text:"Hey Kevonos"},
-        {sender:"Kev",
+        {sender:friendID,
         text:"Go go go"},
-        {sender:"Eugene",
+        {sender:userID,
         text:"Huh..??"},
-        {sender:"Kev",
+        {sender:friendID,
         text:"GOOOOOOOO"},
-        {sender:"Eugene", 
+        {sender:userID, 
         text:"Im confused...."}
     ]
     const [messages, setMessages] = useState(null)
+    const [messageValue, setmessageValue] = useState("")
         useEffect(()=>{
             // ask back end for dms
             setMessages(exampleDMs)
         },[])
-    
+    const sendMessage = () =>{
+        // tell back end
+        const newArr = [...messages, {sender: userID, text: messageValue}]
+        setMessages(newArr)
+        setmessageValue("")
+    }
     return (
     <div class="flex flex-col items-center min-h-screen">
         <div class="bg-pink-900 w-full py-5 mt-[-15px] flex justify-center items-center"> 
@@ -35,7 +41,7 @@ function DMMessage(props) {
             <div className="bg-white min-h-[70%] w-3/4 md:w-1/2 min-w-fit mt-10 py-12 px-16 rounded-xl">
                 <div className="flex flex-col gap-7">
                     {messages.map((message, index) => (
-                        message.sender === "Eugene" ? 
+                        message.sender === userID ? 
                         <div key={index} className="bg-purple-200 bg-opacity-50 w-fit ml-auto p-2 rounded-lg text-black text-right"> {message.text}</div> :
                         <div key={index} className="bg-purple-400 bg-opacity-50 w-fit mr-auto p-2 rounded-lg text-black text-left"> {message.text}</div>
                     ))}
@@ -45,9 +51,11 @@ function DMMessage(props) {
                     <input  
                         class="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0 text-black"
                         placeholder="Enter a Wormhole Message"
-                        type="text">
+                        type="text"
+                        value = {messageValue}
+                        onChange = {(e) => {setmessageValue(e.target.value)}}>
                     </input>
-                    <button class="ml-2 px-4 py-2 bg-blue-500 text-white rounded">Send</button>
+                    <button onClick ={sendMessage} class="ml-2 px-4 py-2 bg-blue-500 text-white rounded">Send</button>
                 </div>
                 
             </div>
