@@ -34,16 +34,18 @@ func GeneratePasswordHash(password string) (*big.Int, error) {
 	return hashInt, nil
 }
 
-// StoreHashInDatabase stores the password hash in the database.
-func StoreHashInDatabase(db *sql.DB, hash *big.Int) error {
-	// Convert the hash to a string for storage in the database
-	hashString := hash.String()
+// Requires changing to []byte if we want to use this
+// // StoreHashInDatabase stores the password hash in the database.
+// func StoreHashInDatabase(db *sql.DB, hash *big.Int) error {
+// 	// Convert the hash to a string for storage in the database
+// 	hashString := hash.String()
 
-	// Store the hash in the database (replace "users" and "password_hash" with your table and column names)
-	_, err := db.Exec("INSERT INTO users (password_hash) VALUES ($1)", hashString)
-	return err
-}
+// 	// Store the hash in the database (replace "users" and "password_hash" with your table and column names)
+// 	_, err := db.Exec("INSERT INTO users (password_hash) VALUES ($1)", hashString)
+// 	return err
+// }
 
+// May not be functional with current database model
 // VerifyPassword verifies a password against the stored hash in the database.
 func VerifyPassword(db *sql.DB, password string) error {
 	// Retrieve the stored hash from the database (replace "users" and "password_hash" with your table and column names)

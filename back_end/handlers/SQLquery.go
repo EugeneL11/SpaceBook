@@ -3,6 +3,8 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/EugeneL11/SpaceBook/pkg"
 	// "math/big"
 	// "github.com/EugeneL11/SpaceBook/pkg"
 )
@@ -65,19 +67,21 @@ func UpdateUser(Home_planet, string, email string, full_name string, postgres *s
 }
 
 func LoginCorrect(email string, password string, postgres *sql.DB, user *User) bool {
-	// hashedPassword, err := pkg.GeneratePasswordHash(password)
-	// if err != nil {
-	// 	// Could not hash password
-	// 	return false
-	// }
-	hashedPassword := 22
+	hashedPassword, err := pkg.GeneratePasswordHash(password)
+	fmt.Println(hashedPassword)
+	hashedBytes := hashedPassword.Bytes()
+	fmt.Println(hashedBytes)
+	if err != nil {
+		// Could not hash password
+		return false
+	}
 	stmt, err := postgres.Prepare("Select * from Users WHERE user_name = $1 AND password = $2")
 	if err != nil {
 		return false
 	}
 	defer stmt.Close()
 
-	rows, err2 := stmt.Query(email, hashedPassword)
+	rows, err2 := stmt.Query(email, hashedBytes)
 	if err2 != nil {
 		return false
 	}
@@ -169,20 +173,21 @@ func RegisterUser(fullName string, password string, email string, username strin
 	if rows.Next() {
 		return "user name taken"
 	}
-	// hashedPassword, err := pkg.GeneratePasswordHash(password)
-	hashedPassword := 22
-	// fmt.Println(hashedPassword)
-	// if err != nil {
-	// 	// Unable to hash the password
-	// 	return "unable to hash password"
-	// }
+	hashedPassword, err := pkg.GeneratePasswordHash(password)
+	hashedBytes := hashedPassword.Bytes()
+	fmt.Println(hashedPassword)
+
+	if err != nil {
+		// Unable to hash the password
+		return "unable to hash password"
+	}
 	stmt, err = postgres.Prepare(`
     INSERT INTO Users (full_name, user_name, email, password, home_planet, profile_picture_path, isAdmin, bio)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`)
 	if err != nil {
 		return "unable to connect to db"
 	}
-	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "default", false, "test bio")
+	_, err = stmt.Exec(fullName, username, email, hashedBytes, "Earth", "default", false, "test bio")
 	if err != nil {
 		fmt.Println("Could not execute insert into users")
 		return "unable to connect to db"
