@@ -15,6 +15,7 @@ import DMController from './Messages/DMController';
 import Navbar from './Navbar/navbar';
 import Background from './Background/background';
 import FriendsList from './Buddies/FriendsList';
+import ImageDemo from './ImageDemo';
 
 function App() {
   
@@ -89,11 +90,13 @@ function App() {
     setScreen(<Notifications toggleNotifications ={showNotifications} toggleHomepage ={showHomeScreen} toggleOtherProfile ={showOtherProfile}/>)
   }
   return (
+    /*
     <div>
       <Background className="!-z-20"/>
       {navBar ? <Navbar clickHandlers={clickHandlers}/> : null}
       <div className={navBar ? 'mt-20' : 'mt=0'}>{screen}</div>
-    </div>
+    </div>*/
+    <ImageDemo/>
   )
 }
 
