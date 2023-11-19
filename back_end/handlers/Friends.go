@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// not tested
 func GetFriends(user_id int, postgres *sql.DB) ([]API_UserInfo, string) {
 	stmt, err := postgres.Prepare(`
 		SELECT (
@@ -56,6 +57,38 @@ func GetFriends(user_id int, postgres *sql.DB) ([]API_UserInfo, string) {
 	return mySlice, "no error"
 }
 
+// not tested
+// not documented
+func GetFriendsHandler(ctx *gin.Context) {
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	user_id, err := strconv.Atoi(ctx.Param("user_id"))
+	if err != nil {
+		return
+	}
+
+	var users []API_UserInfo
+
+	users, err2 := GetFriends(user_id, postgres)
+	ctx.JSON(http.StatusOK, gin.H{
+		"error": err2,
+	})
+
+	usersJson, err := json.Marshal(users)
+	log.Println(string(usersJson))
+
+	if err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"error": err,
+		})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{
+			"error": err,
+			"users": usersJson,
+		})
+	}
+}
+
+// not tested
 func RemoveFriend(user1_id int, user2_id int, postgres *sql.DB) string {
 	if user1_id > user2_id {
 		temp := user1_id
@@ -80,6 +113,14 @@ func RemoveFriend(user1_id int, user2_id int, postgres *sql.DB) string {
 	return "no error"
 }
 
+// not done
+// not tested
+// not documented
+func RemoveFriendHandler(ctx *gin.Context) {
+
+}
+
+// not tested
 func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) string {
 	stmt, err := postgres.Prepare("Select * from Orbit_Requests WHERE requester_id = $1 AND requested_buddy_id = $2")
 	if err != nil {
@@ -138,6 +179,14 @@ func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) string 
 	return "no error"
 }
 
+// not done
+// not tested
+// not documented
+func SendFriendRequestHandler(ctx *gin.Context) {
+
+}
+
+// not tested
 func RejectFriendRequest(rejecter_id int, rejectee_id int, postgres *sql.DB) string {
 	stmt, err := postgres.Prepare(`
 		DELETE FROM Orbit_Requests 
@@ -156,6 +205,14 @@ func RejectFriendRequest(rejecter_id int, rejectee_id int, postgres *sql.DB) str
 	return "no error"
 }
 
+// not done
+// not tested
+// not documented
+func RejectFriendRequestHandler(ctx *gin.Context) {
+
+}
+
+// not tested
 func GetFriendRequests(user_id int, postgres *sql.DB) ([]API_UserInfo, string) {
 	stmt, err := postgres.Prepare(`
 		SELECT requester_id 
@@ -190,47 +247,9 @@ func GetFriendRequests(user_id int, postgres *sql.DB) ([]API_UserInfo, string) {
 
 }
 
-func GetFriendsHandler(ctx *gin.Context) {
-	postgres := ctx.MustGet("postgres").(*sql.DB)
-	user_id, err := strconv.Atoi(ctx.Param("user_id"))
-	if err != nil {
-		return
-	}
-
-	var users []API_UserInfo
-
-	users, err2 := GetFriends(user_id, postgres)
-	ctx.JSON(http.StatusOK, gin.H{
-		"error": err2,
-	})
-
-	usersJson, err := json.Marshal(users)
-	log.Println(string(usersJson))
-
-	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"error": err,
-		})
-	} else {
-		ctx.JSON(http.StatusOK, gin.H{
-			"error": err,
-			"users": usersJson,
-		})
-	}
-}
-
-func RemoveFriendHandler(ctx *gin.Context) {
-
-}
-
-func SendFriendRequestHandler(ctx *gin.Context) {
-
-}
-
-func RejectFriendRequestHandler(ctx *gin.Context) {
-
-}
-
+// not done
+// not tested
+// not documented
 func GetFriendRequestsHandler(ctx *gin.Context) {
 
 }
