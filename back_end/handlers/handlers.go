@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"encoding/json"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gocql/gocql"
@@ -17,8 +19,8 @@ func LoginHandler(ctx *gin.Context) {
 	username := ctx.Param("username")
 	password := ctx.Param("password")
 	var user User
-	res := LoginCorrect(username, password, postgres, &user)
-	if !res {
+	err := LoginCorrect(username, password, postgres, &user)
+	if err != "no error" {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error":                "unable to find User",
 			"id":                   "null",
@@ -50,8 +52,8 @@ func RegisterHandler(ctx *gin.Context) {
 	fullName := ctx.Param("fullname")
 	email := ctx.Param("email")
 	var user User
-	result := RegisterUser(fullName, password, email, username, postgres, &user)
-	if result == "unable to connect to db" || result == "unable to hash password" {
+	err := RegisterUser(fullName, password, email, username, postgres, &user)
+	if err == "unable to connect to db" || err == "unable to hash password" {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error":                "unable to create account at this time",
 			"id":                   "null",
@@ -62,7 +64,7 @@ func RegisterHandler(ctx *gin.Context) {
 			"Home_planet":          "null",
 			"Profile_picture_path": "null",
 		})
-	} else if result == "user name taken" {
+	} else if err == "user name taken" {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error":                "user name not availible",
 			"id":                   "null",
@@ -73,7 +75,7 @@ func RegisterHandler(ctx *gin.Context) {
 			"Home_planet":          "null",
 			"Profile_picture_path": "null",
 		})
-	} else if result == "email taken" {
+	} else if err == "email taken" {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error":                "email already in use",
 			"id":                   "null",
@@ -97,6 +99,64 @@ func RegisterHandler(ctx *gin.Context) {
 		})
 	}
 }
+
+func DeleteUserHandler(ctx *gin.Context) {
+	
+}
+
+func GetFriendsHandler(ctx *gin.Context) {
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	user_id, err := strconv.Atoi(ctx.Param("user_id"))
+	if err != nil {
+		return
+	}
+
+	var users []API_UserInfo
+
+	users, err2 := GetFriends(user_id, postgres)
+	ctx.JSON(http.StatusOK, gin.H{
+		"error": err2,
+	})
+
+	usersJson, err := json.Marshal(users)
+	log.Println(string(usersJson))
+	
+	if err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"error": err,
+		})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{
+			"error": err,
+			"users": usersJson,
+		})
+	}
+}
+
+func RemoveFriendHandler(ctx *gin.Context) {
+
+}
+
+func SendFriendRequestHandler(ctx *gin.Context) {
+	
+}
+
+func RejectFriendRequestHandler(ctx *gin.Context) {
+	
+}
+
+func GetFriendRequestsHandler(ctx *gin.Context) {
+	
+}
+
+func UpdateUserProfileHandler(ctx *gin.Context) {
+	
+}
+
+func GetUserInfoHandler(ctx *gin.Context) {
+
+}
+
 
 /*
 	func Double(ctx *gin.Context) {
