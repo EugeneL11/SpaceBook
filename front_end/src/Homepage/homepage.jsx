@@ -27,7 +27,7 @@ function Post(props) {
                 }        
             </div>
             <div className="flex flex-row p-3 justify-between">
-                <div onClick={() => toggleOtherProfile(props.post.userID, toggleHomePage)} className="flex flex-row justify-center align-middle pl-2 pt-2 hover:cursor-pointer">
+                <div onClick={() => toggleOtherProfile(props.post.userID, toggleHomePage)} className="flex flex-row justify-center align-middle pl-2 pt-2 hover:cursor-pointer hover:text-purple-100">
                     <img src={props.post.pfp} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
                     <p className="ml-2 mt-2">{props.post.username}</p>
                 </div>
