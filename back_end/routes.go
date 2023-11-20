@@ -10,6 +10,7 @@ func setupRoutes(server *gin.Engine) {
 	setupAccount(server)
 
 }
+
 func setupTest(server *gin.Engine) {
 	server.GET("/ping", handlers.Pong)
 	// /num/var1/var2
@@ -18,8 +19,8 @@ func setupTest(server *gin.Engine) {
 	//server.POST("/user", handlers.Double)
 	// server.GET("/postgresTest", TestPostgres)
 }
-func setupAccount(server *gin.Engine) {
 
+func setupAccount(server *gin.Engine) {
 	server.GET("/login/:username/:password", handlers.LoginHandler)
 	server.GET("/register/:email/:password/:fullname/:username", handlers.RegisterHandler)
 }

@@ -3,6 +3,8 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	// "math/big"
+	// "github.com/EugeneL11/SpaceBook/pkg"
 )
 
 // Expect handler to use ctx.MustGet("postgres").(*sql.DB) and pass in session
@@ -61,8 +63,13 @@ func UpdateUser(Home_planet, string, email string, full_name string, postgres *s
 	}
 
 }
+
 func LoginCorrect(email string, password string, postgres *sql.DB, user *User) bool {
-	//hashedPassword := hash(password);
+	// hashedPassword, err := pkg.GeneratePasswordHash(password)
+	// if err != nil {
+	// 	// Could not hash password
+	// 	return false
+	// }
 	hashedPassword := 22
 	stmt, err := postgres.Prepare("Select * from Users WHERE user_name = $1 AND password = $2")
 	if err != nil {
@@ -84,6 +91,7 @@ func LoginCorrect(email string, password string, postgres *sql.DB, user *User) b
 		return false
 	}
 }
+
 func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) bool {
 	stmt, err := postgres.Prepare("Select * from Orbit_Requests WHERE requester_id = $1 AND requested_buddy_id = $2")
 	if err != nil {
@@ -161,17 +169,22 @@ func RegisterUser(fullName string, password string, email string, username strin
 	if rows.Next() {
 		return "user name taken"
 	}
-	//hashedPassword := hash(password)
+	// hashedPassword, err := pkg.GeneratePasswordHash(password)
 	hashedPassword := 22
+	// fmt.Println(hashedPassword)
+	// if err != nil {
+	// 	// Unable to hash the password
+	// 	return "unable to hash password"
+	// }
 	stmt, err = postgres.Prepare(`
-    INSERT INTO Users (full_name, user_name, email, password, home_planet, profile_picture_path, isAdmin)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)`)
+    INSERT INTO Users (full_name, user_name, email, password, home_planet, profile_picture_path, isAdmin, bio)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`)
 	if err != nil {
 		return "unable to connect to db"
 	}
-	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "default", false)
-	// TODO: extract userid from table you just made
+	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "default", false, "test bio")
 	if err != nil {
+		fmt.Println("Could not execute insert into users")
 		return "unable to connect to db"
 	}
 	stmt, err = postgres.Prepare("SELECT user_id FROM Users WHERE email = $1")

@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/gocql/gocql"
 	_ "github.com/lib/pq"
 )
 
@@ -61,22 +62,23 @@ func main() {
 		ctx.Set("postgres", postgres)
 		ctx.Next()
 	})
-	/*
-		// Connecting to CassandraDB:
-		server.Use(func(ctx *gin.Context) {
-			cluster := gocql.NewCluster(addr)
-			cluster.Keyspace = "cassandra"
-			cluster.Consistency = gocql.Quorum
 
-			session, err := cluster.CreateSession()
-			if err != nil {
-				panic(err)
-			}
-			defer session.Close()
-			ctx.Set("cassandra", session)
-			ctx.Next()
-		})
-	*/
+	// Connecting to CassandraDB:
+	server.Use(func(ctx *gin.Context) {
+		cluster := gocql.NewCluster(addr)
+		cluster.Keyspace = "cassandra"
+		cluster.Consistency = gocql.Quorum
+		cluster.ProtoVersion = 4
+		cluster.Authenticator = gocql.PasswordAuthenticator{Username: "cassandra", Password: "cassandra"}
+
+		session, err := cluster.CreateSession()
+		if err != nil {
+			panic(err)
+		}
+		defer session.Close()
+		ctx.Set("cassandra", session)
+		ctx.Next()
+	})
 	// certPath := "/etc/ssl/certs/localhost.crt"
 	// keyPath := "/etc/ssl/private/localhost.key"
 	setupRoutes(server)
