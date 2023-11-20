@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import {userID, admin} from "../Static.js"
+import static1 from "../Static.js";
 import Planet from "./Planet.jsx";
 import { Canvas } from "@react-three/fiber";
 
@@ -80,14 +80,17 @@ function OtherProfile(props) {
          // ask back end for post
          setPosts(examplePosts);
     }, [])
+
     const removeUser = () =>{
         // ask back end
-        back();
+        back()
     }
     return (
         <div className="flex flex-col">
-
-        <button className="mb-5 w-fit ml-6 text-3xl hover:text-purple-300" onClick={back}> {'←'} </button>
+        <div className="w-full flex items-center">
+            <button className="mb-5 w-fit ml-10 mr-auto text-5xl hover:text-purple-300" onClick={back}> {'←'} </button>
+            {static1.admin && (<button className="mr-10 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removeUser}>Remove User</button>)} 
+        </div>
 
         { user ? 
         

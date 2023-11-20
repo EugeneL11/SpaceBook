@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import { userID } from "../Static.js";
+import static1 from "../Static.js";
 function Login(props) {
     const toggleHomepage = props.toggleHomepage;
     const toggleRegister = props.toggleRegister;
@@ -20,8 +20,8 @@ function Login(props) {
             setError("username or password incorrect")
         }
         else{
-            userID = data.id
-            console.log(userID)
+            static1.userID = data.id
+            console.log(static1.userID)
             toggleHomepage();
         }
         

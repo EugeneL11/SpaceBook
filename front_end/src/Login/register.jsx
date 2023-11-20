@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import {userID} from "../Static.js"
+import static1 from "../Static.js";
 function Register(props) {
     const toggleLogin = props.toggleLogin
     const toggleHomepage = props.toggleHomepage
@@ -25,8 +25,8 @@ function Register(props) {
                 setError(data.error)
             }
             else{
-                userID = data.id
-                console.log(userID)
+                static1.userID = data.id
+                console.log(static1.userID)
                 toggleHomepage()
             }
         })})

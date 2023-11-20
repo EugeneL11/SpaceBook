@@ -1,5 +1,5 @@
 import { React, useState,useEffect } from "react";
-import {userID} from "../Static.js"
+import static1 from "../Static.js";
 import pPic from '../images/pp.png';
 import Background from '../Background/background'
 
