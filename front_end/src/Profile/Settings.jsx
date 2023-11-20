@@ -6,23 +6,19 @@ function Settings(props) {
     const toggleMyProfile = props.toggleMyProfile
     return (
     <div className="flex flex-col items-center">
-        <div className=" flex flex-col bg-white text-black text-start text-lg m-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
-            <div className="flex justify-between items-center">
-                <img onClick={toggleMyProfile} src={backPic} alt="a back arrow button" className="w-10 cursor-pointer"></img>
-                <h1 className="text-center text-3xl py-4">Settings</h1>
-                <img onClick={toggleMyProfile} src={backPic} alt="a back arrow button" className="w-10 invisible"></img>
-            </div>
-
-            <label className="mt-6">Change Username: </label>
+        <button className="w-fit ml-2 mr-auto text-5xl hover:text-purple-300" onClick={toggleMyProfile}>{'←'}</button>
+        <div className=" flex flex-col bg-white text-black text-start text-lg md:py-6 sm:px-16 lg:px-24 mt-[-25px] p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
+            <h1 className="text-center text-3xl pt-2">Settings</h1>
+            <label className="mt-4">Change Username: </label>
             <input className="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" placeholder="Enter New Username" type="text"></input>
         
-            <div className="mt-6">Change Profile Picture: </div>
+            <div className="mt-4">Change Profile Picture: </div>
             <input type="file" className="form-input text-sm"></input>
 
-            <div className="mt-6">Edit Bio:</div>
+            <div className="mt-4">Edit Bio:</div>
             <textarea className="form-textarea border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" rows="3" placeholder=" Edit your bio..."></textarea>
 
-            <div className="mt-6">Change Home Planet: </div>
+            <div className="mt-4">Change Home Planet: </div>
             <select className="form-select border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0">
                 <option value="mercury">mercury</option>
                 <option value="venus">venus</option>
@@ -32,14 +28,13 @@ function Settings(props) {
                 <option value="saturn">saturn</option>
                 <option value="uranus">uranus</option>
                 <option value="neptune">neptune</option>
-                <option value=""></option>
-                <option value=""></option>
+                <option value="pluto">pluto</option>
             </select>
             
-            <button classNameName="bg-purple-300 px-7 py-3 mt-6 w-fit self-center rounded-lg">Apply Changes</button>
+            <button className="bg-purple-300 px-4 py-2 mt-5 w-fit self-center rounded-lg">Apply Changes</button>
 
-            <button classNameName="mt-10" onClick={toggleLogin}>Log Out</button>
-            <button>Delete Account</button>
+            <button className="w-fit self-center mt-6 hover:text-blue-300" onClick={toggleLogin}>Log Out</button>
+            <button className="w-fit self-center hover:text-red-600">Delete Account</button>
         </div>
     </div>
     );

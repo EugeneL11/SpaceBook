@@ -56,7 +56,7 @@ function DMMessage(props) {
                         value = {messageValue}
                         onChange = {(e) => {setmessageValue(e.target.value)}}>
                     </input>
-                    <button onClick ={sendMessage} className="ml-2 px-4 py-2 bg-blue-500 text-white rounded">Send</button>
+                    <button onClick ={sendMessage} className="ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Send</button>
                 </div>
                 
             </div>

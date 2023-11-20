@@ -37,7 +37,7 @@ function Post(props) {
             <p className="mt-2 pl-5"> {props.post.caption}</p>
             {/* no resize on image */}
             <img src={props.post.images[imageNum]} className="m-4 h-80  object-contain " alt="" />
-            <button onClick={toggleExpandPost} className="bg-purple-300 px-7 py-3 m-6 w-fit self-center rounded-lg">See Post</button>
+            <button onClick={toggleExpandPost} className="bg-purple-300 hover:bg-purple-400 px-7 py-3 m-6 w-fit self-center rounded-lg">See Post</button>
         </div>
     )
 }
