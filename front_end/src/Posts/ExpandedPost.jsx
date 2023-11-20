@@ -46,7 +46,7 @@ function ExpandedPost(props) {
         // ask back end
         toggleHomepage();
     }
-    
+
     return (
     <>
     {post === null ? <div></div> : (
@@ -78,7 +78,7 @@ function ExpandedPost(props) {
                 <div className="flex flex-col w-full bg-purple-200 rounded-xl p-2 my-5">
                     <div className="flex w-full bg-purple-300 rounded-lg p-2 my-2">
                         <input  
-                            class="w-full bg-transparent border-b-2 border-gray-600 focus:outline-none focus:border-gray-300 focus:ring-0 text-black placeholder-gray-500"
+                            className="w-full bg-transparent border-b-2 border-gray-600 focus:outline-none focus:border-gray-300 focus:ring-0 text-black placeholder-gray-500"
                             placeholder="Add comment..."
                             type="text"
     //                        value = {messageValue}

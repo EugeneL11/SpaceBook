@@ -31,13 +31,14 @@ function DMMessage(props) {
         setmessageValue("")
     }
     return (
-    <div class="flex flex-col items-center min-h-screen">
+    <div className="flex flex-col items-center min-h-screen">
+
         <button className="w-fit ml-10 mr-auto text-5xl hover:text-purple-300" onClick={toggleDMList}> {'←'} </button>
 
         {messages ? (
             <div className="bg-white min-h-[70%] w-3/4 md:w-1/2 min-w-fit mt-[-25px] pt-6 pb-12 px-16 rounded-xl">
-                <div class="bg-purple-700 w-full rounded-md py-5 mb-10 flex justify-center items-center">
-                    <div onClick={toggleOtherProfile} class="text-white text-3xl absolute hover:cursor-pointer">{friendID}</div>
+                <div className="bg-purple-700 w-full rounded-md py-5 mb-10 flex justify-center items-center">
+                    <div onClick={toggleOtherProfile} className="text-white text-3xl absolute hover:cursor-pointer">{friendID}</div>
                 </div>
                 <div className="flex flex-col gap-7">
                     {messages.map((message, index) => (
@@ -49,13 +50,13 @@ function DMMessage(props) {
                 
                 <div className="flex items-center mt-20">
                     <input  
-                        class="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0 text-black"
+                        className="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0 text-black"
                         placeholder="Enter a Wormhole Message"
                         type="text"
                         value = {messageValue}
                         onChange = {(e) => {setmessageValue(e.target.value)}}>
                     </input>
-                    <button onClick ={sendMessage} class="ml-2 px-4 py-2 bg-blue-500 text-white rounded">Send</button>
+                    <button onClick ={sendMessage} className="ml-2 px-4 py-2 bg-blue-500 text-white rounded">Send</button>
                 </div>
                 
             </div>
