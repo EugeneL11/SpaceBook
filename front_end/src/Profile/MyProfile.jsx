@@ -6,7 +6,7 @@ import { Canvas } from "@react-three/fiber";
 function PlanetCanvas () {
     return (
     <Canvas className="cursor-pointer mt-5 md:mt-0">
-        <Planet planet="earth"/>
+        <Planet planet="pluto"/>
     </Canvas>
     )
 }
