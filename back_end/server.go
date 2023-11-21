@@ -75,6 +75,7 @@ func main() {
 	// certPath := "/etc/ssl/certs/localhost.crt"
 	// keyPath := "/etc/ssl/private/localhost.key"
 	setupRoutes(server)
+	server.Static("/images", "./images")
 	err := server.Run(PORT_NO)
 	if err != nil {
 		fmt.Println("Did not Go!")
