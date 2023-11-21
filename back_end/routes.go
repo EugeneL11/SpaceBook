@@ -21,8 +21,10 @@ func setupTest(server *gin.Engine) {
 }
 
 func setupAccount(server *gin.Engine) {
+
 	server.GET("/login/:username/:password", handlers.LoginHandler)
 	server.GET("/register/:email/:password/:fullname/:username", handlers.RegisterHandler)
+
 }
 
 func setupQueries(server *gin.Engine) {
