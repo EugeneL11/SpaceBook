@@ -67,10 +67,8 @@ func UpdateUser(Home_planet, string, email string, full_name string, postgres *s
 }
 
 func LoginCorrect(email string, password string, postgres *sql.DB, user *User) bool {
-	hashedPassword, err := pkg.GeneratePasswordHash(password)
-	fmt.Println(hashedPassword)
-	hashedBytes := hashedPassword.Bytes()
-	fmt.Println(hashedBytes)
+	hashedPassword, err := pkg.HashPassword(password)
+
 	if err != nil {
 		// Could not hash password
 		return false
@@ -81,7 +79,8 @@ func LoginCorrect(email string, password string, postgres *sql.DB, user *User) b
 	}
 	defer stmt.Close()
 
-	rows, err2 := stmt.Query(email, hashedBytes)
+	// TODO retrieve password associated with email, verify, then return true depending on result
+	rows, err2 := stmt.Query(email, hashedPassword)
 	if err2 != nil {
 		return false
 	}
@@ -173,9 +172,7 @@ func RegisterUser(fullName string, password string, email string, username strin
 	if rows.Next() {
 		return "user name taken"
 	}
-	hashedPassword, err := pkg.GeneratePasswordHash(password)
-	hashedBytes := hashedPassword.Bytes()
-	fmt.Println(hashedPassword)
+	hashedPassword, err := pkg.HashPassword(password)
 
 	if err != nil {
 		// Unable to hash the password
@@ -187,7 +184,7 @@ func RegisterUser(fullName string, password string, email string, username strin
 	if err != nil {
 		return "unable to connect to db"
 	}
-	_, err = stmt.Exec(fullName, username, email, hashedBytes, "Earth", "default", false, "test bio")
+	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "default", false, "test bio")
 	if err != nil {
 		fmt.Println("Could not execute insert into users")
 		return "unable to connect to db"

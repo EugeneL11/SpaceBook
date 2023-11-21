@@ -44,13 +44,6 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	// db, err := sql.Open("postgres", connStr)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// initialize(db)
-	// defer db.Close()
-
 	// Connecting to postgres:
 	server.Use(func(ctx *gin.Context) {
 		postgres, err := sql.Open("postgres", connStr)
