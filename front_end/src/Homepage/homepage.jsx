@@ -27,7 +27,7 @@ function Post(props) {
                 }        
             </div>
             <div className="flex flex-row p-3 justify-between">
-                <div onClick={() => toggleOtherProfile(props.post.userID, toggleHomePage)} className="flex flex-row justify-center align-middle pl-2 pt-2 ">
+                <div onClick={() => toggleOtherProfile(props.post.userID, toggleHomePage)} className="flex flex-row justify-center align-middle pl-2 pt-2 hover:cursor-pointer hover:text-purple-100">
                     <img src={props.post.pfp} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
                     <p className="ml-2 mt-2">{props.post.username}</p>
                 </div>
@@ -37,7 +37,7 @@ function Post(props) {
             <p className="mt-2 pl-5"> {props.post.caption}</p>
             {/* no resize on image */}
             <img src={props.post.images[imageNum]} className="m-4 h-80  object-contain " alt="" />
-            <button onClick={toggleExpandPost} className="">See Post</button>
+            <button onClick={toggleExpandPost} className="bg-purple-300 hover:bg-purple-400 px-7 py-3 m-6 w-fit self-center rounded-lg">See Post</button>
         </div>
     )
 }

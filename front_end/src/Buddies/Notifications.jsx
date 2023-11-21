@@ -16,8 +16,8 @@ function Request(props) {
 
     console.log(othersProfileEvent)
     return (
-        <div className="flex flex-row bg-blue-500 h-20 w-1/2 justify-between rounded-md">
-            <div onClick = {othersProfileEvent} className="flex items-center">
+        <div className="flex flex-row bg-blue-500 hover:bg-blue-400 h-20 w-1/2 justify-between rounded-md px-5">
+            <div onClick = {othersProfileEvent} className="flex items-center hover:cursor-pointer hover:opacity-70 hover:text-gray-700">
                 <img 
                     src={props.user_pic_url}
                     alt={props.username} 
