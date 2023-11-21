@@ -24,6 +24,14 @@ function DMMessage(props) {
             // ask back end for dms
             setMessages(exampleDMs)
         },[])
+    
+    const handleKeyPress = (event) => {
+        // Check if the Enter key was pressed (key code 13)
+        if (event.key === 'Enter') {
+            // Trigger the button click action
+            sendMessage();
+        }
+    };
     const sendMessage = () =>{
         // tell back end
         const newArr = [...messages, {sender: static1.userID, text: messageValue}]
@@ -40,7 +48,7 @@ function DMMessage(props) {
                 <div className="bg-purple-700 w-full rounded-md py-5 mb-10 flex justify-center items-center">
                     <div onClick={toggleOtherProfile} className="text-white text-3xl absolute hover:cursor-pointer">{friendID}</div>
                 </div>
-                <div className="flex flex-col gap-7">
+                <div className="flex flex-col gap-1">
                     {messages.map((message, index) => (
                         message.sender === static1.userID ? 
                         <div key={index} className="bg-purple-200 bg-opacity-50 w-fit ml-auto p-2 rounded-lg text-black text-right"> {message.text}</div> :
@@ -48,15 +56,16 @@ function DMMessage(props) {
                     ))}
                 </div>
                 
-                <div className="flex items-center mt-20">
+                <div className="flex items-center mt-10">
                     <input  
                         className="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0 text-black"
                         placeholder="Enter a Wormhole Message"
                         type="text"
                         value = {messageValue}
+                        onKeyPress={handleKeyPress}
                         onChange = {(e) => {setmessageValue(e.target.value)}}>
                     </input>
-                    <button onClick ={sendMessage} className="ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Send</button>
+                    <button onClick={sendMessage} className="ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Send</button>
                 </div>
                 
             </div>
