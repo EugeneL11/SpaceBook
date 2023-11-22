@@ -49,7 +49,7 @@ function ExpandedPost(props) {
     };
     const makeComment = () => {
         // ask backend
-        const newArr = [...userComment, {username: static1.userID, content: userCommentValue}]
+        const newArr = [...userComment, {username: currentUser.userID, content: userCommentValue}]
         setUserComment(newArr);
         setUserCommentValue("");
     };
