@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import static1 from "../Static.js";
+import currentUser from "../Static.js";
 import axios from 'axios'
 function Login(props) {
     const toggleHomepage = props.toggleHomepage;
@@ -13,16 +13,15 @@ function Login(props) {
         if (username == "" || password == "") {
             setError("Actually put something in the text fields you jerk");
         } else {
-            const result = await fetch(
+            const res = await axios.get(
                 `http://localhost:8080/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
             );
-
-            const data = await result.json();
+            const data = res.data;
             console.log(data);
             if (data.error == "unable to find User") {
                 setError("username or password incorrect");
             } else {
-                static1.userID = data.id;
+                currentUser.userID = data.id;
          
                 toggleHomepage();
             }
