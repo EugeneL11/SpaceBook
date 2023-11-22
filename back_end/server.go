@@ -30,7 +30,7 @@ const connStr = "user=" + user + " password=" + password + " dbname=" + dbname +
 const addr = "cassandra"
 
 func main() {
-	// Using Gin for the server, and settings for server:
+	// Using Gin for the server, and configure server settings:
 	server := gin.Default()
 	server.ForwardedByClientIP = true
 	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs

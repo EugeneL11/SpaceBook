@@ -10,8 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// not done
-// not tested
 func RegisterUser(fullName string, password string, email string, username string, postgres *sql.DB, user *User) string {
 	stmt, err := postgres.Prepare("SELECT * FROM Users WHERE email = $1")
 	if err != nil {
@@ -136,8 +134,6 @@ func RegisterHandler(ctx *gin.Context) {
 	}
 }
 
-// not done
-// not tested
 func LoginCorrect(username string, password string, postgres *sql.DB, user *User) bool {
 	stmt, err := postgres.Prepare("SELECT password FROM users WHERE user_name = $1")
 	if err != nil {
@@ -187,6 +183,7 @@ func LoginCorrect(username string, password string, postgres *sql.DB, user *User
 		return false
 	}
 }
+
 func LoginHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	username := ctx.Param("username")

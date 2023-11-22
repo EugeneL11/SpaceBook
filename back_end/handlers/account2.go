@@ -4,26 +4,25 @@ import (
 	"database/sql"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gocql/gocql"
 )
 
-// not done
-// not tested
-func DeleteUserComments(userID int, cassandra gocql.Session) string {
-	return "no error"
-}
+// // not done
+// // not tested
+// func DeleteUserComments(userID int, cassandra gocql.Session) string {
+// 	return "no error"
+// }
 
-// not done
-// not tested
-func DeleteUserLikes(userID int, cassandra gocql.Session) string {
-	return "no error"
-}
+// // not done
+// // not tested
+// func DeleteUserLikes(userID int, cassandra gocql.Session) string {
+// 	return "no error"
+// }
 
-// not done
-// not tested
-func DeleteUserPosts(userID int, cassandra gocql.Session) string {
-	return "no error"
-}
+// // not done
+// // not tested
+// func DeleteUserPosts(userID int, cassandra gocql.Session) string {
+// 	return "no error"
+// }
 
 // not done
 // not tested

@@ -39,12 +39,15 @@ type PostPreview struct {
 	AuthorProfilePath string
 	Images            []string
 }
-type Message struct {
-	senderID int
-	message  string
-}
-type FullDM struct {
-}
+
+// type Message struct {
+// 	senderID int
+// 	message  string
+// }
+
+// type FullDM struct {
+// }
+
 type DMPreview struct {
 	AuthorID          int
 	AuthorName        string
