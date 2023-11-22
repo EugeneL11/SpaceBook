@@ -55,6 +55,18 @@ func DeleteImage(filepath string) error {
 
 // not done
 // not tested
+func UploadProfilePic() {
+
+}
+
+// not done
+// not tested
+func UpdateProfilePath() string {
+	return "no error"
+}
+
+// not done
+// not tested
 // not documented
 func ProfilePicHandler(ctx *gin.Context) {
 	// Parse the form data, limit to 10 MB
@@ -91,6 +103,18 @@ func ProfilePicHandler(ctx *gin.Context) {
 	}
 
 	ctx.String(200, fmt.Sprintf("File %s uploaded successfully!", header.Filename))
+}
+
+// not done
+// not tested
+func UploadPostPic() {
+
+}
+
+// not done
+// not tested
+func UpdatePostPath() string {
+	return "no error"
 }
 
 // not done
