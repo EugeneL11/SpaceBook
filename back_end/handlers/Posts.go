@@ -73,7 +73,8 @@ func CommentHandler(ctx *gin.Context) {
 
 // not done
 // not tested
-func DeletePost(postID int) string {
+func DeletePost(postID int, cassandra *gocql.Session) string {
+	//cassandra.Query()
 	return "no error"
 }
 

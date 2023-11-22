@@ -27,6 +27,7 @@ CREATE TABLE DMSUBSET(
 CREATE TABLE COMMENT(
     commentID int PRIMARY KEY,
     commenter int,
+    postID int,
     content varchar(400),
     time TIMESTAMP,
 )
