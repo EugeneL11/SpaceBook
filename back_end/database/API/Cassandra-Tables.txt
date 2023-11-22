@@ -5,7 +5,7 @@ CREATE TABLE Post(
     imagePaths list<varchar(60)>,
     caption varchar(2000),
     likes set<int>,
-    date_posted date,
+    date_posted TIMESTAMP,
     comments set<int>,
     numberLikes int,
     numberComments int
@@ -22,13 +22,13 @@ CREATE TABLE DMSUBSET(
     subsetID int PRIMARY KEY,
     messages list<varchar(1000)>,
     senders list<int>,
-    time_sent list<date>,
+    time_sent list<TIMESTAMP>,
 )
 CREATE TABLE COMMENT(
     commentID int PRIMARY KEY,
     commenter int,
     content varchar(400),
-    time date,
+    time TIMESTAMP,
 )
 
 CREATE TABLE WORMHOLE(

@@ -6,23 +6,18 @@ import (
 )
 
 func setupRoutes(server *gin.Engine) {
-	setupTest(server)
+
 	setupAccount(server)
-
-}
-
-func setupTest(server *gin.Engine) {
-	server.GET("/ping", handlers.Pong)
-	// /num/var1/var2
-	server.GET("/num/:num1/:num2", handlers.Sum)
-	server.GET("/testInsert/:val", handlers.TestInsertHandler)
-	//server.POST("/user", handlers.Double)
-	// server.GET("/postgresTest", TestPostgres)
+	setupFriends(server)
 }
 
 func setupAccount(server *gin.Engine) {
+
 	server.GET("/login/:username/:password", handlers.LoginHandler)
 	server.POST("/register/:email/:password/:fullname/:username", handlers.RegisterHandler)
 	server.POST("/upload", handlers.ImageHandler)
 	// server.POST("/uploadprofileimg", handlers.ProfileImageHandler)
+}
+func setupFriends(server *gin.Engine) {
+	server.GET("/getfriends/:user_id", handlers.GetFriendsHandler)
 }
