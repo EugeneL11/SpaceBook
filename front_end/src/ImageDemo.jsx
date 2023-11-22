@@ -6,7 +6,7 @@ function ImageDemo() {
 
     // change these
     const localhost = "http://localhost:8080";
-    const path = "/uploadimage";
+    const path = "/upload";
 
     const uploadTest = () => {
         const formData = new FormData();
