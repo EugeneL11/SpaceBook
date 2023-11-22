@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"log"
 
 	"github.com/EugeneL11/SpaceBook/pkg"
 	// "math/big"
@@ -77,26 +78,37 @@ func LoginCorrect(username string, password string, postgres *sql.DB, user *User
 	row := stmt.QueryRow(username)
 	var hashedPassword string
 	err = row.Scan(&hashedPassword)
-	// Compare the hashed password with the user provided password
-	isCorrect := pkg.VerifyPassword(password, []byte(hashedPassword))
-	if !isCorrect {
+	if err != nil {
 		return false
 	}
+
+	// Compare the hashed password with the user provided password
+	isCorrect := pkg.VerifyPassword(password, []byte(hashedPassword))
+
+	if !isCorrect {
+		// fmt.Println("Entered password", password, "incorrectly matches hashed password! :(")
+		return false
+	}
+
+	// fmt.Println("Entered password", password, "correctly matches hashed password!")
 
 	// Get user's information to give frontend
 	stmt, err = postgres.Prepare("SELECT * FROM users WHERE user_name = $1 and password = $2")
 	if err != nil {
+		log.Panic(err)
 		return false
 	}
 	defer stmt.Close()
 
 	rows, err := stmt.Query(username, hashedPassword)
 	if err != nil {
+		log.Panic(err)
 		return false
 	}
 	if rows.Next() {
 		err := rows.Scan(&user.User_id, &user.Full_name, &user.User_name,
-			&user.Email, &user.Password, &user.Home_planet, &user.Profile_picture_path, &user.Admin)
+			&user.Email, &user.Password, &user.Home_planet, &user.Profile_picture_path, &user.Admin, &user.Bio)
+		log.Println(err)
 		return err == nil
 
 	} else {
