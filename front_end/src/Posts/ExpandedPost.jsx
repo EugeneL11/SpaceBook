@@ -1,6 +1,7 @@
 import static1 from "../Static.js";
 import { React, useState, useEffect } from "react";
 import pPic from '../images/pp.png';
+import axios from 'axios'
 function ExpandedPost(props) {
     const postID = props.postID
     const exampleFriends = ["Kevin", "Omar" , "Raine", "Eugene"]

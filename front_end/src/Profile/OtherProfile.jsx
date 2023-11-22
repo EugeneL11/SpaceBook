@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import static1 from "../Static.js";
 import Planet from "./Planet.jsx";
 import { Canvas } from "@react-three/fiber";
-
+import axios from 'axios'
 function PlanetCanvas () {
     return (
     <Canvas className="cursor-pointer mt-5 md:mt-0">

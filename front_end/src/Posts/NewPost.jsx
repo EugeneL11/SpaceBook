@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-
+import axios from 'axios'
 function NewPost(props) {
     const toggleHomepage = props.toggleHomepage
 

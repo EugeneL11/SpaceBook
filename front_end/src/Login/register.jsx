@@ -1,5 +1,6 @@
 import { React, useState } from "react";
 import static1 from "../Static.js";
+import axios from 'axios'
 function Register(props) {
     const toggleLogin = props.toggleLogin
     const toggleHomepage = props.toggleHomepage
