@@ -14,7 +14,6 @@ import (
 const PORT_NO = ":8080"
 
 // Managing proxies: https://pkg.go.dev/github.com/gin-gonic/gin#section-readme
-// TODO Get postgres variable into all handlers
 
 // Connecting PostgreSQL
 const (

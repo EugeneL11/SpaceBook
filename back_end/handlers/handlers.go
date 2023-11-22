@@ -10,8 +10,6 @@ import (
 	"github.com/gocql/gocql"
 )
 
-// TODO gotta separate JSON afterwards
-
 func LoginHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	username := ctx.Param("username")

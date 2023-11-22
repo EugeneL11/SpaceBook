@@ -66,25 +66,34 @@ func UpdateUser(Home_planet, string, email string, full_name string, postgres *s
 
 }
 
-func LoginCorrect(email string, password string, postgres *sql.DB, user *User) bool {
-	hashedPassword, err := pkg.HashPassword(password)
-
-	if err != nil {
-		// Could not hash password
-		return false
-	}
-	stmt, err := postgres.Prepare("Select * from Users WHERE user_name = $1 AND password = $2")
+func LoginCorrect(username string, password string, postgres *sql.DB, user *User) bool {
+	stmt, err := postgres.Prepare("SELECT password FROM users WHERE user_name = $1")
 	if err != nil {
 		return false
 	}
 	defer stmt.Close()
 
-	// TODO retrieve password associated with email, verify, then return true depending on result
-	rows, err2 := stmt.Query(email, hashedPassword)
-	if err2 != nil {
+	// Query the database and get the hashed password stored for the user
+	row := stmt.QueryRow(username)
+	var hashedPassword string
+	err = row.Scan(&hashedPassword)
+	// Compare the hashed password with the user provided password
+	isCorrect := pkg.VerifyPassword(password, []byte(hashedPassword))
+	if !isCorrect {
 		return false
 	}
-	defer rows.Close()
+
+	// Get user's information to give frontend
+	stmt, err = postgres.Prepare("SELECT * FROM users WHERE user_name = $1 and password = $2")
+	if err != nil {
+		return false
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(username, hashedPassword)
+	if err != nil {
+		return false
+	}
 	if rows.Next() {
 		err := rows.Scan(&user.User_id, &user.Full_name, &user.User_name,
 			&user.Email, &user.Password, &user.Home_planet, &user.Profile_picture_path, &user.Admin)

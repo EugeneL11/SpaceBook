@@ -6,25 +6,26 @@ function Login(props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const [errorMessage, setError] = useState("")
+    const [errorMessage, setError] = useState("");
     const loginAction = async () => {
         //ask backend
-        if(username == "" || password == ""){
-            setError("Actually put something in the text fields you jerk")
-        }
-        const result = await fetch(`http://localhost:8080/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`);
+        if (username == "" || password == "") {
+            setError("Actually put something in the text fields you jerk");
+        } else {
+            const result = await fetch(
+                `http://localhost:8080/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
+            );
 
-        const data = await result.json();
-        console.log(data)
-        if(data.error == "unable to find User"){
-            setError("username or password incorrect")
+            const data = await result.json();
+            console.log(data);
+            if (data.error == "unable to find User") {
+                setError("username or password incorrect");
+            } else {
+                userID = data.id;
+                console.log(userID);
+                toggleHomepage();
+            }
         }
-        else{
-            userID = data.id
-            console.log(userID)
-            toggleHomepage();
-        }
-        
     };
 
     return (
