@@ -14,7 +14,6 @@ import (
 const PORT_NO = ":8080"
 
 // Managing proxies: https://pkg.go.dev/github.com/gin-gonic/gin#section-readme
-// TODO Get postgres variable into all handlers
 
 // Connecting PostgreSQL
 const (
@@ -43,13 +42,6 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-
-	// db, err := sql.Open("postgres", connStr)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// initialize(db)
-	// defer db.Close()
 
 	// Connecting to postgres:
 	server.Use(func(ctx *gin.Context) {
@@ -82,6 +74,7 @@ func main() {
 	// certPath := "/etc/ssl/certs/localhost.crt"
 	// keyPath := "/etc/ssl/private/localhost.key"
 	setupRoutes(server)
+	server.Static("/images", "./images")
 	err := server.Run(PORT_NO)
 	if err != nil {
 		fmt.Println("Did not Go!")

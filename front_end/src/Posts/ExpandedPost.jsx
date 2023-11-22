@@ -1,6 +1,7 @@
-import static1 from "../Static.js";
+import currentUser from "../Static.js";
 import { React, useState, useEffect } from "react";
 import pPic from '../images/pp.png';
+import axios from 'axios'
 function ExpandedPost(props) {
     const postID = props.postID
     const exampleFriends = ["Kevin", "Omar" , "Raine", "Eugene"]
@@ -65,7 +66,7 @@ function ExpandedPost(props) {
         <div className="flex flex-col items-center">
             <div className="w-full flex items-center">
                 <button className="mb-5 w-fit ml-10 mt-5 mr-auto text-5xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
-                {static1.admin && (<button className="mr-10 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removePost}>Delete Post</button>)} 
+                {currentUser.admin && (<button className="mr-10 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removePost}>Delete Post</button>)} 
             </div>
             <div className="flex flex-col bg-white text-black text-start text-lg m-5 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
                 {/* <div className="relative w-100 h-100">

@@ -1,8 +1,8 @@
 import { React, useState,useEffect } from "react";
-import static1 from "../Static.js";
+import currentUser from "../Static.js";
 import pPic from '../images/pp.png';
 import Background from '../Background/background'
-
+import axios from 'axios'
 function DMList(props) {
     const toggleHomepage = props.toggleHomepage
     const toggleDMMessage = props.toggleDMMessage

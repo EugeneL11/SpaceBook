@@ -1,21 +1,22 @@
 import { React, useState, useEffect} from "react";
 import backPic from '../images/back.png';
-import static1 from "../Static.js";
+import currentUser from "../Static.js";
+import axios from 'axios'
 function DMMessage(props) {
     const friendID = props.friendID
     const toggleDMMessage = () => {props.toggleDMMessage(friendID)}
     const toggleOtherProfile = () => props.toggleOtherProfile(friendID,toggleDMMessage)
     const toggleDMList = props.toggleDMList
     const exampleDMs = [
-        {sender:static1.userID,
+        {sender:currentUser.userID,
         text:"Hey Kevonos"},
         {sender:friendID,
         text:"Go go go"},
-        {sender:static1.userID,
+        {sender:currentUser.userID,
         text:"Huh..??"},
         {sender:friendID,
         text:"GOOOOOOOO"},
-        {sender:static1.userID, 
+        {sender:currentUser.userID, 
         text:"Im confused...."}
     ]
     const [messages, setMessages] = useState(null)
@@ -34,7 +35,7 @@ function DMMessage(props) {
     };
     const sendMessage = () =>{
         // tell back end
-        const newArr = [...messages, {sender: static1.userID, text: messageValue}]
+        const newArr = [...messages, {sender: currentUser.userID, text: messageValue}]
         setMessages(newArr)
         setmessageValue("")
     }
@@ -50,7 +51,7 @@ function DMMessage(props) {
                 </div>
                 <div className="flex flex-col gap-1">
                     {messages.map((message, index) => (
-                        message.sender === static1.userID ? 
+                        message.sender === currentUser.userID ? 
                         <div key={index} className="bg-purple-200 bg-opacity-50 w-fit ml-auto p-2 rounded-lg text-black text-right"> {message.text}</div> :
                         <div key={index} className="bg-purple-400 bg-opacity-50 w-fit mr-auto p-2 rounded-lg text-black text-left"> {message.text}</div>
                     ))}

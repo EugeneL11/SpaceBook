@@ -1,10 +1,11 @@
 CREATE TYPE planet AS ENUM('Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto');
+
 CREATE TABLE Users (
     user_id SERIAL PRIMARY KEY,
     full_name varchar(60),
     user_name varchar(40) UNIQUE NOT NULL,
     email varchar(60) UNIQUE NOT NULL,
-    password bigint NOT NULL,  
+    password varchar(255) NOT NULL,
     home_planet planet,
     profile_picture_path varchar(70),
     isAdmin bool,
