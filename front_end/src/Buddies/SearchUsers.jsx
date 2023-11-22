@@ -4,7 +4,7 @@ import { userID } from "../Static.js";
 function Person(props) {
     const user_pic_url = props.user_pic_url
     return (
-        <div className="flex items-center w-1/2 bg-blue-500 space-x-4 rounded-md">
+        <div className="flex items-center w-1/2 bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
             <img 
                 src={props.user_pic_url}
                 alt={props.username} 
