@@ -3,8 +3,10 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 
+	"github.com/EugeneL11/SpaceBook/pkg"
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,13 +41,11 @@ func RegisterUser(fullName string, password string, email string, username strin
 	if rows.Next() {
 		return "user name taken"
 	}
-	// hashedPassword, err := pkg.GeneratePasswordHash(password)
-	hashedPassword := 22
-	// fmt.Println(hashedPassword)
-	// if err != nil {
-	// 	// Unable to hash the password
-	// 	return "unable to hash password"
-	// }
+	hashedPassword, err := pkg.HashPassword(password)
+	if err != nil {
+		// Unable to hash the password
+		return "unable to hash password"
+	}
 	stmt, err = postgres.Prepare(`
     INSERT INTO Users (full_name, user_name, email, password, home_planet, profile_picture_path, isAdmin, bio)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`)
@@ -138,46 +138,62 @@ func RegisterHandler(ctx *gin.Context) {
 
 // not done
 // not tested
-func LoginCorrect(email string, password string, postgres *sql.DB, user *User) string {
-	// hashedPassword, err := pkg.GeneratePasswordHash(password)
-	// if err != nil {
-	// 	// Could not hash password
-	// 	return false
-	// }
-	hashedPassword := 22
-	stmt, err := postgres.Prepare("Select * from Users WHERE user_name = $1 AND password = $2")
+func LoginCorrect(username string, password string, postgres *sql.DB, user *User) bool {
+	stmt, err := postgres.Prepare("SELECT password FROM users WHERE user_name = $1")
 	if err != nil {
-		return "unable to connect to db"
+		return false
 	}
 	defer stmt.Close()
 
-	rows, err2 := stmt.Query(email, hashedPassword)
-	if err2 != nil {
-		return "unable to connect to db"
+	// Query the database and get the hashed password stored for the user
+	row := stmt.QueryRow(username)
+	var hashedPassword string
+	err = row.Scan(&hashedPassword)
+	if err != nil {
+		return false
 	}
-	defer rows.Close()
 
+	// Compare the hashed password with the user provided password
+	isCorrect := pkg.VerifyPassword(password, []byte(hashedPassword))
+
+	if !isCorrect {
+		// fmt.Println("Entered password", password, "incorrectly matches hashed password! :(")
+		return false
+	}
+
+	// fmt.Println("Entered password", password, "correctly matches hashed password!")
+
+	// Get user's information to give frontend
+	stmt, err = postgres.Prepare("SELECT * FROM users WHERE user_name = $1 and password = $2")
+	if err != nil {
+		log.Panic(err)
+		return false
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(username, hashedPassword)
+	if err != nil {
+		log.Panic(err)
+		return false
+	}
 	if rows.Next() {
 		err := rows.Scan(&user.User_id, &user.Full_name, &user.User_name,
-			&user.Email, &user.Password, &user.Home_planet, &user.Profile_picture_path, &user.Admin)
+			&user.Email, &user.Password, &user.Home_planet, &user.Profile_picture_path, &user.Admin, &user.Bio)
+		fmt.Println(user.User_name)
+		log.Println(err)
+		return true
 
-		if err != nil {
-			return "unable to connect to db"
-		}
-
-		return "no errer"
 	} else {
-		return "invalid login credentials"
+		return false
 	}
 }
-
 func LoginHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	username := ctx.Param("username")
 	password := ctx.Param("password")
 	var user User
 	err := LoginCorrect(username, password, postgres, &user)
-	if err != "no error" {
+	if !err {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error":                "unable to find User",
 			"id":                   "null",

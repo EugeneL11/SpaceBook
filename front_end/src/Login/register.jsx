@@ -1,5 +1,6 @@
 import { React, useState } from "react";
-import static1 from "../Static.js";
+import currentUser from "../Static.js";
+import axios from 'axios'
 function Register(props) {
     const toggleLogin = props.toggleLogin
     const toggleHomepage = props.toggleHomepage
@@ -14,7 +15,8 @@ function Register(props) {
         const localhost = "http://localhost:8080"
         
         const path = `/register/${encodeURIComponent(email)}/${encodeURIComponent(password)}/${encodeURIComponent(fullName)}/${encodeURIComponent(username)}`
-        fetch(`${localhost}${path}`).then(res => { res.json().then(data =>{
+        axios.post(`${localhost}${path}`).then(res =>{
+            const data = res.data
             if(data.error === "email already in use"){
                 setError(data.error)
             }
@@ -25,11 +27,11 @@ function Register(props) {
                 setError(data.error)
             }
             else{
-                static1.userID = data.id
-                console.log(static1.userID)
+                currentUser.userID = data.id
+                console.log(currentUser.userID)
                 toggleHomepage()
             }
-        })})
+        })
         /*
         const path = "/testInsert/val"
         fetch(`${localhost}${path}`).then(res => {res.json().then(data =>{

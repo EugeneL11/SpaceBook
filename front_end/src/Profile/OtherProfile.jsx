@@ -1,8 +1,9 @@
 import { React, useState, useEffect } from "react";
-import static1 from "../Static.js";
+
 import Planet from "./Planet.jsx";
 import { Canvas } from "@react-three/fiber";
-
+import axios from 'axios'
+import currentUser from "../Static";
 function PlanetCanvas () {
     return (
     <Canvas className="cursor-pointer mt-5 md:mt-0">
@@ -89,7 +90,7 @@ function OtherProfile(props) {
         <div className="flex flex-col">
         <div className="w-full flex items-center">
             <button className="mb-5 w-fit ml-10 mr-auto text-5xl hover:text-purple-300" onClick={back}> {'←'} </button>
-            {static1.admin && (<button className="mr-10 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removeUser}>Remove User</button>)} 
+            {currentUser.admin && (<button className="mr-10 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removeUser}>Remove User</button>)} 
         </div>
 
         { user ? 

@@ -1,30 +1,31 @@
 import { React, useState } from "react";
-import static1 from "../Static.js";
+import currentUser from "../Static.js";
+import axios from 'axios'
 function Login(props) {
     const toggleHomepage = props.toggleHomepage;
     const toggleRegister = props.toggleRegister;
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const [errorMessage, setError] = useState("")
+    const [errorMessage, setError] = useState("");
     const loginAction = async () => {
         //ask backend
-        if(username == "" || password == ""){
-            setError("Actually put something in the text fields you jerk")
+        if (username == "" || password == "") {
+            setError("Actually put something in the text fields you jerk");
+        } else {
+            const res = await axios.get(
+                `http://localhost:8080/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
+            );
+            const data = res.data;
+            console.log(data);
+            if (data.error == "unable to find User") {
+                setError("username or password incorrect");
+            } else {
+                currentUser.userID = data.id;
+         
+                toggleHomepage();
+            }
         }
-        const result = await fetch(`http://localhost:8080/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`);
-
-        const data = await result.json();
-        console.log(data)
-        if(data.error == "unable to find User"){
-            setError("username or password incorrect")
-        }
-        else{
-            static1.userID = data.id
-            console.log(static1.userID)
-            toggleHomepage();
-        }
-        
     };
 
     return (

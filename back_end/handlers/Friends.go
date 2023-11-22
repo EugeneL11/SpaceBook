@@ -253,3 +253,11 @@ func GetFriendRequests(user_id int, postgres *sql.DB) ([]API_UserInfo, string) {
 func GetFriendRequestsHandler(ctx *gin.Context) {
 
 }
+
+func SearchPeople(userID int, postgres *sql.DB) {
+
+}
+
+func SearchPeopleHandler(ctx *gin.Context) {
+
+}
