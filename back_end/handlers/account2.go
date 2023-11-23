@@ -32,7 +32,7 @@ func DeleteUserRequests(userID int, postgres *sql.DB) string {
 		return "unable to connect to db"
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(user_id)
+	_, err = stmt.Exec(userID)
 	if err != nil {
 		return "unable to connect to db"
 	}
@@ -47,7 +47,7 @@ func DeleteUserFriends(userID int, postgres *sql.DB) string {
 		return "unable to connect to db"
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(user_id)
+	_, err = stmt.Exec(userID)
 	if err != nil {
 		return "unable to connect to db"
 	}
