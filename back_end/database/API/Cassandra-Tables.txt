@@ -1,6 +1,5 @@
 CREATE TABLE cassandra.POST(
     postID int PRIMARY KEY,
-    title text,
     authorID int,
     imagePaths list<text>,
     caption text,

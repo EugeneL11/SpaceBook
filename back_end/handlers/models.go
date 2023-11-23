@@ -23,20 +23,31 @@ type API_UserInfo struct {
 	Bio                  string `json:"bio"`
 }
 type Comment struct {
+	CommenterID          int
+	CommenterProfilePath string
+	CommenterName        string
+	Content              string
+	Date                 string
 }
 type FullPost struct {
+	PostID            int
 	AuthorID          int
 	AuthorName        string
 	AuthorProfilePath string
+	Caption           string
+	Date              string
 	Images            []string
 	Comments          []Comment
 	Liked             bool
 	NumLikes          int
 }
 type PostPreview struct {
+	postID            int
 	AuthorID          int
 	AuthorName        string
 	AuthorProfilePath string
+	Caption           string
+	Date              string
 	Images            []string
 }
 
