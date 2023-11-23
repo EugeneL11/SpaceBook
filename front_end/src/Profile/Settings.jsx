@@ -1,6 +1,7 @@
 import { React, useState } from "react";
 import backPic from '../images/back.png';
-
+import axios from 'axios'
+import currentUser from "../Static";
 function Settings(props) {
     const toggleLogin = props.toggleLogin
     const toggleMyProfile = props.toggleMyProfile

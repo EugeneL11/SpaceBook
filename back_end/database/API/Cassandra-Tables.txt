@@ -1,38 +1,40 @@
-CREATE TABLE Post(
-    postID int PRIMARY KEY
-    title varchar(20),
-    authourID int,
-    imagePaths list<varchar(60)>,
-    caption varchar(2000),
+CREATE TABLE cassandra.POST(
+    postID int PRIMARY KEY,
+    title text,
+    authorID int,
+    imagePaths list<text>,
+    caption text,
     likes set<int>,
-    date_posted date,
+    date_posted TIMESTAMP,
     comments set<int>,
     numberLikes int,
     numberComments int
-)
+);
 
-CREATE TABLE DMTABLE(
+CREATE TABLE cassandra.DMTABLE(
     user1 int,
     user2 int,
     messageChunks list<int>,
     PRIMARY KEY (user1, user2)
-)
+);
 
-CREATE TABLE DMSUBSET(
+CREATE TABLE cassandra.DMSUBSET(
     subsetID int PRIMARY KEY,
-    messages list<varchar(1000)>,
+    messages list<text>,
     senders list<int>,
-    time_sent list<date>,
-)
-CREATE TABLE COMMENT(
+    time_sent list<TIMESTAMP>
+);
+
+CREATE TABLE cassandra.COMMENT(
     commentID int PRIMARY KEY,
     commenter int,
-    content varchar(400),
-    time date,
-)
+    content text,
+    time TIMESTAMP
+);
 
-CREATE TABLE WORMHOLE(
+CREATE TABLE cassandra.WORMHOLE(
     user1 int,
     user2 int,
-    messages list<varchar(1000)>,
-)
+    messages list<text>,
+    PRIMARY KEY (user1, user2)
+);

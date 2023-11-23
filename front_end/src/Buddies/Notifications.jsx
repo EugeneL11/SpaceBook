@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import {userID} from "../Static.js"
 
-
+import axios from 'axios'
 function Request(props) {
     // const removeFriendEvent = () => {
     //     props.removeFriend(props.username)

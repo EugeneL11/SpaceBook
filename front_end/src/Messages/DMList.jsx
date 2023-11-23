@@ -1,8 +1,8 @@
 import { React, useState,useEffect } from "react";
-import static1 from "../Static.js";
+import currentUser from "../Static.js";
 import pPic from '../images/pp.png';
 import Background from '../Background/background'
-
+import axios from 'axios'
 function DMList(props) {
     const toggleHomepage = props.toggleHomepage
     const toggleDMMessage = props.toggleDMMessage
@@ -30,7 +30,7 @@ function DMList(props) {
 
     return (
     <div className="flex flex-col items-center min-h-screen">
-        <div className="bg-neutral-700 bg-opacity-90 text-black text-center text-xl m-14 md:p-6 p-2 rounded-xl w-2/3 min-w-fit">
+        <div className="bg-neutral-700 bg-opacity-90 text-black text-xl m-14 md:p-6 p-2 rounded-xl w-2/3 min-w-fit">
             <div className="flex-1 overflow-y-auto flex flex-col">
                 {msgs ? msgs.map((msgObject, index) => (
                     <div  onClick = {() => {toggleDMMessage(msgObject.username)}} key = {index} className="bg-purple-200 hover:bg-purple-300 flex py-4 md:py-6 px-6 md:px-12 border-2 m-2 border-purple-700 rounded-xl">

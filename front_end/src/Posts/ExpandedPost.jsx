@@ -1,6 +1,7 @@
-import static1 from "../Static.js";
+import currentUser from "../Static.js";
 import { React, useState, useEffect } from "react";
 import pPic from '../images/pp.png';
+import axios from 'axios'
 function ExpandedPost(props) {
     const postID = props.postID
     const exampleFriends = ["Kevin", "Omar" , "Raine", "Eugene"]
@@ -20,11 +21,6 @@ function ExpandedPost(props) {
         comments: [{username: "duppy", content: "I don't give up that easily", id: 5}, {username: "kevon", content: "Go to the Sun, it's got a warmer climate", id: 6}]
     };
 
-    useEffect(() => {
-         // ask back end for post
-         setPost(examplePost);
-    }, []);
-
     // const imageCount = post.images.length;
     // const [imageNum,setImageNum] = useState(0)
     // const toggleNextImage = () =>{
@@ -36,9 +32,26 @@ function ExpandedPost(props) {
     //     setImageNum(nextImage);
     // }
 
-    const [userComment, setuserComment] = useState("");
+    const [userComment, setUserComment] = useState(null);
+    const [userCommentValue, setUserCommentValue] = useState("");
+
+    useEffect(() => {
+        // ask back end for post
+        setPost(examplePost);
+        setUserComment(examplePost.comments);
+    }, []);
+    const handleKeyPress = (event) => {
+        // Check if the Enter key was pressed (key code 13)
+        if (event.key === 'Enter') {
+            // Trigger the button click action
+            makeComment();
+        }
+    };
     const makeComment = () => {
         // ask backend
+        const newArr = [...userComment, {username: currentUser.userID, content: userCommentValue}]
+        setUserComment(newArr);
+        setUserCommentValue("");
     };
     
     //for admin
@@ -53,7 +66,7 @@ function ExpandedPost(props) {
         <div className="flex flex-col items-center">
             <div className="w-full flex items-center">
                 <button className="mb-5 w-fit ml-10 mt-5 mr-auto text-5xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
-                {static1.admin && (<button className="mr-10 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removePost}>Delete Post</button>)} 
+                {currentUser.admin && (<button className="mr-10 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removePost}>Delete Post</button>)} 
             </div>
             <div className="flex flex-col bg-white text-black text-start text-lg m-5 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
                 {/* <div className="relative w-100 h-100">
@@ -81,14 +94,14 @@ function ExpandedPost(props) {
                             className="w-full bg-transparent border-b-2 border-gray-600 focus:outline-none focus:border-gray-300 focus:ring-0 text-black placeholder-gray-500"
                             placeholder="Add comment..."
                             type="text"
-    //                        value = {messageValue}
-    //                        onChange = {(e) => {setmessageValue(e.target.value)}}
+                            value = {userCommentValue}
+                            onKeyPress={handleKeyPress}
+                            onChange = {(e) => {setUserCommentValue(e.target.value)}}
                             >
                         </input>
                         <button className="p-2 bg-blue-300 hover:bg-blue-400 text-white rounded-md ml-2" onClick={makeComment}><img src="arrow-up.png" className="w-4"></img></button>
                     </div>
-
-                    {post.comments.map((comment ,index) => (
+                    {userComment.map((comment, index) => (
                         <div key = {index}>
                             <div className="w-full flex justify-between bg-purple-400 rounded-lg p-2 my-2">
                                 <div className="text-white">{comment.username}</div>
