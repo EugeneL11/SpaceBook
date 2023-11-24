@@ -5,7 +5,7 @@ function ImageDemo() {
     const [image, setImage] = useState(null);
 
     // change these
-    const localhost = "http://localhost:8080";
+    const localhost = "https://space-book-pied.vercel.app";
     const path = "/upload";
 
     const uploadTest = () => {

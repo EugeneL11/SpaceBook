@@ -29,7 +29,7 @@ function FetchTest() {
     //     });
     // });
 
-    fetch("http://localhost:8080/ping").then((res) => {
+    fetch("https://space-book-pied.vercel.app/ping").then((res) => {
         res.json().then((result) => {
             setSum(result.message);
         });

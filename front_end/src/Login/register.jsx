@@ -12,7 +12,7 @@ function Register(props) {
     const [errorMessage, setError] = useState(null)
     const registerAction = () => {
         //ask backend
-        const localhost = "http://localhost:8080"
+        const localhost = "https://space-book-pied.vercel.app"
         
         const path = `/register/${encodeURIComponent(email)}/${encodeURIComponent(password)}/${encodeURIComponent(fullName)}/${encodeURIComponent(username)}`
         axios.post(`${localhost}${path}`).then(res =>{

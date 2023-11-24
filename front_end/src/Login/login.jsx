@@ -14,7 +14,7 @@ function Login(props) {
             setError("Actually put something in the text fields you jerk");
         } else {
             const res = await axios.get(
-                `http://localhost:8080/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
+                `https://space-book-pied.vercel.app/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
             );
             const data = res.data;
             console.log(data);

@@ -50,6 +50,7 @@ func RegisterUser(fullName string, password string, email string, username strin
     INSERT INTO Users (full_name, user_name, email, password, home_planet, profile_picture_path, isAdmin, bio)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`)
 	if err != nil {
+		fmt.Println("fuck")
 		return "unable to connect to db"
 	}
 	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "default", false, "test bio")
