@@ -189,8 +189,9 @@ func LoginHandler(ctx *gin.Context) {
 	username := ctx.Param("username")
 	password := ctx.Param("password")
 	var user User
-	err := LoginCorrect(username, password, postgres, &user)
-	if !err {
+	correct := LoginCorrect(username, password, postgres, &user)
+	// Incorrect Login
+	if !correct {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error":                "unable to find User",
 			"id":                   "null",
