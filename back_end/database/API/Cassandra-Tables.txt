@@ -1,12 +1,12 @@
 CREATE TABLE cassandra.POST(
-    postID int PRIMARY KEY,
+    postID UUID PRIMARY KEY,
     title text,
     authorID int,
     imagePaths list<text>,
     caption text,
     likes set<int>,
     date_posted TIMESTAMP,
-    comments set<int>,
+    comments set<UUID>,
     numberLikes int,
     numberComments int
 );
@@ -14,19 +14,19 @@ CREATE TABLE cassandra.POST(
 CREATE TABLE cassandra.DMTABLE(
     user1 int,
     user2 int,
-    messageChunks list<int>,
+    messageChunks list<UUID>,
     PRIMARY KEY (user1, user2)
 );
 
 CREATE TABLE cassandra.DMSUBSET(
-    subsetID int PRIMARY KEY,
+    subsetID UUID PRIMARY KEY,
     messages list<text>,
     senders list<int>,
     time_sent list<TIMESTAMP>
 );
 
 CREATE TABLE cassandra.COMMENT(
-    commentID int PRIMARY KEY,
+    commentID UUID PRIMARY KEY,
     commenter int,
     content text,
     time TIMESTAMP
