@@ -11,7 +11,11 @@ type User struct {
 	Admin                bool   `json:"admin"`
 	Bio                  string `json:"bio"`
 }
-
+type UserPreview struct {
+	Full_name            string `json:"full_name"`
+	User_name            string `json:"user_name"`
+	Profile_picture_path string `json:"profile_picture_path"`
+}
 type API_UserInfo struct {
 	User_id              int    `json:"id"`
 	Full_name            string `json:"full_name"`

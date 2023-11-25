@@ -183,7 +183,18 @@ func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) string 
 // not tested
 // not documented
 func SendFriendRequestHandler(ctx *gin.Context) {
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	sender, err1 := strconv.Atoi(ctx.Param("sender"))
+	reciever, err2 := strconv.Atoi(ctx.Param("reciever"))
+	if err1 != nil || err2 != nil {
 
+	}
+	result := SendFriendRequest(sender, reciever, postgres)
+	if result == "no error" {
+
+	} else {
+
+	}
 }
 
 // not tested
@@ -251,11 +262,44 @@ func GetFriendRequests(user_id int, postgres *sql.DB) ([]API_UserInfo, string) {
 // not tested
 // not documented
 func GetFriendRequestsHandler(ctx *gin.Context) {
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	user, err1 := strconv.Atoi(ctx.Param("sender"))
+	if err1 != nil {
 
+	}
+	requests, result := GetFriendRequests(user, postgres)
+	if result == "unable to connect to db" {
+
+	} else {
+
+	}
 }
 
-func SearchPeople(userID int, postgres *sql.DB) {
+func SearchPeople(userID int, searchTerm string, users []UserPreview, postgres *sql.DB) string {
+	stmt, err := postgres.Prepare(`SELECT full_name, user_name, profile_picture_path FROM USERS
+	WHERE username LIKE $1 OR username = $2
+	LIMIT 20`)
+	if err != nil {
+		return "unable to connect to db"
+	}
+	SQLsearchTerm := searchTerm + "%"
 
+	row, err := stmt.Query(SQLsearchTerm, searchTerm)
+	if err != nil {
+		return "unable to connect to db"
+	}
+	for row.Next() {
+		var newUser UserPreview
+		err := row.Scan(
+			&newUser.Full_name, &newUser.User_name,
+			&newUser.Profile_picture_path,
+		)
+		if err != nil {
+			return "unable to connect to db"
+		}
+		users = append(users, newUser)
+	}
+	return "no error"
 }
 
 func SearchPeopleHandler(ctx *gin.Context) {
