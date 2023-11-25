@@ -129,7 +129,7 @@ func HomepageHandler(ctx *gin.Context) {
 }
 
 // not tested
-func GetPostDetails(postID int, viewingUser int, post FullPost, cassandra *gocql.Session, postgres *sql.DB) string {
+func GetPostDetails(postID gocql.UUID, viewingUser int, post FullPost, cassandra *gocql.Session, postgres *sql.DB) string {
 	stmt := cassandra.Query("select * from post where postID = ?")
 	iter := stmt.Bind(postID).Iter()
 
@@ -212,7 +212,21 @@ func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 // not tested
 // not documented
 func LikePostHandler(ctx *gin.Context) {
+	cassandra := ctx.MustGet("postgres").(*gocql.Session)
+	userID, err := strconv.Atoi(ctx.Param("userID"))
+	if err != nil {
+		return
+	}
+	postID, err := gocql.ParseUUID((ctx.Param("PostID")))
+	if err != nil {
+		return
+	}
+	res := LikePost(postID, userID, cassandra)
+	if res {
 
+	} else {
+
+	}
 }
 
 // not done
@@ -248,11 +262,26 @@ func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql
 // not tested
 // not documented
 func CommentHandler(ctx *gin.Context) {
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
+	userID, err := strconv.Atoi(ctx.Param("userID"))
+	if err != nil {
+		return
+	}
+	postID, err := gocql.ParseUUID((ctx.Param("PostID")))
+	if err != nil {
+		return
+	}
+	comment := ctx.Param("comment")
+	res := CommentPost(comment, userID, postID, cassandra)
+	if res {
 
+	} else {
+
+	}
 }
 
 // not done, tested, or documented
-func deleteComments(postID int, cassandra *gocql.Session) {
+func DeleteComments(postID int, cassandra *gocql.Session) {
 
 }
 
