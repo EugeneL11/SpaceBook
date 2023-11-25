@@ -10,11 +10,13 @@ type User struct {
 	Admin                bool   `json:"admin"`
 	Bio                  string `json:"bio"`
 }
+
 type UserPreview struct {
 	Full_name            string `json:"full_name"`
 	User_name            string `json:"user_name"`
 	Profile_picture_path string `json:"profile_picture_path"`
 }
+
 type Comment struct {
 	CommenterID          int
 	CommenterProfilePath string
@@ -22,6 +24,7 @@ type Comment struct {
 	Content              string
 	Date                 string
 }
+
 type FullPost struct {
 	PostID            int
 	AuthorID          int
@@ -34,6 +37,7 @@ type FullPost struct {
 	Liked             bool
 	NumLikes          int
 }
+
 type PostPreview struct {
 	postID            int
 	AuthorID          int
