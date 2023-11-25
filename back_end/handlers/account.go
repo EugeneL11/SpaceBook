@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Add new non-admin user to SQL db, returning error message if unsuccessful
 func RegisterUser(fullName string, password string, email string, username string, postgres *sql.DB, user *User) string {
 	stmt, err := postgres.Prepare("SELECT * FROM Users WHERE email = $1")
 	if err != nil {
@@ -79,6 +80,7 @@ func RegisterUser(fullName string, password string, email string, username strin
 	return "no error"
 }
 
+// Route handler for registering a new user, returning error/user info in JSON
 func RegisterHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	username := ctx.Param("username")
@@ -88,52 +90,17 @@ func RegisterHandler(ctx *gin.Context) {
 	var user User
 	err := RegisterUser(fullName, password, email, username, postgres, &user)
 	if err == "unable to connect to db" || err == "unable to hash password" {
-		ctx.JSON(http.StatusOK, gin.H{
-			"error":                "unable to create account at this time",
-			"id":                   "null",
-			"username":             "null",
-			"admin":                "null",
-			"full_name":            "null",
-			"Email":                "null",
-			"Home_planet":          "null",
-			"Profile_picture_path": "null",
-		})
+		ctx.JSON(http.StatusOK, ErrorUserResponse("unable to create account at this time"))
 	} else if err == "user name taken" {
-		ctx.JSON(http.StatusOK, gin.H{
-			"error":                "user name not availible",
-			"id":                   "null",
-			"username":             "null",
-			"admin":                "null",
-			"full_name":            "null",
-			"Email":                "null",
-			"Home_planet":          "null",
-			"Profile_picture_path": "null",
-		})
+		ctx.JSON(http.StatusOK, ErrorUserResponse("user name not available"))
 	} else if err == "email taken" {
-		ctx.JSON(http.StatusOK, gin.H{
-			"error":                "email already in use",
-			"id":                   "null",
-			"username":             "null",
-			"admin":                "null",
-			"full_name":            "null",
-			"Email":                "null",
-			"Home_planet":          "null",
-			"Profile_picture_path": "null",
-		})
+		ctx.JSON(http.StatusOK, ErrorUserResponse("email already in use"))
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{
-			"error":                "no error!",
-			"id":                   user.User_id,
-			"username":             user.User_name,
-			"admin":                user.Admin,
-			"full_name":            user.Full_name,
-			"Email":                user.Email,
-			"Home_planet":          user.Home_planet,
-			"Profile_picture_path": user.Profile_picture_path,
-		})
+		ctx.JSON(http.StatusOK, GoodUserResponse(user))
 	}
 }
 
+// Confirms whether provided username/password combo is consistent with SQL db
 func LoginCorrect(username string, password string, postgres *sql.DB, user *User) bool {
 	stmt, err := postgres.Prepare("SELECT password FROM users WHERE user_name = $1")
 	if err != nil {
@@ -184,35 +151,17 @@ func LoginCorrect(username string, password string, postgres *sql.DB, user *User
 	}
 }
 
+// Route handler for /login, returning a JSON with error/user info
 func LoginHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	username := ctx.Param("username")
 	password := ctx.Param("password")
 	var user User
 	correct := LoginCorrect(username, password, postgres, &user)
-	// Incorrect Login
 	if !correct {
-		ctx.JSON(http.StatusOK, gin.H{
-			"error":                "unable to find User",
-			"id":                   "null",
-			"username":             "null",
-			"admin":                "false",
-			"full_name":            "null",
-			"Email":                `null"`,
-			"Home_planet":          `null`,
-			"Profile_picture_path": "null",
-		})
+		ctx.JSON(http.StatusOK, ErrorUserResponse("unable to find User"))
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{
-			"error":                "no error!",
-			"id":                   user.User_id,
-			"username":             user.User_name,
-			"admin":                user.Admin,
-			"full_name":            user.Full_name,
-			"Email":                user.Email,
-			"Home_planet":          user.Home_planet,
-			"Profile_picture_path": user.Profile_picture_path,
-		})
+		ctx.JSON(http.StatusOK, GoodUserResponse(user))
 	}
 }
 

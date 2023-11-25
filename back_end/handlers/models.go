@@ -62,31 +62,39 @@ type DMPreview struct {
 	AuthorProfilePath string
 	LastDM            string
 }
+type Response struct {
+	Error                string `json:"error"`
+	User_id              int    `json:"id"`
+	User_name            string `json:"username"`
+	Admin                bool   `json:"admin"`
+	Full_name            string `json:"full_name"`
+	Email                string `json:"Email"`
+	Home_planet          string `json:"Home_planet"`
+	Profile_picture_path string `json:"Profile_picture_path"`
+}
 
-// ErrorResponse is intended to be used in handlers with gin.H to return error client response
-func ErrorResponse(errorMsg string) map[string]any {
-	return map[string]any{
-		"error":                errorMsg,
-		"id":                   0,
-		"username":             "null",
-		"admin":                false,
-		"full_name":            "null",
-		"Email":                "null",
-		"Home_planet":          "null",
-		"Profile_picture_path": "null",
+func ErrorUserResponse(errorMsg string) Response {
+	return Response{
+		Error:                errorMsg,
+		User_id:              0,
+		User_name:            "null",
+		Admin:                false,
+		Full_name:            "null",
+		Email:                "null",
+		Home_planet:          "null",
+		Profile_picture_path: "null",
 	}
 }
 
-// GoodResponse is intended to be used in handlers with gin.H to return client response
-func GoodResponse(user User) map[string]any {
-	return map[string]any{
-		"error":                "no error!",
-		"id":                   user.User_id,
-		"username":             user.User_name,
-		"admin":                user.Admin,
-		"full_name":            user.Full_name,
-		"Email":                user.Email,
-		"Home_planet":          user.Home_planet,
-		"Profile_picture_path": user.Profile_picture_path,
+func GoodUserResponse(user User) Response {
+	return Response{
+		Error:                "no error!",
+		User_id:              user.User_id,
+		User_name:            user.User_name,
+		Admin:                user.Admin,
+		Full_name:            user.Full_name,
+		Email:                user.Email,
+		Home_planet:          user.Home_planet,
+		Profile_picture_path: user.Profile_picture_path,
 	}
 }

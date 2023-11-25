@@ -1,5 +1,3 @@
-import FetchTest from "./FetchTest";
-
 import { useState, useTransition } from "react";
 import Login from "./Login/login";
 import Register from "./Login/register";
