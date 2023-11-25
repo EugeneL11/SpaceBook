@@ -170,8 +170,12 @@ func PostDetailsHandler(ctx *gin.Context) {
 
 // not done
 // not tested
-func LikePost(postID int, userID int) string {
-	return "no error"
+func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
+	if err := cassandra.Query("UPDATE POST SET likes += ? WHERE postID = ?",
+		userID, postID).Exec(); err != nil {
+		return false
+	}
+	return true
 }
 
 // not done
@@ -193,8 +197,21 @@ func UnlikePost(userID int, postID int) string {
 func UnlikePostHandler(ctx *gin.Context) {
 
 }
-func CommentPost(comment string, userID int, postID int) string {
-	return "no error"
+func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql.Session) bool {
+	currTime := time.Now()
+	commentID := gocql.TimeUUID()
+
+	// Execute the query to insert a comment
+	if err := cassandra.Query("INSERT INTO Comment (commentID, commenter, content, time, postID) VALUES (?, ?, ?, ?, ?)",
+		commentID, userID, comment, currTime, postID).Exec(); err != nil {
+		return false
+	}
+	if err := cassandra.Query("UPDATE POST SET comments += ? WHERE postID = ?",
+		commentID, postID).Exec(); err != nil {
+		return false
+	}
+	// Return true if the comment was successfully inserted
+	return true
 }
 
 // not done

@@ -109,37 +109,37 @@ func ProfilePicHandler(ctx *gin.Context) {
 
 // not done
 // not tested
-func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) bool {
+func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (bool, string) {
 	filename := filepath.Join("images", dir, header.Filename)
 
 	// Create the file on the server
 	out, err := os.Create(filename)
 	if err != nil {
-		return false
+		return false, ""
 	}
 	defer out.Close()
 
 	// Copy the file data to the server file
 	_, err = io.Copy(out, file)
 	if err != nil {
-		return false
+		return false, ""
 	}
-	return true
+	return true, filename
 }
 
 // not done
 // not tested
-func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) string {
+func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) bool {
 
 	updateStmt := cassandra.Query(`UPDATE post
 			SET imagePaths += ?
 			WHERE postID = ?`)
 
 	if err := updateStmt.Bind(path, postID).Exec(); err != nil {
-		return "unable to connect to db"
+		return false
 	}
 
-	return "no error"
+	return true
 
 }
 
@@ -147,6 +147,7 @@ func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) st
 // not tested
 // not doucumeted
 func PostHandler(ctx *gin.Context) {
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	err := ctx.Request.ParseMultipartForm(10 << 20)
 	if err != nil {
 		ctx.String(400, "Bad Request")
@@ -155,12 +156,24 @@ func PostHandler(ctx *gin.Context) {
 
 	// Get the file from the form data
 	file, header, err := ctx.Request.FormFile("image")
+	postID := ctx.Request.FormValue("postID")
 	if err != nil {
 		ctx.String(400, "Bad Request")
 		return
 	}
 	defer file.Close()
-	UploadPic(file, header, "posts")
+	success, filename := UploadPic(file, header, "posts")
+	if !success {
+		return
+	}
+	uuid, err := gocql.ParseUUID(postID)
+	if err != nil {
+		return
+	}
+	success = UpdatePostPath(uuid, filename, cassandra)
+	if !success {
+		return
+	}
 
 	// Create a unique filename for the uploaded file
 
