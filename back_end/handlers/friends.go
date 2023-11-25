@@ -277,14 +277,14 @@ func GetFriendRequestsHandler(ctx *gin.Context) {
 
 func SearchPeople(userID int, searchTerm string, users []UserPreview, postgres *sql.DB) string {
 	stmt, err := postgres.Prepare(`SELECT full_name, user_name, profile_picture_path FROM USERS
-	WHERE username LIKE $1 OR username = $2
+	WHERE (username LIKE $1 OR username = $2) and user_id = $3
 	LIMIT 20`)
 	if err != nil {
 		return "unable to connect to db"
 	}
 	SQLsearchTerm := searchTerm + "%"
 
-	row, err := stmt.Query(SQLsearchTerm, searchTerm)
+	row, err := stmt.Query(SQLsearchTerm, searchTerm, userID)
 	if err != nil {
 		return "unable to connect to db"
 	}
