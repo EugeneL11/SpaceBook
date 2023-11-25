@@ -260,20 +260,31 @@ func GetFriendRequests(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 
 }
 
-// not done
 // not tested
-// not documented
 func GetFriendRequestsHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
-	user, err1 := strconv.Atoi(ctx.Param("sender"))
-	if err1 != nil {
-
+	user, err := strconv.Atoi(ctx.Param("sender"))
+	if err != nil {
+		log.Panic(err)
 	}
-	// Retrieve requests instead of _ when this is being done
-	_, result := GetFriendRequests(user, postgres)
-	if result == "unable to connect to db" {
 
+	requests, result := GetFriendRequests(user, postgres)
+	if result == "unable to connect to db" {
+		ctx.JSON(http.StatusOK, gin.H{
+			"error":    result,
+			"requests": nil,
+		})
 	} else {
+		var status string
+		if len(requests) == 0 {
+			status = "no requests"
+		} else {
+			status = "pending request"
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"error":    status,
+			"requests": requests,
+		})
 
 	}
 }
