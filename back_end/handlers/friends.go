@@ -224,7 +224,7 @@ func RejectFriendRequestHandler(ctx *gin.Context) {
 }
 
 // not tested
-func GetFriendRequests(user_id int, postgres *sql.DB) ([]API_UserInfo, string) {
+func GetFriendRequests(user_id int, postgres *sql.DB) ([]User, string) {
 	stmt, err := postgres.Prepare(`
 		SELECT requester_id 
 		FROM Orbit_Requests 
