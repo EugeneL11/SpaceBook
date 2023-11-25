@@ -8,6 +8,14 @@ import (
 	"github.com/gocql/gocql"
 )
 
+func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID, string) {
+	postID := gocql.TimeUUID()
+	selectStmt := cassandra.Query("Insert Into  Post Values(postID, caption, authorID) Values ( ? ? ?)")
+	return postID, "no error"
+}
+func MakePostHandler(ctx *gin.Context) {
+
+}
 func GetNewPostsFromUser(userID int, userProfilePath string, userName string, date time.Time, cassandra *gocql.Session, posts []PostPreview) error {
 	// Define your PostPreview slice to store the results
 
