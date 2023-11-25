@@ -188,8 +188,8 @@ func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) string 
 // not documented
 func SendFriendRequestHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
-	sender, err1 := strconv.Atoi(ctx.Param("sender"))
-	reciever, err2 := strconv.Atoi(ctx.Param("reciever"))
+	sender, err1 := strconv.Atoi(ctx.Param("sender_user_id"))
+	reciever, err2 := strconv.Atoi(ctx.Param("receiver_user_id"))
 	if err1 != nil {
 		log.Panic(err1)
 	} else if err2 != nil {
