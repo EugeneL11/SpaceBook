@@ -12,6 +12,17 @@
 
 -   "error" can contain an error from Go, so consider just checking whether or not (error = "no error") unless custom error messages are provided at a later point
 
+## Send Friend Request (WIP)
+
+-   Use path (POST): /sendfriendreq/{sender_user_id}/{receiver_user_id}
+-   Will return a JSON with following format:
+
+```json
+{
+    "status": "no error" OR "unable to connect to db"
+}
+```
+
 ## Get Friend Requests (WIP)
 
 -   Use path (GET): /getfriendreqs/{user_id}
