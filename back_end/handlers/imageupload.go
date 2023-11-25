@@ -156,7 +156,7 @@ func PostHandler(ctx *gin.Context) {
 
 	// Get the file from the form data
 	file, header, err := ctx.Request.FormFile("image")
-	postID := ctx.Request.FormValue("postID")
+	postID := ctx.Param("postID")
 	if err != nil {
 		ctx.String(400, "Bad Request")
 		return
@@ -164,10 +164,12 @@ func PostHandler(ctx *gin.Context) {
 	defer file.Close()
 	success, filename := UploadPic(file, header, "posts")
 	if !success {
+		ctx.String(400, "Bad Request")
 		return
 	}
 	uuid, err := gocql.ParseUUID(postID)
 	if err != nil {
+		ctx.String(400, "Bad Request")
 		return
 	}
 	success = UpdatePostPath(uuid, filename, cassandra)

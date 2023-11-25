@@ -34,6 +34,7 @@ func setupFriends(server *gin.Engine) {
 
 func setupPosts(server *gin.Engine) {
 	server.POST("/makepost/:user_id/:caption", handlers.MakePostHandler)
+	server.POST("uploadpostimage/:postID")
 	server.GET("/gethomepageposts/:user_id", handlers.HomepageHandler)
 	server.POST("/makecomment/:postID/:userID/:comment", handlers.CommentHandler)
 }
