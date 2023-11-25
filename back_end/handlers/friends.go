@@ -190,15 +190,16 @@ func SendFriendRequestHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	sender, err1 := strconv.Atoi(ctx.Param("sender"))
 	reciever, err2 := strconv.Atoi(ctx.Param("reciever"))
-	if err1 != nil || err2 != nil {
-
+	if err1 != nil {
+		log.Panic(err1)
+	} else if err2 != nil {
+		log.Panic(err2)
 	}
+
 	result := SendFriendRequest(sender, reciever, postgres)
-	if result == "no error" {
-
-	} else {
-
-	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": result,
+	})
 }
 
 // not tested
@@ -220,9 +221,7 @@ func RejectFriendRequest(rejecter_id int, rejectee_id int, postgres *sql.DB) str
 	return "no error"
 }
 
-// not done
 // not tested
-// not documented
 func RejectFriendRequestHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	rejecter, err1 := strconv.Atoi(ctx.Param("rejecter"))

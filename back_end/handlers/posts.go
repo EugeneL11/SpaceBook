@@ -221,12 +221,12 @@ func CommentHandler(ctx *gin.Context) {
 
 }
 
+// not done, tested, or documented
 func deleteComments(postID int, cassandra *gocql.Session) {
 
 }
 
-// not done
-// not tested
+// not done, not tested
 func DeletePost(postID int, cassandra *gocql.Session) string {
 	//cassandra.Query()
 	return "no error"
