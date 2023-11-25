@@ -1,7 +1,7 @@
 ## Get Friends (WIP)
 
 -   Use path (GET request): /getfriends/{user_id}
--   Will return a json object with following format:
+-   Will return a JSON object with following format:
 
 ```json
 {
@@ -11,6 +11,40 @@
 ```
 
 -   "error" can contain an error from Go, so consider just checking whether or not (error = "no error") unless custom error messages are provided at a later point
+
+## Get Friend Requests (WIP)
+
+-   Use path (GET): /getfriendreqs/{user_id}
+-   Will return a JSON with following format:
+
+```json
+{
+    "status": "no requests", "pending request", or appropriate error (only "unable to connect to db")
+    "requests": JSON containing UserPreview for each user which made a request (see below)
+}
+
+// UserPreviews
+{
+    {
+        "full_name",
+        "user_name",
+        "profile_picture_path",
+    }
+    ... (repeats for number of friend requests)
+}
+```
+
+## Reject Friend Request
+
+-   Use path (DELETE): /rejectfriendreq/{rejecter_id}/{rejectee_id}
+-   Where rejecter is the person rejecting the rejectee's request
+-   Will return a JSON with following format:
+
+```json
+{
+    "status": "no error" or "unable to connect to db" (should not happen)
+}
+```
 
 ## Search for Users (WIP)
 
@@ -26,7 +60,7 @@
     "userPreviews": null or a JSON containing up to 20 users' fullname + username + profile picture path
 }
 
-// userPreviews JSON:
+// UserPreviews JSON:
 {
     {
         "full_name",
