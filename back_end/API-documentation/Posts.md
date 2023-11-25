@@ -9,3 +9,7 @@
     "post_id": ID of post (int)
 }
 ```
+
+## Get Homepage (WIP)
+
+-   Use path (GET)

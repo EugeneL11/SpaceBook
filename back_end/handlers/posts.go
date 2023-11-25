@@ -37,14 +37,13 @@ func MakePostHandler(ctx *gin.Context) {
 	})
 }
 
-func GetNewPostsFromUser(userID int, userProfilePath string, userName string, date time.Time, cassandra *gocql.Session, posts []PostPreview) error {
-	// Define your PostPreview slice to store the results
-
+func GetNewPostsFromUser(userID int, userProfilePath string, userName string, date time.Time, cassandra *gocql.Session) ([]PostPreview, error) {
 	// Define the SELECT statement
 	selectStmt := cassandra.Query("SELECT postID, imagePaths,caption, date_posted FROM post WHERE authorID = ? AND date_posted > ?")
 
 	// Bind the parameters and execute the query
 	iter := selectStmt.Bind(userID, date).Iter()
+	var posts []PostPreview
 
 	// Iterate through the results and append them to the posts slice
 	for {
@@ -60,51 +59,55 @@ func GetNewPostsFromUser(userID int, userProfilePath string, userName string, da
 	}
 
 	if err := iter.Close(); err != nil {
-		return err
+		return nil, err
 	}
 
 	// Now, 'posts' slice contains the new posts from the specified user after the specified date
-	return nil
+	return posts, nil
 }
 
 // not tested
-func GetHomePagePost(userID int, date time.Time, posts []PostPreview, postgres *sql.DB, cassandra *gocql.Session) string {
+func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *gocql.Session) ([]PostPreview, string) {
 	stmt, err := postgres.Prepare(`Select user2_id from orbit_buddies where user1_id = $1 union 
 	select user2_id from orbit_buddies where user1_id = $1`)
 	if err != nil {
-		return "unable to connect to db"
+		return nil, "unable to connect to db"
 	}
 	defer stmt.Close()
 
 	row, err := stmt.Query(userID)
 
 	if err != nil {
-		return "unable to connect to db"
+		return nil, "unable to connect to db"
 	}
+
+	var posts []PostPreview
+
 	for row.Next() {
 		var curr_friend int
 		row.Scan(&curr_friend)
 		stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
 		if err != nil {
-			return "unable to connect to db"
+			return nil, "unable to connect to db"
 		}
 		defer stmt.Close()
 		userInfo, err := stmt.Query(curr_friend)
 		if err != nil {
-			return "unable to connect to db"
+			return nil, "unable to connect to db"
 		}
 		userName, profilePath := "", ""
 		if userInfo.Next() {
 			userInfo.Scan(&userName, &profilePath)
 		} else {
-			return "unable to connect to db"
+			return nil, "unable to connect to db"
 		}
-		err = GetNewPostsFromUser(curr_friend, profilePath, userName, date, cassandra, posts)
-		if err != nil {
-			return "unable to connect to db"
+		tempPost, err2 := GetNewPostsFromUser(curr_friend, profilePath, userName, date, cassandra)
+		if err2 != nil {
+			return nil, "unable to connect to db"
 		}
+		posts = append(posts, tempPost...)
 	}
-	return "no error"
+	return posts, "no error"
 }
 
 // not done
