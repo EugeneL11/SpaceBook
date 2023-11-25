@@ -228,12 +228,11 @@ func RejectFriendRequestHandler(ctx *gin.Context) {
 }
 
 // not tested
-func GetFriendRequests(user_id int, postgres *sql.DB) ([]User, string) {
+func GetFriendRequests(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 	stmt, err := postgres.Prepare(`
-		SELECT requester_id 
+		SELECT full_name, user_name, profile_picture_path 
 		FROM Orbit_Requests 
-		WHERE requested_buddy_id = $1
-	`)
+		WHERE requested_buddy_id = $1`)
 	if err != nil {
 		return nil, "unable to connect to db"
 	}
@@ -244,13 +243,12 @@ func GetFriendRequests(user_id int, postgres *sql.DB) ([]User, string) {
 		return nil, "unable to connect to db"
 	}
 
-	var mySlice []User
+	var mySlice []UserPreview
 	for rows.Next() {
-		var newUser User
+		var newUser UserPreview
 		err := rows.Scan(
-			&newUser.User_id, &newUser.Full_name, &newUser.User_name,
-			&newUser.Email, &newUser.Home_planet, &newUser.Profile_picture_path,
-			&newUser.Admin, &newUser.Bio,
+			&newUser.Full_name, &newUser.User_name,
+			&newUser.Profile_picture_path,
 		)
 		if err != nil {
 			return nil, "unable to connect to db"
