@@ -49,7 +49,7 @@ func GetNewPostsFromUser(userID int, userProfilePath string, userName string, da
 	for {
 		var post PostPreview
 		var postDate time.Time
-		if !iter.Scan(&post.postID, &post.Images, &post.Caption, &postDate) {
+		if !iter.Scan(&post.PostID, &post.Images, &post.Caption, &postDate) {
 			break
 		}
 		post.Date = postDate.Format(time.RFC3339)
@@ -66,6 +66,7 @@ func GetNewPostsFromUser(userID int, userProfilePath string, userName string, da
 	return posts, nil
 }
 
+// not done
 // not tested
 func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *gocql.Session) ([]PostPreview, string) {
 	stmt, err := postgres.Prepare(`Select user2_id from orbit_buddies where user1_id = $1 union 
@@ -95,7 +96,7 @@ func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *go
 		if err != nil {
 			return nil, "unable to connect to db"
 		}
-		userName, profilePath := "", ""
+		userName, profilePath := "", "" // TODO
 		if userInfo.Next() {
 			userInfo.Scan(&userName, &profilePath)
 		} else {
@@ -110,11 +111,21 @@ func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *go
 	return posts, "no error"
 }
 
-// not done
 // not tested
-// not documented
 func HomepageHandler(ctx *gin.Context) {
-
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
+	userID, err1 := strconv.Atoi(ctx.Param("user_id"))
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	date := time.Now()
+	minTime := date.AddDate(0, 0, -7) // Current time - 7 days to get recent posts
+	posts, status := GetHomePagePost(userID, minTime, postgres, cassandra)
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+		"posts":  posts,
+	})
 }
 
 // not tested

@@ -1,5 +1,7 @@
 package handlers
 
+import "github.com/gocql/gocql"
+
 type User struct {
 	User_id              int    `json:"id"`
 	Full_name            string `json:"full_name"`
@@ -18,34 +20,34 @@ type UserPreview struct {
 }
 
 type Comment struct {
-	CommenterID          int
-	CommenterProfilePath string
-	CommenterName        string
-	Content              string
-	Date                 string
+	CommenterID          int    `json:"commenter_id"`
+	CommenterProfilePath string `json:"commenter_profile_path"`
+	CommenterName        string `json:"commenter_name"`
+	Content              string `json:"content"`
+	Date                 string `json:"date"`
 }
 
 type FullPost struct {
-	PostID            int
-	AuthorID          int
-	AuthorName        string
-	AuthorProfilePath string
-	Caption           string
-	Date              string
-	Images            []string
-	Comments          []Comment
-	Liked             bool
-	NumLikes          int
+	PostID            gocql.UUID `json:"post_id"`
+	AuthorID          int        `json:"author_id"`
+	AuthorName        string     `json:"author_name"`
+	AuthorProfilePath string     `json:"author_profile_path"`
+	Caption           string     `json:"caption"`
+	Date              string     `json:"date"`
+	Images            []string   `json:"images"`
+	Comments          []Comment  `json:"comments"`
+	Liked             bool       `json:"liked"`
+	NumLikes          int        `json:"num_likes"`
 }
 
 type PostPreview struct {
-	postID            int
-	AuthorID          int
-	AuthorName        string
-	AuthorProfilePath string
-	Caption           string
-	Date              string
-	Images            []string
+	PostID            gocql.UUID `json:"post_id"`
+	AuthorID          int        `json:"author_id"`
+	AuthorName        string     `json:"author_name"`
+	AuthorProfilePath string     `json:"author_profile_path"`
+	Caption           string     `json:"caption"`
+	Date              string     `json:"date"`
+	Images            []string   `json:"images"`
 }
 
 // type Message struct {

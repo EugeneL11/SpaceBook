@@ -50,10 +50,10 @@
 // UserPreviews
 {
     {
-        "full_name",
-        "user_name",
-        "profile_picture_path",
-    }
+        "full_name" (string type),
+        "user_name" (string),
+        "profile_picture_path" (string),
+    },
     ... (repeats for number of friend requests)
 }
 ```
