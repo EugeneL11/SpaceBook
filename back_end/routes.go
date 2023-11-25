@@ -28,7 +28,7 @@ func setupFriends(server *gin.Engine) {
 	server.GET("/search/:user_id/:searchTerm", handlers.SearchPeopleHandler)
 	server.POST("/sendfriendreq/:sender_user_id/:receiver_user_id", handlers.SendFriendRequestHandler)
 	server.DELETE("/rejectfriendreq/:rejecter_id/:rejectee_id", handlers.RejectFriendRequestHandler)
-	server.DELETE("/removefriend", handlers.RemoveFriendHandler)
+	server.DELETE("/removefriend/:id1/:id2", handlers.RemoveFriendHandler)
 }
 func setupPosts(server *gin.Engine) {
 

@@ -12,14 +12,27 @@
 
 -   "error" can contain an error from Go, so consider just checking whether or not (error = "no error") unless custom error messages are provided at a later point
 
-## Send Friend Request (WIP)
+## Send and Accept Friend Request
 
 -   Use path (POST): /sendfriendreq/{sender_user_id}/{receiver_user_id}
+-   Note: Use this same route for sending and accepting (accept by flipping the order of the sender/receiver ids)
 -   Will return a JSON with following format:
 
 ```json
 {
-    "status": "no error" OR "unable to connect to db"
+    "status": "no error" OR "unable to connect to db" (should not happen)
+}
+```
+
+## Remove Friend Handler
+
+-   Use path (DELETE): /removefriend/{id1}/{id2}
+-   The order of the IDs does not matter
+-   Will return a JSON with following format:
+
+```json
+{
+    "status": "no error" or "unable to connect to db" (should not happen)
 }
 ```
 

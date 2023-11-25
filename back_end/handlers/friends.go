@@ -117,11 +117,21 @@ func RemoveFriend(user1_id int, user2_id int, postgres *sql.DB) string {
 	return "no error"
 }
 
-// not done
 // not tested
-// not documented
 func RemoveFriendHandler(ctx *gin.Context) {
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	user1_id, err1 := strconv.Atoi(ctx.Param("id1"))
+	user2_id, err2 := strconv.Atoi(ctx.Param("id2"))
+	if err1 != nil {
+		log.Panic(err1)
+	} else if err2 != nil {
+		log.Panic(err2)
+	}
 
+	result := RemoveFriend(user1_id, user2_id, postgres)
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": result,
+	})
 }
 
 // not tested
@@ -183,9 +193,7 @@ func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) string 
 	return "no error"
 }
 
-// not done
 // not tested
-// not documented
 func SendFriendRequestHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	sender, err1 := strconv.Atoi(ctx.Param("sender_user_id"))
