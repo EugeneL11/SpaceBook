@@ -9,6 +9,9 @@ func setupRoutes(server *gin.Engine) {
 
 	setupAccount(server)
 	setupFriends(server)
+	setupPosts(server)
+	setupDMs(server)
+
 }
 
 func setupAccount(server *gin.Engine) {
@@ -21,4 +24,13 @@ func setupAccount(server *gin.Engine) {
 }
 func setupFriends(server *gin.Engine) {
 	server.GET("/getfriends/:user_id", handlers.GetFriendsHandler)
+	server.POST("", handlers.SendFriendRequestHandler)
+	server.DELETE("", handlers.RejectFriendRequestHandler)
+	server.DELETE("", handlers.RemoveFriendHandler)
+}
+func setupPosts(server *gin.Engine) {
+
+}
+func setupDMs(server *gin.Engine) {
+
 }
