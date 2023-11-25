@@ -193,8 +193,18 @@ func UnlikePost(userID int, postID int) string {
 func UnlikePostHandler(ctx *gin.Context) {
 
 }
-func CommentPost(comment string, userID int, postID int) string {
-	return "no error"
+func CommentPost(comment string, userID int, postID int, cassandra *gocql.Session) bool {
+	currTime := time.Now()
+	commentID := gocql.TimeUUID()
+
+	// Execute the query to insert a comment
+	if err := cassandra.Query("INSERT INTO Comment (commentID, commenter, content, time, postID) VALUES (?, ?, ?, ?, ?)",
+		commentID, userID, comment, currTime, postID).Exec(); err != nil {
+		return false
+	}
+
+	// Return true if the comment was successfully inserted
+	return true
 }
 
 // not done
