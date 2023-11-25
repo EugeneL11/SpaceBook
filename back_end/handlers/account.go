@@ -174,7 +174,7 @@ func LoginCorrect(username string, password string, postgres *sql.DB, user *User
 	}
 	if rows.Next() {
 		err := rows.Scan(&user.User_id, &user.Full_name, &user.User_name,
-			&user.Email, &user.Password, &user.Home_planet, &user.Profile_picture_path, &user.Admin, &user.Bio)
+			&user.Email, nil, &user.Home_planet, &user.Profile_picture_path, &user.Admin, &user.Bio)
 		fmt.Println(user.User_name)
 		log.Println(err)
 		return true
@@ -250,7 +250,7 @@ func UpdateUserProfileHandler(ctx *gin.Context) {
 }
 
 // not tested
-func GetUserInfo(user_id int, postgres *sql.DB, userInfo *API_UserInfo) string {
+func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 	stmt, err := postgres.Prepare(`
 		SELECT (
 			user_id, full_name, user_name, 

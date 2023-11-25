@@ -11,7 +11,7 @@ import (
 )
 
 // not tested
-func GetFriends(user_id int, postgres *sql.DB) ([]API_UserInfo, string) {
+func GetFriends(user_id int, postgres *sql.DB) ([]User, string) {
 	stmt, err := postgres.Prepare(`
 		SELECT (
 			user_id, full_name, user_name,
@@ -40,9 +40,9 @@ func GetFriends(user_id int, postgres *sql.DB) ([]API_UserInfo, string) {
 	}
 	defer rows.Close()
 
-	var mySlice []API_UserInfo
+	var mySlice []User
 	for rows.Next() {
-		var newUser API_UserInfo
+		var newUser User
 		err := rows.Scan(
 			&newUser.User_id, &newUser.Full_name, &newUser.User_name,
 			&newUser.Email, &newUser.Home_planet, &newUser.Profile_picture_path,
@@ -66,7 +66,7 @@ func GetFriendsHandler(ctx *gin.Context) {
 		return
 	}
 
-	var users []API_UserInfo
+	var users []User
 
 	users, err2 := GetFriends(user_id, postgres)
 	ctx.JSON(http.StatusOK, gin.H{
@@ -240,9 +240,9 @@ func GetFriendRequests(user_id int, postgres *sql.DB) ([]API_UserInfo, string) {
 		return nil, "unable to connect to db"
 	}
 
-	var mySlice []API_UserInfo
+	var mySlice []User
 	for rows.Next() {
-		var newUser API_UserInfo
+		var newUser User
 		err := rows.Scan(
 			&newUser.User_id, &newUser.Full_name, &newUser.User_name,
 			&newUser.Email, &newUser.Home_planet, &newUser.Profile_picture_path,
