@@ -134,7 +134,6 @@ func RemoveFriendHandler(ctx *gin.Context) {
 	})
 }
 
-// not tested
 func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) string {
 	stmt, err := postgres.Prepare("Select * from Orbit_Requests WHERE requester_id = $1 AND requested_buddy_id = $2")
 	if err != nil {
@@ -193,7 +192,6 @@ func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) string 
 	return "no error"
 }
 
-// not tested
 func SendFriendRequestHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	sender, err1 := strconv.Atoi(ctx.Param("sender_user_id"))
@@ -210,7 +208,6 @@ func SendFriendRequestHandler(ctx *gin.Context) {
 	})
 }
 
-// not tested
 func RejectFriendRequest(rejecter_id int, rejectee_id int, postgres *sql.DB) string {
 	stmt, err := postgres.Prepare(`
 		DELETE FROM Orbit_Requests 
@@ -229,7 +226,6 @@ func RejectFriendRequest(rejecter_id int, rejectee_id int, postgres *sql.DB) str
 	return "no error"
 }
 
-// not tested
 func RejectFriendRequestHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	rejecter, err1 := strconv.Atoi(ctx.Param("rejecter"))
@@ -247,12 +243,16 @@ func RejectFriendRequestHandler(ctx *gin.Context) {
 
 }
 
-// not tested
 func GetFriendRequests(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 	stmt, err := postgres.Prepare(`
-		SELECT full_name, user_name, profile_picture_path 
-		FROM Orbit_Requests 
-		WHERE requested_buddy_id = $1`)
+	SELECT u.full_name, u.user_name, u.profile_picture_path
+	FROM users u
+	WHERE EXISTS (
+		SELECT 1
+		FROM orbit_requests
+		WHERE requested_buddy_id = $1
+		AND requester_id = u.user_id
+	)`)
 	if err != nil {
 		return nil, "unable to connect to db"
 	}
@@ -280,18 +280,20 @@ func GetFriendRequests(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 
 }
 
-// not tested
 func GetFriendRequestsHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
-	user, err := strconv.Atoi(ctx.Param("sender"))
+	user, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
-		log.Panic(err)
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":   "bad request",
+			"requests": nil,
+		})
 	}
 
 	requests, result := GetFriendRequests(user, postgres)
 	if result == "unable to connect to db" {
 		ctx.JSON(http.StatusOK, gin.H{
-			"error":    result,
+			"status":   result,
 			"requests": nil,
 		})
 	} else {
@@ -302,7 +304,7 @@ func GetFriendRequestsHandler(ctx *gin.Context) {
 			status = "pending request"
 		}
 		ctx.JSON(http.StatusOK, gin.H{
-			"error":    status,
+			"status":   status,
 			"requests": requests,
 		})
 

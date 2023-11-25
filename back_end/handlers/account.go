@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/EugeneL11/SpaceBook/pkg"
 	"github.com/gin-gonic/gin"
@@ -201,11 +202,11 @@ func UpdateUserProfileHandler(ctx *gin.Context) {
 // not tested
 func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 	stmt, err := postgres.Prepare(`
-		SELECT (
+		SELECT 
 			user_id, full_name, user_name, 
 			email, home_planet, 
-			profile_picture_path, isAdmin, bio
-		)
+			profile_picture_path, bio
+		
 		FROM Users 
 		WHERE user_id = $1
 	`)
@@ -224,7 +225,7 @@ func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 		err := rows.Scan(
 			&userInfo.User_id, &userInfo.Full_name, &userInfo.User_name,
 			&userInfo.Email, &userInfo.Home_planet, &userInfo.Profile_picture_path,
-			&userInfo.Admin, &userInfo.Bio)
+			&userInfo.Bio)
 		if err != nil {
 			return "unable to connect to db"
 		}
@@ -237,9 +238,92 @@ func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 	//return "no error"
 }
 
+func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
+	if viewer > viewed {
+		viewer, viewed = viewed, viewer
+	}
+	stmt, err := postgres.Prepare("SELECT * FROM Orbit_buddies WHERE user1_id = $1 and user2_id = $2")
+	if err != nil {
+		return "unable to connect to db"
+	}
+	defer stmt.Close()
+
+	rows, err2 := stmt.Query(viewer, viewed)
+	if err2 != nil {
+		return "unable to connect to db"
+	}
+
+	if rows.Next() {
+		return "already friends"
+	}
+	stmt, err = postgres.Prepare("SELECT * FROM orbit_requests WHERE requested_buddy_id = $1 and requester_id = $2")
+	if err != nil {
+		return "unable to connect to db"
+	}
+	defer stmt.Close()
+
+	rows, err2 = stmt.Query(viewed, viewer)
+	if err2 != nil {
+		return "unable to connect to db"
+	}
+
+	if rows.Next() {
+		return "viewer sent request"
+	}
+	stmt, err = postgres.Prepare("SELECT * FROM orbit_requests WHERE requested_buddy_id = $1 and requester_id = $2")
+	if err != nil {
+		return "unable to connect to db"
+	}
+	defer stmt.Close()
+
+	rows, err2 = stmt.Query(viewer, viewed)
+	if err2 != nil {
+		return "unable to connect to db"
+	}
+
+	if rows.Next() {
+		return "viewed person sent request"
+	}
+	return "no requests"
+}
+
 // not done
 // not tested
 // not documented
 func GetUserInfoHandler(ctx *gin.Context) {
-
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	viewer, err1 := strconv.Atoi(ctx.Param("viewer"))
+	viewed, err2 := strconv.Atoi(ctx.Param("viewed"))
+	if err1 != nil || err2 != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       "bad request",
+			"user":         nil,
+			"friendstatus": nil,
+		})
+		return
+	}
+	var user User
+	result := GetUserInfo(viewed, postgres, &user)
+	if result != "no error" {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       "result",
+			"user":         nil,
+			"friendstatus": nil,
+		})
+		return
+	}
+	status := FriendStatus(viewer, viewed, postgres)
+	if status == "unable to connect to db" {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       status,
+			"user":         nil,
+			"friendstatus": nil,
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":       "no error",
+		"user":         user,
+		"friendstatus": status,
+	})
 }
