@@ -224,6 +224,19 @@ func RejectFriendRequest(rejecter_id int, rejectee_id int, postgres *sql.DB) str
 // not tested
 // not documented
 func RejectFriendRequestHandler(ctx *gin.Context) {
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	rejecter, err1 := strconv.Atoi(ctx.Param("rejecter"))
+	rejectee, err2 := strconv.Atoi(ctx.Param("rejectee"))
+	if err1 != nil {
+		log.Panic(err1)
+	} else if err2 != nil {
+		log.Panic(err2)
+	}
+
+	result := RejectFriendRequest(rejecter, rejectee, postgres)
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": result,
+	})
 
 }
 

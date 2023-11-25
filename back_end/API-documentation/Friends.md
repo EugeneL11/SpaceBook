@@ -36,6 +36,16 @@
 
 ## Reject Friend Request
 
+-   Use path (DELETE): /rejectfriendreq/{rejecter_id}/{rejectee_id}
+-   Where rejecter is the person rejecting the rejectee's request
+-   Will return a JSON with following format:
+
+```json
+{
+    "status": "no error" or "unable to connect to db" (should not happen)
+}
+```
+
 ## Search for Users (WIP)
 
 -   Use path (GET): /search/{user_id}/{searchTerm}
