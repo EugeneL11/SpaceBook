@@ -37,3 +37,7 @@ CREATE TABLE cassandra.WORMHOLE(
     messages list<text>,
     PRIMARY KEY (user1, user2)
 );
+CREATE TABLE cassandra.COOKIE(
+    machineID text PRIMARY KEY,
+    userID int
+);
