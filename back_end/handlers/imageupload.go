@@ -3,10 +3,12 @@ package handlers
 import (
 	"fmt"
 	"io"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gocql/gocql"
 )
 
 // testing- will delete later
@@ -107,19 +109,60 @@ func ProfilePicHandler(ctx *gin.Context) {
 
 // not done
 // not tested
-func UploadPostPic() {
+func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) bool {
+	filename := filepath.Join("images", dir, header.Filename)
 
+	// Create the file on the server
+	out, err := os.Create(filename)
+	if err != nil {
+		return false
+	}
+	defer out.Close()
+
+	// Copy the file data to the server file
+	_, err = io.Copy(out, file)
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 // not done
 // not tested
-func UpdatePostPath() string {
+func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) string {
+
+	updateStmt := cassandra.Query(`UPDATE post
+			SET imagePaths += ?
+			WHERE postID = ?`)
+
+	if err := updateStmt.Bind(path, postID).Exec(); err != nil {
+		return "unable to connect to db"
+	}
+
 	return "no error"
+
 }
 
 // not done
 // not tested
 // not doucumeted
 func PostHandler(ctx *gin.Context) {
+	err := ctx.Request.ParseMultipartForm(10 << 20)
+	if err != nil {
+		ctx.String(400, "Bad Request")
+		return
+	}
 
+	// Get the file from the form data
+	file, header, err := ctx.Request.FormFile("image")
+	if err != nil {
+		ctx.String(400, "Bad Request")
+		return
+	}
+	defer file.Close()
+	UploadPic(file, header, "posts")
+
+	// Create a unique filename for the uploaded file
+
+	ctx.String(200, fmt.Sprintf("File %s uploaded successfully!", header.Filename))
 }

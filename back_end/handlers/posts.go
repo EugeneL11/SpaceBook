@@ -10,9 +10,14 @@ import (
 
 func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID, string) {
 	postID := gocql.TimeUUID()
-	selectStmt := cassandra.Query("Insert Into  Post Values(postID, caption, authorID) Values ( ? ? ?)")
+	insertStmt := cassandra.Query("INSERT INTO Post (postID, caption, authorID) VALUES (?, ?, ?)")
+
+	if err := insertStmt.Bind(postID, caption, userID).Exec(); err != nil {
+		return gocql.UUID{}, "unable to connect to db"
+	}
 	return postID, "no error"
 }
+
 func MakePostHandler(ctx *gin.Context) {
 
 }
