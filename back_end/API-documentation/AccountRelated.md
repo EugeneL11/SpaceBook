@@ -1,12 +1,7 @@
-## Note on using routes/"path"
-
--   "{email}" indicates that you should fill it with the actual email
--   Ex. for route /register/{email}/{password}/{fullname}, fill it like /register/john@gmail.com/myPassword/John Doe
-
 ## To Register an Account:
 
 -   Use path (POST request): /register/{email}/{password}/{fullname}/{username}
--   Will return a json object:
+-   Will return a json object such as the following:
 
 ```json
 {
@@ -29,7 +24,7 @@
 
 ## To Login:
 
--   Use path (GET): /login/username/password
+-   Use path (GET): /login/{username}/{password}
 -   will return a json object
 
 ```json
