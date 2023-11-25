@@ -279,18 +279,18 @@ func GetFriendRequestsHandler(ctx *gin.Context) {
 }
 
 // not tested
-func SearchPeople(userID int, searchTerm string, users []UserPreview, postgres *sql.DB) string {
+func SearchPeople(userID int, searchTerm string, postgres *sql.DB) (string, []UserPreview) {
 	stmt, err := postgres.Prepare(`SELECT full_name, user_name, profile_picture_path FROM USERS
-	WHERE (username LIKE $1 OR username = $2) and user_id = $3
+	WHERE (user_name LIKE $1 OR user_name = $2) and not user_id = $3
 	LIMIT 20`)
 	if err != nil {
-		return "unable to connect to db"
+		return "unable to connect to db", nil
 	}
 	SQLsearchTerm := searchTerm + "%"
-
+	var users []UserPreview
 	row, err := stmt.Query(SQLsearchTerm, searchTerm, userID)
 	if err != nil {
-		return "unable to connect to db"
+		return "unable to connect to db", nil
 	}
 	for row.Next() {
 		var newUser UserPreview
@@ -299,11 +299,11 @@ func SearchPeople(userID int, searchTerm string, users []UserPreview, postgres *
 			&newUser.Profile_picture_path,
 		)
 		if err != nil {
-			return "unable to connect to db"
+			return "unable to connect to db", nil
 		}
 		users = append(users, newUser)
 	}
-	return "no error"
+	return "no error", users
 }
 
 // not tested
@@ -311,21 +311,24 @@ func SearchPeopleHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	userID, err := strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
-		log.Panic(err)
+		ctx.JSON(http.StatusOK, gin.H{
+			"error":        "bad request",
+			"userPreviews": nil,
+		})
 	}
 	searchTerm := ctx.Param("searchTerm")
-	var users []UserPreview
-	errMsg := SearchPeople(userID, searchTerm, users, postgres)
+	errMsg, users := SearchPeople(userID, searchTerm, postgres)
+	if len(users) == 0 {
+		errMsg = "no users found"
+	}
 	// Return JSON with "error" and "userPreviews", which is a nested JSON
 	if errMsg == "no error" {
-		userPreviews, err := json.Marshal(users)
-		if err != nil {
-			log.Panic(err)
-		}
+
 		ctx.JSON(http.StatusOK, gin.H{
 			"error":        "no error",
-			"userPreviews": userPreviews,
+			"userPreviews": users,
 		})
+
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error":        errMsg,

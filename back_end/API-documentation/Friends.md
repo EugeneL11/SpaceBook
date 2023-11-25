@@ -22,7 +22,7 @@
 
 ```json
 {
-    "error": "no error" OR appropriate error
+    "error": "no error" OR "no users found" OR appropriate error
     "userPreviews": null or a JSON containing up to 20 users' fullname + username + profile picture path
 }
 
