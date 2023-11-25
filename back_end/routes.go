@@ -22,6 +22,7 @@ func setupAccount(server *gin.Engine) {
 
 	// server.POST("/uploadprofileimg", handlers.ProfileImageHandler)
 }
+
 func setupFriends(server *gin.Engine) {
 	server.GET("/getfriends/:user_id", handlers.GetFriendsHandler)
 	server.GET("/getfriendreqs/:user_id", handlers.GetFriendRequestsHandler)
@@ -30,9 +31,11 @@ func setupFriends(server *gin.Engine) {
 	server.DELETE("/rejectfriendreq/:rejecter_id/:rejectee_id", handlers.RejectFriendRequestHandler)
 	server.DELETE("/removefriend/:id1/:id2", handlers.RemoveFriendHandler)
 }
-func setupPosts(server *gin.Engine) {
 
+func setupPosts(server *gin.Engine) {
+	server.POST("/makepost/:user_id/:caption", handlers.MakePostHandler)
 }
+
 func setupDMs(server *gin.Engine) {
 
 }

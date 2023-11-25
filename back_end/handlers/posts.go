@@ -2,12 +2,16 @@ package handlers
 
 import (
 	"database/sql"
+	"log"
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gocql/gocql"
 )
 
+// not tested
 func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID, string) {
 	postID := gocql.TimeUUID()
 	insertStmt := cassandra.Query("INSERT INTO Post (postID, caption, authorID) VALUES (?, ?, ?)")
@@ -18,9 +22,21 @@ func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID,
 	return postID, "no error"
 }
 
+// not tested
 func MakePostHandler(ctx *gin.Context) {
-
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
+	userID, err1 := strconv.Atoi(ctx.Param("user_id"))
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	caption := ctx.Param("caption")
+	postID, status := MakePost(userID, caption, cassandra)
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":  status,
+		"post_id": postID,
+	})
 }
+
 func GetNewPostsFromUser(userID int, userProfilePath string, userName string, date time.Time, cassandra *gocql.Session, posts []PostPreview) error {
 	// Define your PostPreview slice to store the results
 
