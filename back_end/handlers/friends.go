@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -10,7 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// not done
 // not tested
+// TODO Change to UserPreview
 func GetFriends(user_id int, postgres *sql.DB) ([]User, string) {
 	stmt, err := postgres.Prepare(`
 		SELECT (
@@ -30,12 +33,14 @@ func GetFriends(user_id int, postgres *sql.DB) ([]User, string) {
 		)
 	`)
 	if err != nil {
+		fmt.Println(err)
 		return nil, "unable to connect to db"
 	}
 	defer stmt.Close()
 
 	rows, err := stmt.Query(user_id)
 	if err != nil {
+		fmt.Println(err)
 		return nil, "unable to connect to db"
 	}
 	defer rows.Close()
@@ -49,6 +54,7 @@ func GetFriends(user_id int, postgres *sql.DB) ([]User, string) {
 			&newUser.Admin, &newUser.Bio,
 		)
 		if err != nil {
+			fmt.Println(err)
 			return nil, "unable to connect to db"
 		}
 		mySlice = append(mySlice, newUser)
@@ -74,6 +80,7 @@ func GetFriendsHandler(ctx *gin.Context) {
 			"error": err2,
 			"users": nil,
 		})
+		return
 	}
 
 	usersJson, err := json.Marshal(users)
@@ -211,7 +218,7 @@ func SendFriendRequestHandler(ctx *gin.Context) {
 func RejectFriendRequest(rejecter_id int, rejectee_id int, postgres *sql.DB) string {
 	stmt, err := postgres.Prepare(`
 		DELETE FROM Orbit_Requests 
-		WHERE requested_buddy_id = $1 AND requester_id = $2 
+		WHERE requester_id = $1 AND requested_buddy_id = $2 
 	`)
 	if err != nil {
 		return "unable to connect to db"
@@ -228,8 +235,8 @@ func RejectFriendRequest(rejecter_id int, rejectee_id int, postgres *sql.DB) str
 
 func RejectFriendRequestHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
-	rejecter, err1 := strconv.Atoi(ctx.Param("rejecter"))
-	rejectee, err2 := strconv.Atoi(ctx.Param("rejectee"))
+	rejecter, err1 := strconv.Atoi(ctx.Param("rejecter_id"))
+	rejectee, err2 := strconv.Atoi(ctx.Param("rejectee_id"))
 	if err1 != nil {
 		log.Panic(err1)
 	} else if err2 != nil {
