@@ -1,6 +1,6 @@
 ## Get Friends (WIP)
 
--   Use path (GET request): /getfriends/{user_id}
+-   Use path (GET request): /friends/{user_id}
 -   Will return a JSON object with following format:
 
 ```json
@@ -38,7 +38,7 @@
 
 ## Get Friend Requests (WIP)
 
--   Use path (GET): /getfriendreqs/{user_id}
+-   Use path (GET): /friendreqs/{user_id}
 -   Will return a JSON with following format:
 
 ```json

@@ -24,8 +24,8 @@ func setupAccount(server *gin.Engine) {
 }
 
 func setupFriends(server *gin.Engine) {
-	server.GET("/getfriends/:user_id", handlers.GetFriendsHandler)
-	server.GET("/getfriendreqs/:user_id", handlers.GetFriendRequestsHandler)
+	server.GET("/friends/:user_id", handlers.GetFriendsHandler)
+	server.GET("/friendrequests/:user_id", handlers.GetFriendRequestsHandler)
 	server.GET("/search/:user_id/:searchTerm", handlers.SearchPeopleHandler)
 	server.POST("/sendfriendreq/:sender_user_id/:receiver_user_id", handlers.SendFriendRequestHandler)
 	server.DELETE("/rejectfriendreq/:rejecter_id/:rejectee_id", handlers.RejectFriendRequestHandler)
@@ -35,8 +35,9 @@ func setupFriends(server *gin.Engine) {
 func setupPosts(server *gin.Engine) {
 	server.POST("/makepost/:user_id/:caption", handlers.MakePostHandler)
 	server.POST("uploadpostimage/:postID")
-	server.GET("/gethomepageposts/:user_id", handlers.HomepageHandler)
+	server.GET("/homepageposts/:user_id", handlers.HomepageHandler)
 	server.POST("/makecomment/:postID/:userID/:comment", handlers.CommentHandler)
+	server.GET("/postdetails/:postID/:userID", handlers.PostDetailsHandler)
 }
 
 func setupDMs(server *gin.Engine) {

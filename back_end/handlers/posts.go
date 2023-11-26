@@ -191,11 +191,24 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post FullPost, cassandra
 	return "no error"
 }
 
-// not done
 // not tested
-// not documented
 func PostDetailsHandler(ctx *gin.Context) {
-
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	postID, err := gocql.ParseUUID(ctx.Param("postID"))
+	if err != nil {
+		log.Panic(err)
+	}
+	viewingUser, err := strconv.Atoi(ctx.Param("userID"))
+	if err != nil {
+		log.Panic(err)
+	}
+	var post FullPost // Post details to be filled in GetPostDetails
+	status := GetPostDetails(postID, viewingUser, post, cassandra, postgres)
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+		"post":   post,
+	})
 }
 
 // not done

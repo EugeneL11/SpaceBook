@@ -12,7 +12,7 @@
 
 ## Get Posts for Homepage (WIP)
 
--   Use path (GET): /gethomepageposts/{user_id}
+-   Use path (GET): /homepageposts/{user_id}
 -   Returns a JSON of following format:
 
 ```json
@@ -32,5 +32,37 @@
         "images" (string[]),
     },
     ... (repeats for number of posts)
+}
+```
+
+## Get Full Details of a Post from IDs (WIP)
+
+-   Use path (GET): /postdetails/{postID}/{userID}
+-   Returns a JSON of following format:
+
+```json
+{
+        "post_id" (of type string),
+        "author_id" (int),
+        "author_name" (string),
+        "author_profile_path" (string),
+        "caption" (string),
+        "date" (string),
+        "images" (string[]),
+        "comments" (nested JSON, see below),
+        "liked" (bool),
+        "num_likes" (int),
+}
+
+// Comments JSON
+{
+    {
+        "commenter_id" (int),
+        "commenter_profile_path" (string),
+        "commenter_name" (string),
+        "content" (string),
+        "date" (string),
+    },
+    ... (repeating for every comment on that post)
 }
 ```
