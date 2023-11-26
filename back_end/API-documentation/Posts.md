@@ -77,3 +77,25 @@
     "status": "no error" or "unable to comment"
 }
 ```
+
+## Like Post
+
+-   Use path (POST): /like/{postID}/{userID}
+-   Will return a JSON with the following content:
+
+```json
+{
+    "status": "no error" or "unable to like"
+}
+```
+
+## Unlike Post
+
+-   Use path (POST): /unlike/{postID}/{userID}
+-   Will return a JSON with the following content:
+
+```json
+{
+    "status": "no error" or "unable to like"
+}
+```
