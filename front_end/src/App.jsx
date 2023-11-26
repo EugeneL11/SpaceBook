@@ -33,7 +33,7 @@ function App() {
     };
     function showOtherProfile(personID, backEvent) {
         showNavBar();
-        setScreen(<OtherProfile userID={personID} goBackScreen={backEvent} />);
+        setScreen(<OtherProfile userID={personID} goBackScreen={backEvent} goDMLIst={toggleDMList} />);
     }
     function showLoginScreen() {
         hideNavBar();
@@ -109,12 +109,12 @@ function App() {
         );
     }
     return (
-        /*<div>
+        <div>
             <Background className="!-z-20" />
             {navBar ? <Navbar clickHandlers={clickHandlers} /> : null}
             <div className={navBar ? "mt-20" : "mt=0"}>{screen}</div>
-        </div>*/
-         <ImageDemo/>
+        </div>
+        //  <ImageDemo/>
     );
 }
 
