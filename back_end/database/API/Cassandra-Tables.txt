@@ -5,9 +5,7 @@ CREATE TABLE cassandra.POST(
     caption text,
     likes set<int>,
     date_posted TIMESTAMP,
-    comments set<UUID>,
-    numberLikes int,
-    numberComments int
+    comments set<UUID>
 );
 
 CREATE TABLE cassandra.DMTABLE(
@@ -28,7 +26,8 @@ CREATE TABLE cassandra.COMMENT(
     commentID UUID PRIMARY KEY,
     commenter int,
     content text,
-    time TIMESTAMP
+    time TIMESTAMP,
+    postID UUID
 );
 
 CREATE TABLE cassandra.WORMHOLE(

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -128,15 +129,19 @@ func HomepageHandler(ctx *gin.Context) {
 
 // not tested
 func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandra *gocql.Session, postgres *sql.DB) string {
-	stmt := cassandra.Query("select authorID, caption, imagepaths, date_posted, comments, likes, numberlikes, numbercomments from post where postID = ?")
+	stmt := cassandra.Query("select authorID, caption, imagepaths, date_posted, comments, likes from post where postID = ?")
 	iter := stmt.Bind(postID).Iter()
 	post.PostID = postID
 	var likes []int
 	var comments []int
 	var postDate time.Time
 	if iter.Scan(&post.AuthorID, &post.Caption, &post.Images,
-		&postDate, nil, &likes, &post.NumLikes, nil) {
-		//_, post.Liked = likes[viewingUser]
+		&postDate, &comments, &likes) {
+		for _, e := range likes {
+			if e == viewingUser {
+				post.Liked = true
+			}
+		}
 		post.NumLikes = len(likes)
 		stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
 		if err != nil {
@@ -156,7 +161,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 		post.AuthorName = userName
 		post.AuthorProfilePath = profilePath
 		post.Date = postDate.Format(time.RFC3339)
-		for key := range comments {
+		for _, key := range comments {
 			stmt := cassandra.Query("Select * from comment where commentID = ?")
 			iter := stmt.Bind(key).Iter()
 			var comment Comment
@@ -212,8 +217,9 @@ func PostDetailsHandler(ctx *gin.Context) {
 // not done
 // not tested
 func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
-	if err := cassandra.Query("UPDATE POST SET likes += ? WHERE postID = ?",
-		userID, postID).Exec(); err != nil {
+	if err := cassandra.Query("UPDATE POST SET likes = likes + ? WHERE postID = ?",
+		[]int{userID}, postID).Exec(); err != nil {
+		fmt.Println("Error updating POST table:", err)
 		return false
 	}
 	return true
@@ -223,12 +229,12 @@ func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 // not tested
 // not documented
 func LikePostHandler(ctx *gin.Context) {
-	cassandra := ctx.MustGet("postgres").(*gocql.Session)
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	userID, err := strconv.Atoi(ctx.Param("userID"))
 	if err != nil {
 		return
 	}
-	postID, err := gocql.ParseUUID((ctx.Param("PostID")))
+	postID, err := gocql.ParseUUID((ctx.Param("postID")))
 	if err != nil {
 		return
 	}
@@ -261,13 +267,18 @@ func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql
 	// Execute the query to insert a comment
 	if err := cassandra.Query("INSERT INTO Comment (commentID, commenter, content, time, postID) VALUES (?, ?, ?, ?, ?)",
 		commentID, userID, comment, currTime, postID).Exec(); err != nil {
+		fmt.Println("Error inserting comment:", err)
 		return false
 	}
-	if err := cassandra.Query("UPDATE POST SET comments += ?, numberComments += 1 WHERE postID = ?",
-		commentID, postID).Exec(); err != nil {
+
+	// Update the POST table to add the commentID to the comments set
+	if err := cassandra.Query("UPDATE POST SET comments = comments + ? WHERE postID = ?",
+		[]gocql.UUID{commentID}, postID).Exec(); err != nil {
+		fmt.Println("Error updating POST table:", err)
 		return false
 	}
-	// Return true if the comment was successfully inserted
+
+	// Return true if the comment was successfully inserted and the counters updated
 	return true
 }
 
@@ -278,7 +289,7 @@ func CommentHandler(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	postID, err := gocql.ParseUUID((ctx.Param("PostID")))
+	postID, err := gocql.ParseUUID((ctx.Param("postID")))
 	if err != nil {
 		return
 	}

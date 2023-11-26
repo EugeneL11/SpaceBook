@@ -239,6 +239,9 @@ func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 }
 
 func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
+	if viewer == viewed {
+		return "own profile"
+	}
 	if viewer > viewed {
 		viewer, viewed = viewed, viewer
 	}

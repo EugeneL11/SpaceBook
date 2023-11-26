@@ -14,22 +14,20 @@ import (
 // not done
 // not tested
 // TODO Change to UserPreview
-func GetFriends(user_id int, postgres *sql.DB) ([]User, string) {
+func GetFriends(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 	stmt, err := postgres.Prepare(`
-		SELECT (
-			user_id, full_name, user_name,
-			email, home_planet, 
-			profile_picture_path, isAdmin, bio
-		)
-		FROM Users
-		WHERE user_id IN (
-			SELECT user2_id 
+		SELECT 
+			u.user_id, u.full_name, u.user_name, 
+			u.profile_picture_path
+		FROM Users as u
+		WHERE EXISTS (
+			SELECT * 
 			FROM Orbit_Buddies 
-			WHERE user1_id = $1
-			UNION 
-			SELECT user1_id 
+			WHERE user1_id = $1 and u.user_id = user2_id
+		) or exists(
+			SELECT * 
 			FROM Orbit_Buddies 
-			WHERE user2_id = $1
+			WHERE user2_id = $1 and u.user_id = user1_id
 		)
 	`)
 	if err != nil {
@@ -45,13 +43,12 @@ func GetFriends(user_id int, postgres *sql.DB) ([]User, string) {
 	}
 	defer rows.Close()
 
-	var mySlice []User
+	var mySlice []UserPreview
 	for rows.Next() {
-		var newUser User
+		var newUser UserPreview
 		err := rows.Scan(
-			&newUser.User_id, &newUser.Full_name, &newUser.User_name,
-			&newUser.Email, &newUser.Home_planet, &newUser.Profile_picture_path,
-			&newUser.Admin, &newUser.Bio,
+			&newUser.UserID, &newUser.Full_name, &newUser.User_name,
+			&newUser.Profile_picture_path,
 		)
 		if err != nil {
 			fmt.Println(err)
@@ -72,7 +69,7 @@ func GetFriendsHandler(ctx *gin.Context) {
 		return
 	}
 
-	var users []User
+	var users []UserPreview
 
 	users, err2 := GetFriends(user_id, postgres)
 	if err2 != "no error" {
@@ -252,7 +249,7 @@ func RejectFriendRequestHandler(ctx *gin.Context) {
 
 func GetFriendRequests(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 	stmt, err := postgres.Prepare(`
-	SELECT u.full_name, u.user_name, u.profile_picture_path
+	SELECT u.user_id, u.full_name, u.user_name, u.profile_picture_path
 	FROM users u
 	WHERE EXISTS (
 		SELECT 1
@@ -274,7 +271,7 @@ func GetFriendRequests(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 	for rows.Next() {
 		var newUser UserPreview
 		err := rows.Scan(
-			&newUser.Full_name, &newUser.User_name,
+			&newUser.UserID, &newUser.Full_name, &newUser.User_name,
 			&newUser.Profile_picture_path,
 		)
 		if err != nil {
@@ -318,9 +315,8 @@ func GetFriendRequestsHandler(ctx *gin.Context) {
 	}
 }
 
-// not tested
 func SearchPeople(userID int, searchTerm string, postgres *sql.DB) (string, []UserPreview) {
-	stmt, err := postgres.Prepare(`SELECT full_name, user_name, profile_picture_path FROM USERS
+	stmt, err := postgres.Prepare(`SELECT user_id, full_name, user_name, profile_picture_path FROM USERS
 	WHERE (user_name LIKE $1 OR user_name = $2) and not user_id = $3
 	LIMIT 20`)
 	if err != nil {
@@ -335,7 +331,7 @@ func SearchPeople(userID int, searchTerm string, postgres *sql.DB) (string, []Us
 	for row.Next() {
 		var newUser UserPreview
 		err := row.Scan(
-			&newUser.Full_name, &newUser.User_name,
+			&newUser.UserID, &newUser.Full_name, &newUser.User_name,
 			&newUser.Profile_picture_path,
 		)
 		if err != nil {
