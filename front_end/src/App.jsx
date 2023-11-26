@@ -109,12 +109,12 @@ function App() {
         );
     }
     return (
-        /*<div>
+        <div>
             <Background className="!-z-20" />
             {navBar ? <Navbar clickHandlers={clickHandlers} /> : null}
             <div className={navBar ? "mt-20" : "mt=0"}>{screen}</div>
-        </div>*/
-         <ImageDemo/>
+        </div>
+        // <ImageDemo/>
     );
 }
 
