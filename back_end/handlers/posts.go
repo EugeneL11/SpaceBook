@@ -305,21 +305,3 @@ func CommentHandler(ctx *gin.Context) {
 		"status": status,
 	})
 }
-
-// not done, tested, or documented
-func DeleteComments(postID int, cassandra *gocql.Session) {
-
-}
-
-// not done, not tested
-func DeletePost(postID int, cassandra *gocql.Session) string {
-	//cassandra.Query()
-	return "no error"
-}
-
-// not done
-// not tested
-// not documented
-func DeletePostHandler(ctx *gin.Context) {
-
-}
