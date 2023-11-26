@@ -214,7 +214,6 @@ func PostDetailsHandler(ctx *gin.Context) {
 	})
 }
 
-// not done
 // not tested
 func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 	if err := cassandra.Query("UPDATE POST SET likes = likes + ? WHERE postID = ?",
@@ -225,9 +224,7 @@ func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not done
 // not tested
-// not documented
 func LikePostHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	userID, err := strconv.Atoi(ctx.Param("userID"))
@@ -239,11 +236,15 @@ func LikePostHandler(ctx *gin.Context) {
 		return
 	}
 	res := LikePost(postID, userID, cassandra)
+	var status string
 	if res {
-
+		status = "no error"
 	} else {
-
+		status = "unable to like"
 	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+	})
 }
 
 // not done
