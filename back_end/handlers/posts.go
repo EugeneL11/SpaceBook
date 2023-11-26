@@ -11,7 +11,6 @@ import (
 	"github.com/gocql/gocql"
 )
 
-// not tested
 func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID, string) {
 	postID := gocql.TimeUUID()
 	time := time.Now()
@@ -24,7 +23,6 @@ func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID,
 	return postID, "no error"
 }
 
-// not tested
 func MakePostHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	userID, err1 := strconv.Atoi(ctx.Param("user_id"))
@@ -41,7 +39,7 @@ func MakePostHandler(ctx *gin.Context) {
 
 func GetNewPostsFromUser(userID int, userProfilePath string, userName string, date time.Time, cassandra *gocql.Session) ([]PostPreview, error) {
 	// Define the SELECT statement
-	selectStmt := cassandra.Query("SELECT postID, imagePaths,caption, date_posted FROM post WHERE authorID = ? AND date_posted > ?")
+	selectStmt := cassandra.Query("SELECT postID, imagePaths,caption, date_posted FROM post WHERE authorID = ? AND date_posted > ? ALLOW FILTERING")
 
 	// Bind the parameters and execute the query
 	iter := selectStmt.Bind(userID, date).Iter()
@@ -57,6 +55,7 @@ func GetNewPostsFromUser(userID int, userProfilePath string, userName string, da
 		post.Date = postDate.Format(time.RFC3339)
 		post.AuthorName = userName
 		post.AuthorProfilePath = userProfilePath
+		post.AuthorID = userID
 		posts = append(posts, post)
 	}
 
@@ -68,8 +67,6 @@ func GetNewPostsFromUser(userID int, userProfilePath string, userName string, da
 	return posts, nil
 }
 
-// not done
-// not tested
 func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *gocql.Session) ([]PostPreview, string) {
 	stmt, err := postgres.Prepare(`Select user2_id from orbit_buddies where user1_id = $1 union 
 	select user2_id from orbit_buddies where user1_id = $1`)
@@ -100,7 +97,7 @@ func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *go
 		}
 		userName, profilePath := "", "" // TODO
 		if userInfo.Next() {
-			userInfo.Scan(&userName, &profilePath)
+			userInfo.Scan(&profilePath, &userName)
 		} else {
 			return nil, "unable to connect to db"
 		}
@@ -113,7 +110,6 @@ func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *go
 	return posts, "no error"
 }
 
-// not tested
 func HomepageHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
@@ -131,55 +127,55 @@ func HomepageHandler(ctx *gin.Context) {
 }
 
 // not tested
-func GetPostDetails(postID gocql.UUID, viewingUser int, post FullPost, cassandra *gocql.Session, postgres *sql.DB) string {
-	stmt := cassandra.Query("select * from post where postID = ?")
+func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandra *gocql.Session, postgres *sql.DB) string {
+	stmt := cassandra.Query("select authorID, caption, imagepaths, date_posted, comments, likes, numberlikes, numbercomments from post where postID = ?")
 	iter := stmt.Bind(postID).Iter()
-
-	var likes map[int]struct{}
-	var comments map[int]struct{}
+	post.PostID = postID
+	var likes []int
+	var comments []int
 	var postDate time.Time
-	if iter.Scan(&post.PostID, &post.AuthorID, &post.Images, &post.Caption,
-		&likes, &postDate, &comments, &post.NumLikes) {
-		_, post.Liked = likes[viewingUser]
+	if iter.Scan(&post.AuthorID, &post.Caption, &post.Images,
+		&postDate, nil, &likes, &post.NumLikes, nil) {
+		//_, post.Liked = likes[viewingUser]
 		post.NumLikes = len(likes)
 		stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
 		if err != nil {
-			return "unable to connect to db"
+			return "unable to connect to db 1"
 		}
 		defer stmt.Close()
 		userInfo, err := stmt.Query(post.AuthorID)
 		if err != nil {
-			return "unable to connect to db"
+			return "unable to connect to db 2"
 		}
 		userName, profilePath := "", ""
 		if userInfo.Next() {
 			userInfo.Scan(&userName, &profilePath)
 		} else {
-			return "unable to connect to db"
+			return "unable to connect to db 3"
 		}
 		post.AuthorName = userName
 		post.AuthorProfilePath = profilePath
 		post.Date = postDate.Format(time.RFC3339)
 		for key := range comments {
-			stmt := cassandra.Query("Select * from comment where commentID = commentID")
+			stmt := cassandra.Query("Select * from comment where commentID = ?")
 			iter := stmt.Bind(key).Iter()
 			var comment Comment
 			var commentDate time.Time
 			for iter.Scan(nil, &comment.CommenterID, &comment.Content, &commentDate) {
 				stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
 				if err != nil {
-					return "unable to connect to db"
+					return "unable to connect to db 4"
 				}
 				defer stmt.Close()
 				userInfo, err := stmt.Query(post.AuthorID)
 				if err != nil {
-					return "unable to connect to db"
+					return "unable to connect to db 5"
 				}
 				userName, profilePath := "", ""
 				if userInfo.Next() {
 					userInfo.Scan(&userName, &profilePath)
 				} else {
-					return "unable to connect to db"
+					return "unable to connect to db 6"
 				}
 				comment.CommenterName = userName
 				comment.CommenterName = profilePath
@@ -188,7 +184,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post FullPost, cassandra
 			}
 		}
 	} else {
-		return "unable to connect to db"
+		return "unable to connect to db 7"
 	}
 	return "no error"
 }
@@ -206,7 +202,7 @@ func PostDetailsHandler(ctx *gin.Context) {
 		log.Panic(err)
 	}
 	var post FullPost // Post details to be filled in GetPostDetails
-	status := GetPostDetails(postID, viewingUser, post, cassandra, postgres)
+	status := GetPostDetails(postID, viewingUser, &post, cassandra, postgres)
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": status,
 		"post":   post,

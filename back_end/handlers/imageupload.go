@@ -130,11 +130,12 @@ func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (b
 // not done
 // not tested
 func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) bool {
-	var pathSlice []string
-	pathSlice = append(pathSlice, path)
+	pathSlice := []string{path}
+
 	updateStmt := cassandra.Query(`
-	UPDATE post            SET imagePaths = imagePaths + ['sdksd'] 
-	WHERE postID = ?`, pathSlice, postID)
+		UPDATE post
+		SET imagePaths = imagePaths + ?
+		WHERE postID = ?`, pathSlice, postID)
 
 	if err := updateStmt.Exec(); err != nil {
 		return false
