@@ -20,15 +20,32 @@ func CreateNewDMHandler(ctx *gin.Context) {
 
 // not done
 // not tested
-// func sendDM(senderID int, receiver_id int, cassandra *gocql.Session) string {
-// 	return "no error"
-// }
+func sendDM(senderID int, receiver_id int, message string, cassandra *gocql.Session) string {
+	
+	// get DM between users
+	// catch error if DM doesn't exist
+	// get most recent message subset
+	// catch error
+	// see if message subset is full
+	// catch error
+
+	// if message subset is full
+		// create new message subset
+		// catch error
+		// retrieve this new message subset
+		// catch error
+
+	// send message within subset
+	// catch error
+	
+	return "no error"
+}
 
 // not done
 // not tested
 // not documented
 func SendDMHandler(ctx *gin.Context) {
-
+	
 }
 
 // not done
