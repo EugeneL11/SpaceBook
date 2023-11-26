@@ -18,6 +18,7 @@ func DeleteImage(filepath string) error {
 }
 
 func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (bool, string) {
+	// make random somehow
 	filename := filepath.Join("images", dir, header.Filename)
 
 	// Create the file on the server
@@ -96,6 +97,7 @@ func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) bo
 	return true
 }
 
+// not done - sends wrong message to client
 // not documented
 func UploadImagePost(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
@@ -128,8 +130,6 @@ func UploadImagePost(ctx *gin.Context) {
 		ctx.String(200, "Bad Rdsdfsdfdsequest")
 		return
 	}
-
-	// Create a unique filename for the uploaded file
 
 	ctx.String(200, fmt.Sprintf("File %s uploaded successfully!", header.Filename))
 }

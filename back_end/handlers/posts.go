@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -216,8 +217,9 @@ func PostDetailsHandler(ctx *gin.Context) {
 // not done
 // not tested
 func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
-	if err := cassandra.Query("UPDATE POST SET likes += ? WHERE postID = ?",
-		userID, postID).Exec(); err != nil {
+	pathSlice := []int{userID}
+	if err := cassandra.Query("UPDATE POST SET likes = likes + ? WHERE postID = ?",
+		pathSlice, postID).Exec(); err != nil {
 		return false
 	}
 	return true
@@ -265,13 +267,25 @@ func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql
 	// Execute the query to insert a comment
 	if err := cassandra.Query("INSERT INTO Comment (commentID, commenter, content, time, postID) VALUES (?, ?, ?, ?, ?)",
 		commentID, userID, comment, currTime, postID).Exec(); err != nil {
+		fmt.Println("Error inserting comment:", err)
 		return false
 	}
-	if err := cassandra.Query("UPDATE POST SET comments += ?, numberComments += 1 WHERE postID = ?",
-		commentID, postID).Exec(); err != nil {
+
+	// Update the POST table to add the commentID to the comments set
+	if err := cassandra.Query("UPDATE POST SET comments = comments + ? WHERE postID = ?",
+		[]gocql.UUID{commentID}, postID).Exec(); err != nil {
+		fmt.Println("Error updating POST table:", err)
 		return false
 	}
-	// Return true if the comment was successfully inserted
+
+	// Increment the number of comments
+	if err := cassandra.Query("UPDATE POST SET numberComments = numberComments + 1 WHERE postID = ?",
+		postID).Exec(); err != nil {
+		fmt.Println("Error updating numberComments:", err)
+		return false
+	}
+
+	// Return true if the comment was successfully inserted and the counters updated
 	return true
 }
 
@@ -282,7 +296,7 @@ func CommentHandler(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	postID, err := gocql.ParseUUID((ctx.Param("PostID")))
+	postID, err := gocql.ParseUUID((ctx.Param("postID")))
 	if err != nil {
 		return
 	}

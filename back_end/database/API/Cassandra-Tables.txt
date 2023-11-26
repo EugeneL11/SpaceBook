@@ -28,7 +28,8 @@ CREATE TABLE cassandra.COMMENT(
     commentID UUID PRIMARY KEY,
     commenter int,
     content text,
-    time TIMESTAMP
+    time TIMESTAMP,
+    postID UUID
 );
 
 CREATE TABLE cassandra.WORMHOLE(

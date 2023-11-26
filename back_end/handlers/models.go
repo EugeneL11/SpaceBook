@@ -14,6 +14,7 @@ type User struct {
 }
 
 type UserPreview struct {
+	UserID               int    `json:"user_id"`
 	Full_name            string `json:"full_name"`
 	User_name            string `json:"user_name"`
 	Profile_picture_path string `json:"profile_picture_path"`

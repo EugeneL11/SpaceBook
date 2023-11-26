@@ -18,9 +18,8 @@ func setupAccount(server *gin.Engine) {
 
 	server.GET("/login/:username/:password", handlers.LoginHandler)
 	server.POST("/register/:email/:password/:fullname/:username", handlers.RegisterHandler)
-	server.POST("/upload", handlers.ImageHandler)
 	server.GET("/getuserinfo/:viewer/:viewed", handlers.GetUserInfoHandler)
-	// server.POST("/uploadprofileimg", handlers.ProfileImageHandler)
+	// server.POST("/uploadprofileimage", handlers.ProfileImageHandler)
 }
 
 func setupFriends(server *gin.Engine) {
@@ -36,9 +35,10 @@ func setupPosts(server *gin.Engine) {
 	server.GET("/homepageposts/:user_id", handlers.HomepageHandler)
 	server.GET("/postdetails/:postID/:userID", handlers.PostDetailsHandler)
 	server.POST("/makepost/:user_id/:caption", handlers.MakePostHandler)
-	server.POST("uploadpostimage/:postID", handlers.UploadImagePost)
+	server.POST("/uploadpostimage/:postID", handlers.UploadImagePost)
 	server.GET("/gethomepageposts/:user_id", handlers.HomepageHandler)
 	server.POST("/makecomment/:postID/:userID/:comment", handlers.CommentHandler)
+	server.PUT("/likepost/:postID/:userID", handlers.LikePostHandler)
 }
 
 func setupDMs(server *gin.Engine) {
