@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -10,7 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// not done
 // not tested
+// TODO Change to UserPreview
 func GetFriends(user_id int, postgres *sql.DB) ([]User, string) {
 	stmt, err := postgres.Prepare(`
 		SELECT (
@@ -30,12 +33,14 @@ func GetFriends(user_id int, postgres *sql.DB) ([]User, string) {
 		)
 	`)
 	if err != nil {
+		fmt.Println(err)
 		return nil, "unable to connect to db"
 	}
 	defer stmt.Close()
 
 	rows, err := stmt.Query(user_id)
 	if err != nil {
+		fmt.Println(err)
 		return nil, "unable to connect to db"
 	}
 	defer rows.Close()
@@ -49,6 +54,7 @@ func GetFriends(user_id int, postgres *sql.DB) ([]User, string) {
 			&newUser.Admin, &newUser.Bio,
 		)
 		if err != nil {
+			fmt.Println(err)
 			return nil, "unable to connect to db"
 		}
 		mySlice = append(mySlice, newUser)
@@ -74,6 +80,7 @@ func GetFriendsHandler(ctx *gin.Context) {
 			"error": err2,
 			"users": nil,
 		})
+		return
 	}
 
 	usersJson, err := json.Marshal(users)
