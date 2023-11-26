@@ -53,6 +53,7 @@
         "full_name" (string type),
         "user_name" (string),
         "profile_picture_path" (string),
+        "user_id" (int)
     },
     ... (repeats for number of friend requests)
 }
@@ -90,6 +91,7 @@
         "full_name",
         "user_name",
         "profile_picture_path",
+        "user_id" (int)
     }
     ... (repeats max 20 total times)
 }

@@ -135,8 +135,12 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 	var comments []int
 	var postDate time.Time
 	if iter.Scan(&post.AuthorID, &post.Caption, &post.Images,
-		&postDate, nil, &likes, &post.NumLikes, nil) {
-		//_, post.Liked = likes[viewingUser]
+		&postDate, &comments, &likes, &post.NumLikes, nil) {
+		for _, e := range likes {
+			if e == viewingUser {
+				post.Liked = true
+			}
+		}
 		post.NumLikes = len(likes)
 		stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
 		if err != nil {
@@ -156,7 +160,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 		post.AuthorName = userName
 		post.AuthorProfilePath = profilePath
 		post.Date = postDate.Format(time.RFC3339)
-		for key := range comments {
+		for _, key := range comments {
 			stmt := cassandra.Query("Select * from comment where commentID = ?")
 			iter := stmt.Bind(key).Iter()
 			var comment Comment
