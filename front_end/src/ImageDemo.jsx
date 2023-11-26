@@ -6,7 +6,7 @@ function ImageDemo() {
 
     // change these
     const localhost = "http://localhost:8080";
-    const path = "/upload";
+    const path = `/uploadpostimage/${encodeURIComponent("b86e1293-8bee-11ee-b365-0242ac120004")}`;
 
     const uploadTest = () => {
         const formData = new FormData();

@@ -14,9 +14,11 @@ import (
 // not tested
 func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID, string) {
 	postID := gocql.TimeUUID()
-	insertStmt := cassandra.Query("INSERT INTO Post (postID, caption, authorID) VALUES (?, ?, ?)")
+	time := time.Now()
+	insertStmt := cassandra.Query(`INSERT INTO Post (postID, caption, authorID, comments, date_posted, imagepaths, 
+		likes, numbercomments, numberlikes) VALUES (?, ?, ?, {}, ?, [], {}, 0, 0 )`)
 
-	if err := insertStmt.Bind(postID, caption, userID).Exec(); err != nil {
+	if err := insertStmt.Bind(postID, caption, userID, time).Exec(); err != nil {
 		return gocql.UUID{}, "unable to connect to db"
 	}
 	return postID, "no error"
@@ -265,7 +267,7 @@ func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql
 		commentID, userID, comment, currTime, postID).Exec(); err != nil {
 		return false
 	}
-	if err := cassandra.Query("UPDATE POST SET comments += ? WHERE postID = ?",
+	if err := cassandra.Query("UPDATE POST SET comments += ?, numberComments += 1 WHERE postID = ?",
 		commentID, postID).Exec(); err != nil {
 		return false
 	}

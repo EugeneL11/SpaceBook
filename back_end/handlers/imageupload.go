@@ -130,23 +130,23 @@ func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (b
 // not done
 // not tested
 func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) bool {
+	var pathSlice []string
+	pathSlice = append(pathSlice, path)
+	updateStmt := cassandra.Query(`
+	UPDATE post            SET imagePaths = imagePaths + ['sdksd'] 
+	WHERE postID = ?`, pathSlice, postID)
 
-	updateStmt := cassandra.Query(`UPDATE post
-			SET imagePaths += ?
-			WHERE postID = ?`)
-
-	if err := updateStmt.Bind(path, postID).Exec(); err != nil {
+	if err := updateStmt.Exec(); err != nil {
 		return false
 	}
 
 	return true
-
 }
 
 // not done
 // not tested
 // not doucumeted
-func PostHandler(ctx *gin.Context) {
+func UploadImagePost(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	err := ctx.Request.ParseMultipartForm(10 << 20)
 	if err != nil {
@@ -158,22 +158,23 @@ func PostHandler(ctx *gin.Context) {
 	file, header, err := ctx.Request.FormFile("image")
 	postID := ctx.Param("postID")
 	if err != nil {
-		ctx.String(400, "Bad Request")
+		ctx.String(200, "Bad Request")
 		return
 	}
 	defer file.Close()
 	success, filename := UploadPic(file, header, "posts")
 	if !success {
-		ctx.String(400, "Bad Request")
+		ctx.String(200, "Bad Request")
 		return
 	}
 	uuid, err := gocql.ParseUUID(postID)
 	if err != nil {
-		ctx.String(400, "Bad Request")
+		ctx.String(200, "Bad Request")
 		return
 	}
 	success = UpdatePostPath(uuid, filename, cassandra)
 	if !success {
+		ctx.String(200, "Bad Rdsdfsdfdsequest")
 		return
 	}
 
