@@ -56,6 +56,7 @@ function Post(props) {
 function OtherProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
+    const goDMList = props.goDMList
     const back = props.goBackScreen
 
     const duppy = {
@@ -114,12 +115,12 @@ function OtherProfile(props) {
 
                 <p className="mb-4">{user.bio}</p>
 
-                <button onClick={toggleSettings} className="flex flex-row cursor-pointer mb-3 hover:text-purple-300">
+                <button className="flex flex-row cursor-pointer mb-3 hover:text-purple-300">
                     <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
                     <p>Request orbit buddy</p>
                 </button>
 
-                <button onClick={toggleFriendsList} className="flex flex-row cursor-pointer hover:text-purple-300">
+                <button onClick={goDMList} className="flex flex-row cursor-pointer hover:text-purple-300">
                     <img src="./whitehole.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
                     <p>Launch wormhole chat</p>
                 </button>
