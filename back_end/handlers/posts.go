@@ -129,14 +129,14 @@ func HomepageHandler(ctx *gin.Context) {
 
 // not tested
 func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandra *gocql.Session, postgres *sql.DB) string {
-	stmt := cassandra.Query("select authorID, caption, imagepaths, date_posted, comments, likes, numberlikes, numbercomments from post where postID = ?")
+	stmt := cassandra.Query("select authorID, caption, imagepaths, date_posted, comments, likes from post where postID = ?")
 	iter := stmt.Bind(postID).Iter()
 	post.PostID = postID
 	var likes []int
 	var comments []int
 	var postDate time.Time
 	if iter.Scan(&post.AuthorID, &post.Caption, &post.Images,
-		&postDate, &comments, &likes, &post.NumLikes, nil) {
+		&postDate, &comments, &likes) {
 		for _, e := range likes {
 			if e == viewingUser {
 				post.Liked = true
@@ -217,9 +217,9 @@ func PostDetailsHandler(ctx *gin.Context) {
 // not done
 // not tested
 func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
-	pathSlice := []int{userID}
 	if err := cassandra.Query("UPDATE POST SET likes = likes + ? WHERE postID = ?",
-		pathSlice, postID).Exec(); err != nil {
+		[]int{userID}, postID).Exec(); err != nil {
+		fmt.Println("Error updating POST table:", err)
 		return false
 	}
 	return true
@@ -229,12 +229,12 @@ func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 // not tested
 // not documented
 func LikePostHandler(ctx *gin.Context) {
-	cassandra := ctx.MustGet("postgres").(*gocql.Session)
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	userID, err := strconv.Atoi(ctx.Param("userID"))
 	if err != nil {
 		return
 	}
-	postID, err := gocql.ParseUUID((ctx.Param("PostID")))
+	postID, err := gocql.ParseUUID((ctx.Param("postID")))
 	if err != nil {
 		return
 	}
@@ -275,13 +275,6 @@ func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql
 	if err := cassandra.Query("UPDATE POST SET comments = comments + ? WHERE postID = ?",
 		[]gocql.UUID{commentID}, postID).Exec(); err != nil {
 		fmt.Println("Error updating POST table:", err)
-		return false
-	}
-
-	// Increment the number of comments
-	if err := cassandra.Query("UPDATE POST SET numberComments = numberComments + 1 WHERE postID = ?",
-		postID).Exec(); err != nil {
-		fmt.Println("Error updating numberComments:", err)
 		return false
 	}
 
