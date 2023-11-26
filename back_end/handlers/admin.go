@@ -2,20 +2,43 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gocql/gocql"
 )
 
-// not done, tested, or documented
+// DeleteComments deletes comments associated with a postID
 func DeleteComments(postID gocql.UUID, cassandra *gocql.Session) bool {
+	if err := cassandra.Query("DELETE FROM COMMENT WHERE postID = ? ALLOW FILTERING", postID).Exec(); err != nil {
+		fmt.Println("Error deleting comments:", err)
+		return false
+	}
 	return true
 }
 
-// not done, not tested
+// DeletePost deletes a post and associated data
 func DeletePost(postID gocql.UUID, cassandra *gocql.Session) bool {
-	// delete pictures
+	var imagePaths []string
+	if err := cassandra.Query("SELECT imagePaths FROM POST WHERE postID = ?", postID).Iter().Scan(&imagePaths); !err {
+		fmt.Println("Error retrieving imagePaths:", err)
+		return false
+	}
+
+	// Call DeleteImage for each imagePath
+	for _, imagePath := range imagePaths {
+		if DeleteImage(imagePath) != nil {
+			fmt.Println("Couldn't delete image", imagePath)
+			return false
+		}
+	}
+	// Delete the post
+	if err2 := cassandra.Query("DELETE FROM POST WHERE postID = ?", postID).Exec(); err2 != nil {
+		fmt.Println("Error deleting post:", err2)
+		return false
+	}
+
 	return true
 }
 
@@ -42,24 +65,64 @@ func DeletePostHandler(ctx *gin.Context) {
 
 }
 
-// not done
-// not tested
+// DeleteUserComments deletes comments made by a user
 func DeleteUserComments(userID int, cassandra *gocql.Session) bool {
+	postToComment := make(map[gocql.UUID][]gocql.UUID)
+	rows := cassandra.Query("SELECT commentID, postID FROM COMMENT WHERE commenter = ? ALLOW FILTERING", userID).Iter()
+	for {
+		var currPost, currComment gocql.UUID
+		if !rows.Scan(&currComment, &currPost) {
+			break
+		}
+		postToComment[currPost] = append(postToComment[currPost], currComment)
+	}
+	for key, value := range postToComment {
+		if err := cassandra.Query("Update post set comments = comments - ? where postID = ?", value, key).Exec(); err != nil {
+			fmt.Println("Error deleting user comments:", err)
+			return false
+		}
+	}
+	if err := rows.Close(); err != nil {
+		return false
+	}
+	if err := cassandra.Query("DELETE FROM COMMENT WHERE commenter = ?", userID).Exec(); err != nil {
+		fmt.Println("Error deleting user comments:", err)
+		return false
+	}
 	return true
 }
 
-// not done
-// not tested
+// not done not tested
 func DeleteUserLikes(userID int, cassandra *gocql.Session) bool {
+	if err := cassandra.Query("UPDATE POST SET likes = likes - ? WHERE authorID = ? ALLOW FILTERING", userID, userID).Exec(); err != nil {
+		fmt.Println("Error deleting user likes:", err)
+		return false
+	}
 	return true
 }
 
-// not done
 // not tested
 func DeleteUserPosts(userID int, cassandra *gocql.Session) bool {
+	// Retrieve postIDs made by the user
+	var postIDs []gocql.UUID
+	if err := cassandra.Query("SELECT postID FROM POST WHERE authorID = ? ALLOW FILTERING", userID).Iter().Scan(&postIDs); !err {
+		fmt.Println("Error retrieving user posts:", err)
+		return false
+	}
+
+	// Delete associated comments, images, and posts
+	for _, postID := range postIDs {
+		if !DeletePost(postID, cassandra) {
+			return false
+		}
+	}
+
 	return true
 }
+
+// not tested
 func DeleteUserDM(userID int, cassandra *gocql.Session) bool {
+
 	return true
 }
 
@@ -119,7 +182,7 @@ func DeleteUserHandler(ctx *gin.Context) {
 		// send message
 		return
 	}
-	result := DeleteUserDM(userID, cassandra)
+	result := DeleteUserPosts(userID, cassandra)
 	if !result {
 		// send message
 		return
@@ -134,7 +197,7 @@ func DeleteUserHandler(ctx *gin.Context) {
 		// send message
 		return
 	}
-	result = DeleteUserPosts(userID, cassandra)
+	result = DeleteUserDM(userID, cassandra)
 	if !result {
 		// send message
 		return
