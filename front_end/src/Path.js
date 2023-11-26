@@ -1,0 +1,1 @@
+export const serverpath = "http://localhost:8080"
