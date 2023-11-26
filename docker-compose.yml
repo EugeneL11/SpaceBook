@@ -1,0 +1,79 @@
+services:
+    client:
+        image: react-app
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+            - WATCHPACK_POLLING=true
+            - WDS_SOCKET_PORT=3000
+        volumes:
+            # - /app/node_modules
+            - ./front_end:/app
+            # - ./auth/localhost.crt:/etc/ssl/certs/localhost.crt
+            # - ./auth/localhost.key:/etc/ssl/private/localhost.key
+        working_dir: /app
+        ports:
+            - "3000:3000"
+        networks:
+            - spacebook
+        command: npm start
+        depends_on:
+            - server
+    server:
+        image: go-server
+        volumes:
+            - ./back_end:/app
+            # - ./auth/localhost.crt:/etc/ssl/certs/localhost.crt
+            # - ./auth/localhost.key:/etc/ssl/private/localhost.key
+
+        working_dir: /app
+        ports:
+            - "8080:8080"
+        networks:
+            - spacebook
+        depends_on:
+            - postgres
+            - cassandra
+        command: go run .
+    postgres:
+        image: postgres:15.4 # Just use from Docker Hub
+        restart: always
+        ports:
+            - "5433:5432"
+        networks:
+            - spacebook
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=postgres
+            - PGHOST=postgres
+        container_name: postgres
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+
+    cassandra:
+        image: cassandra:4.1.3 # Just use from Docker Hub
+        restart: always
+        ports:
+            - "9042:9042"
+        networks:
+            - spacebook
+        environment:
+            - CASSANDRA_CLUSTER_NAME=cassandra
+            - CASSANDRA_SEEDS=cassandra
+            - CASSANDRA_LISTEN_ADDRESS=auto
+            - CASSANDRA_RPC_ADDRESS=0.0.0.0
+            - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+            - CASSANDRA_DC=datacenter1
+            - CASSANDRA_RACK=rack1
+            - CASSANDRA_AUTO_BOOTSTRAP=true
+        volumes:
+            - cassandra-data:/var/lib/cassandra/data
+        container_name: cassandra
+
+volumes:
+    postgres-data: {}
+    cassandra-data: {}
+
+networks:
+    spacebook:
+        driver: bridge

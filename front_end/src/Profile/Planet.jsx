@@ -3,20 +3,42 @@ import { useLoader, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { useRef } from 'react'
 
-export default function Planet() {
+export default function Planet(props) {
     const earthRef = useRef()
-    const model = useLoader(GLTFLoader, "./earth.glb");
+    const modelpath = "./planets/" + props.planet + ".glb"
+
+    const model = useLoader(GLTFLoader, modelpath);
+
+    // Create a Map
+    const lightMap = new Map([
+      ["mercury", 10],
+      ["venus", 1],
+      ["earth", 30],
+      ["mars", 1.5],
+      ["jupiter", 1.5],
+      ["saturn", 1],
+      ["uranus", 1],
+      ["neptune", 1],
+      ["pluto", 5]
+    ]);
 
     useFrame(() => {
         earthRef.current.rotation.y += 0.005;
     })
 
+    // earthRef.rotateX(props.planet == "saturn" ? 90 : 0.0);
+
+
     return (
       <>
         <OrbitControls enablePan={false} enableZoom={false} rotateSpeed={0.2}/>
-        <ambientLight intensity={30} />
+        <ambientLight intensity={ lightMap.get(props.planet) } />
 
-        <primitive ref={earthRef} object={model.scene}  scale={0.006} />
+        <primitive ref={earthRef} object={model.scene} scale={
+          props.planet == "saturn" ? 0.0025 : 0.006
+        }/>
+
+
       </>
     );
 }
