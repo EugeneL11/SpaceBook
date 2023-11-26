@@ -33,11 +33,12 @@ func setupFriends(server *gin.Engine) {
 }
 
 func setupPosts(server *gin.Engine) {
+	server.GET("/homepageposts/:user_id", handlers.HomepageHandler)
+	server.GET("/postdetails/:postID/:userID", handlers.PostDetailsHandler)
 	server.POST("/makepost/:user_id/:caption", handlers.MakePostHandler)
 	server.POST("uploadpostimage/:postID")
-	server.GET("/homepageposts/:user_id", handlers.HomepageHandler)
-	server.POST("/makecomment/:postID/:userID/:comment", handlers.CommentHandler)
-	server.GET("/postdetails/:postID/:userID", handlers.PostDetailsHandler)
+	server.POST("/comment/:postID/:userID/:comment", handlers.CommentHandler)
+
 }
 
 func setupDMs(server *gin.Engine) {

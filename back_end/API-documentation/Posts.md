@@ -66,3 +66,14 @@
     ... (repeating for every comment on that post)
 }
 ```
+
+## Comment on Post
+
+-   Use path (POST): /comment/{postID}/{userID}/{commentMsg}
+-   Will return a JSON with the following content:
+
+```json
+{
+    "status": "no error" or "unable to comment"
+}
+```

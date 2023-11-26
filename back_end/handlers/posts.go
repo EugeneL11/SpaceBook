@@ -254,6 +254,8 @@ func UnlikePost(userID int, postID int) string {
 func UnlikePostHandler(ctx *gin.Context) {
 
 }
+
+// not tested
 func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql.Session) bool {
 	currTime := time.Now()
 	commentID := gocql.TimeUUID()
@@ -271,9 +273,7 @@ func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql
 	return true
 }
 
-// not done
 // not tested
-// not documented
 func CommentHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	userID, err := strconv.Atoi(ctx.Param("userID"))
@@ -286,11 +286,15 @@ func CommentHandler(ctx *gin.Context) {
 	}
 	comment := ctx.Param("comment")
 	res := CommentPost(comment, userID, postID, cassandra)
+	var status string
 	if res {
-
+		status = "no error"
 	} else {
-
+		status = "unable to comment"
 	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+	})
 }
 
 // not done, tested, or documented
