@@ -1,11 +1,11 @@
 import { React, useState, useEffect } from "react";
 import currentUser from "../Static.js"
 import Planet from "./Planet.jsx";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree} from "@react-three/fiber";
 import axios from 'axios'
 function PlanetCanvas () {
     return (
-    <Canvas className="cursor-pointer mt-5 md:mt-0">
+    <Canvas className="cursor-pointer pt-5 md:pt-0">
         <Planet planet="pluto"/>
     </Canvas>
     )
@@ -118,8 +118,6 @@ function MyProfile(props) {
                 </button>
 
             </div>
-
-
 
             <div>
                 <PlanetCanvas/>
