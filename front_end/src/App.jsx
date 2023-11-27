@@ -33,7 +33,7 @@ function App() {
     };
     function showOtherProfile(personID, backEvent) {
         showNavBar();
-        setScreen(<OtherProfile userID={personID} goBackScreen={backEvent} goDMLIst={showDMList} />);
+        setScreen(<OtherProfile userID={personID} goBackScreen={backEvent} goDMList={showDMList} />);
     }
     function showLoginScreen() {
         hideNavBar();

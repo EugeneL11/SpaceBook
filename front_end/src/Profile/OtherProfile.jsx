@@ -56,7 +56,7 @@ function Post(props) {
 function OtherProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
-    const goDMList = props.goDMList
+    const dm = props.goDMList
     const back = props.goBackScreen
 
     const duppy = {
@@ -120,7 +120,7 @@ function OtherProfile(props) {
                     <p>Request orbit buddy</p>
                 </button>
 
-                <button onClick={goDMList} className="flex flex-row cursor-pointer hover:text-purple-300">
+                <button onClick={dm} className="flex flex-row cursor-pointer hover:text-purple-300">
                     <img src="./whitehole.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
                     <p>Launch wormhole chat</p>
                 </button>
