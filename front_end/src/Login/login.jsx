@@ -56,11 +56,11 @@ function Login(props) {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}></input>
                 </div>
+                <h1 className="text-red-500">{errorMessage}</h1>
                 <button className="bg-purple-200 px-7 py-3 mt-10 rounded-lg" onClick={loginAction}>
                     Log In
                 </button>
             </div>
-            <h1>{errorMessage}</h1>
             <button className="text-xl mt-12" onClick={toggleRegister}>
                 Sign Up
             </button>

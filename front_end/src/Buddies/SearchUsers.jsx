@@ -3,8 +3,10 @@ import { userID } from "../Static.js";
 import axios from 'axios'
 function Person(props) {
     const user_pic_url = props.user_pic_url
+
     return (
-        <div className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
+        <div className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300"
+            onClick={props.toggleOtherProfile}>
             <img 
                 src={props.user_pic_url}
                 alt={props.username} 
@@ -62,6 +64,7 @@ function SearchUsers(props) {
                         key={index}
                         username={person.username} 
                         user_pic_url={person.user_pic_url}
+                        toggleOtherProfile = {() => {toggleOtherProfile(person.username,toggleSearchUser)}}
                     ></Person> : null
                 )
             )}
