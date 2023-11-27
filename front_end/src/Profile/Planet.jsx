@@ -1,7 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { useLoader, useFrame } from '@react-three/fiber'
+import { useLoader, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 
 export default function Planet(props) {
     const earthRef = useRef()
@@ -28,6 +28,22 @@ export default function Planet(props) {
 
     // earthRef.rotateX(props.planet == "saturn" ? 90 : 0.0);
 
+
+    // const { setSize, size } = useThree();
+
+    // useEffect(() => {
+    //   function handleResize() {
+    //     setSize(window.innerWidth, window.innerHeight);
+    //   }
+  
+    //   window.addEventListener('resize', handleResize);
+  
+    //   return () => {
+    //     window.removeEventListener('resize', handleResize);
+    //   };
+    // }, [setSize]);
+  
+    // // Use 'size' to adjust your planet as needed
 
     return (
       <>
