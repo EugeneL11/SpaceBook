@@ -127,7 +127,6 @@ func HomepageHandler(ctx *gin.Context) {
 	})
 }
 
-// not tested
 func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandra *gocql.Session, postgres *sql.DB) string {
 	stmt := cassandra.Query("select authorID, caption, imagepaths, date_posted, comments, likes from post where postID = ?")
 	iter := stmt.Bind(postID).Iter()
@@ -194,7 +193,6 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 	return "no error"
 }
 
-// not tested
 func PostDetailsHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	postgres := ctx.MustGet("postgres").(*sql.DB)
@@ -214,7 +212,6 @@ func PostDetailsHandler(ctx *gin.Context) {
 	})
 }
 
-// not tested
 func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 	if err := cassandra.Query("UPDATE POST SET likes = likes + ? WHERE postID = ?",
 		[]int{userID}, postID).Exec(); err != nil {
@@ -224,7 +221,6 @@ func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not tested
 func LikePostHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	userID, err := strconv.Atoi(ctx.Param("userID"))
@@ -260,7 +256,6 @@ func UnlikePostHandler(ctx *gin.Context) {
 
 }
 
-// not tested
 func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql.Session) bool {
 	currTime := time.Now()
 	commentID := gocql.TimeUUID()
@@ -283,7 +278,6 @@ func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql
 	return true
 }
 
-// not tested
 func CommentHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	userID, err := strconv.Atoi(ctx.Param("userID"))

@@ -337,7 +337,6 @@ func SearchPeople(userID int, searchTerm string, postgres *sql.DB) (string, []Us
 	return "no error", users
 }
 
-// not tested
 func SearchPeopleHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	userID, err := strconv.Atoi(ctx.Param("user_id"))
