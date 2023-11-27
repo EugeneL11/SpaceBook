@@ -33,7 +33,7 @@ function Settings(props) {
                 <option value="pluto">pluto</option>
             </select>
             
-            <button className="bg-purple-300 hover:bg-purple-400 px-4 py-2 mt-5 w-fit self-center rounded-lg">Apply Changes</button>
+            <button className="bg-purple-300 hover:bg-purple-400 px-4 py-2 mt-5 w-fit self-center rounded-lg" onClick={toggleMyProfile}>Apply Changes</button>
 
             <button className="w-fit self-center mt-6 hover:text-blue-300" onClick={toggleLogin}>Log Out</button>
             <button className="w-fit self-center hover:text-red-600">Delete Account</button>
