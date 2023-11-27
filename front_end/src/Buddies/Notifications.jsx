@@ -16,7 +16,7 @@ function Request(props) {
 
     console.log(othersProfileEvent)
     return (
-        <div className="flex flex-row bg-blue-500 hover:bg-blue-400 h-20 w-1/2 justify-between rounded-md px-5">
+        <div className="flex flex-row bg-blue-500 hover:bg-blue-400 h-20 w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit justify-between rounded-md px-5">
             <div onClick = {othersProfileEvent} className="flex items-center hover:cursor-pointer hover:opacity-70 hover:text-gray-700">
                 <img 
                     src={props.user_pic_url}
@@ -98,7 +98,7 @@ function Notifications(props) {
 
     return (<div className="flex flex-col">
         <div className="flex flex-start w-full">
-            <button className="mb-5 w-fit ml-6 text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
+            <button className="mb-2 w-fit ml-6 text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
         </div>
         {/* {exampleRequests.map((friend) =>(
             <button onClick={() => {toggleOtherProfile(friend, toggleNotifications)}}> See Other Profile: {friend}</button>

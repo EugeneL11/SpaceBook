@@ -28,15 +28,15 @@ function NewPost(props) {
         <div className="flex flex-col items-center">
             <button className="mb-5 w-fit ml-6 mr-auto text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
 
-            <div class="flex flex-col bg-white text-black text-start text-lg mt-[-20px] mb-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
-                <div class="flex justify-center items-center">
-                    <h1 class="text-center text-3xl pt-2">New Post</h1>
+            <div className="flex flex-col bg-white text-black text-start text-lg mt-[-20px] mb-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
+                <div className="flex justify-center items-center">
+                    <h1 className="text-center text-3xl pt-2">New Post</h1>
                 </div>
 
-                <label class=" mt-3 lg:mt-4">Write a caption </label>
-                <textarea class="form-textarea border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" rows="3" placeholder=" Write a caption..."></textarea>
+                <label className=" mt-3 lg:mt-4">Write a caption </label>
+                <textarea className="form-textarea border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" rows="3" placeholder=" Write a caption..."></textarea>
             
-                <div class="mt-4">Add images </div>
+                <div className="mt-4">Add images </div>
                 <input type="file" class="form-input text-sm"></input>
 
                 <div className="relative w-100 h-100 mt-4 border-black border-2">
@@ -56,9 +56,9 @@ function NewPost(props) {
                     }
                 </div>
 
-                <button class="bg-red-300 hover:bg-red-400 px-2 py-1 mt-4 w-fit self-center rounded-md text-sm">Remove Selected Image</button>
+                <button className="bg-red-300 hover:bg-red-400 px-2 py-1 mt-4 w-fit self-center rounded-md text-sm">Remove Selected Image</button>
 
-                <button class="bg-purple-300 hover:bg-purple-400 px-5 py-2 mt-5 w-fit self-center rounded-lg">Post!</button>
+                <button className="bg-purple-300 hover:bg-purple-400 px-5 py-2 mt-5 w-fit self-center rounded-lg">Post!</button>
 
             </div>
 
