@@ -4,6 +4,9 @@ import Planet from "./Planet.jsx";
 import { Canvas } from "@react-three/fiber";
 import axios from 'axios'
 import currentUser from "../Static";
+
+import DMController from "../Messages/DMController"
+
 function PlanetCanvas () {
     return (
     <Canvas className="cursor-pointer mt-5 md:mt-0">
@@ -56,7 +59,8 @@ function Post(props) {
 function OtherProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
-    const dm = props.goDMList
+    // const dm = props.goDMList
+    dm = toggleDMMessage
     const back = props.goBackScreen
 
     const duppy = {
