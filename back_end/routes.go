@@ -19,7 +19,7 @@ func setupAccount(server *gin.Engine) {
 	server.GET("/login/:username/:password", handlers.LoginHandler)
 	server.POST("/register/:email/:password/:fullname/:username", handlers.RegisterHandler)
 	server.GET("/getuserinfo/:viewer/:viewed", handlers.GetUserInfoHandler)
-	// server.POST("/uploadprofileimage", handlers.ProfileImageHandler)
+	// server.POST("/uploadprofileimage", handlers.ProfilePicHandler)
 }
 
 func setupFriends(server *gin.Engine) {
