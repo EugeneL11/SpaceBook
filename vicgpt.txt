@@ -1,0 +1,13 @@
+App.jsx is the root/parent component
+
+It has a state called screen or mainscreen(I forget what I called it) and something to set the state
+
+So every function defined in there changes the screen
+
+And the login component needs a way to tell App.jsx to change the screen to the register screen for instance
+
+So the login component needs the function that changes the screen to register(js is dynamically typed so you 
+can pass in literally anything you want) as a prop
+
+So you see how every function in there sets the screen and passes in multiple props to that screen because 
+the screen also needs to tell App.jsx when it should change screens

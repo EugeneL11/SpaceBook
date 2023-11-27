@@ -56,6 +56,7 @@ function Post(props) {
 function OtherProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
+    const dm = props.goDMList
     const back = props.goBackScreen
 
     const duppy = {
@@ -89,8 +90,8 @@ function OtherProfile(props) {
     return (
         <div className="flex flex-col">
         <div className="w-full flex items-center">
-            <button className="mb-5 w-fit ml-10 mr-auto text-5xl hover:text-purple-300" onClick={back}> {'←'} </button>
-            {currentUser.admin && (<button className="mr-10 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removeUser}>Remove User</button>)} 
+            <button className="mb-5 w-fit ml-6 mr-auto text-3xl hover:text-purple-300" onClick={back}> {'←'} </button>
+            {currentUser.admin && (<button className="mr-6 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removeUser}>Remove User</button>)} 
         </div>
 
         { user ? 
@@ -114,12 +115,12 @@ function OtherProfile(props) {
 
                 <p className="mb-4">{user.bio}</p>
 
-                <button onClick={toggleSettings} className="flex flex-row cursor-pointer mb-3 hover:text-purple-300">
+                <button className="flex flex-row cursor-pointer mb-3 hover:text-purple-300">
                     <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
                     <p>Request orbit buddy</p>
                 </button>
 
-                <button onClick={toggleFriendsList} className="flex flex-row cursor-pointer hover:text-purple-300">
+                <button onClick={dm} className="flex flex-row cursor-pointer hover:text-purple-300">
                     <img src="./whitehole.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
                     <p>Launch wormhole chat</p>
                 </button>

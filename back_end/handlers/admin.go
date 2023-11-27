@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gocql/gocql"
 )
 
 // // not done
@@ -76,5 +77,23 @@ func DeleteUser(user_id int, postgres *sql.DB) string {
 // not tested
 // not documented
 func DeleteUserHandler(ctx *gin.Context) {
+
+}
+
+// not done, tested, or documented
+func DeleteComments(postID int, cassandra *gocql.Session) {
+
+}
+
+// not done, not tested
+func DeletePost(postID int, cassandra *gocql.Session) string {
+	//cassandra.Query()
+	return "no error"
+}
+
+// not done
+// not tested
+// not documented
+func DeletePostHandler(ctx *gin.Context) {
 
 }

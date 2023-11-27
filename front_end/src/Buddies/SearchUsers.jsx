@@ -4,7 +4,7 @@ import axios from 'axios'
 function Person(props) {
     const user_pic_url = props.user_pic_url
     return (
-        <div className="flex items-center w-1/2 bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
+        <div className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
             <img 
                 src={props.user_pic_url}
                 alt={props.username} 
@@ -38,9 +38,9 @@ function SearchUsers(props) {
     return (
         <div className="flex flex-col justify-start items-center space-y-4">
             <div className="flex flex-start w-full">
-                <button className="mb-5 w-fit ml-6 text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
+                <button className="mb-2 w-fit ml-6 text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
             </div>
-            <div className="flex w-1/2">
+            <div className="flex w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit">
                 <input 
                     type="text" 
                     value={searchTerm} 
