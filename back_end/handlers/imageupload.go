@@ -45,6 +45,7 @@ func UpdateProfilePath() string {
 // not done
 // not tested
 // not documented
+// TODO: Rename files to match user ID
 func ProfilePicHandler(ctx *gin.Context) {
 	// Parse the form data, limit to 10 MB
 	err := ctx.Request.ParseMultipartForm(10 << 20)
@@ -97,7 +98,6 @@ func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) bo
 	return true
 }
 
-// not done - sends wrong message to client
 // not documented
 func UploadImagePost(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
@@ -111,23 +111,23 @@ func UploadImagePost(ctx *gin.Context) {
 	file, header, err := ctx.Request.FormFile("image")
 	postID := ctx.Param("postID")
 	if err != nil {
-		ctx.String(200, "Bad Request")
+		ctx.String(400, "Bad Request")
 		return
 	}
 	defer file.Close()
 	success, filename := UploadPic(file, header, "posts")
 	if !success {
-		ctx.String(200, "Bad Request")
+		ctx.String(400, "Bad Request")
 		return
 	}
 	uuid, err := gocql.ParseUUID(postID)
 	if err != nil {
-		ctx.String(200, "Bad Request")
+		ctx.String(400, "Bad Request")
 		return
 	}
 	success = UpdatePostPath(uuid, filename, cassandra)
 	if !success {
-		ctx.String(200, "Bad Rdsdfsdfdsequest")
+		ctx.String(400, "Bad Rdsdfsdfdsequest")
 		return
 	}
 

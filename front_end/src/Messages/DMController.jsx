@@ -1,13 +1,23 @@
-import { React, useState } from "react";
+import { React, useState, useEffect} from "react";
 import DMList from "./DMList";
 import DMMessage from "./DMMessage";
+import NewDM from "./NewDM"
 import OtherProfile from "../Profile/OtherProfile";
 
 function DMController(props) {
     const toggleHomepage = props.toggleHomepage
-    const [DMstate, setDMstate] = useState(<DMList toggleHomepage={toggleHomepage} toggleDMMessage={toggleDMMessage}/>);
+    const [DMstate, setDMstate] = useState(null);
+    useEffect(() => {
+        if (props.wormhole) {
+            toggleDMMessage(props.friendID)
+        } else {
+            toggleDMList()
+        }
+    }, [])
+
     function toggleDMList(){
-        setDMstate(<DMList toggleHomepage={toggleHomepage} toggleDMMessage={toggleDMMessage}/>)
+        console.log(toggleHomepage)
+        setDMstate(<DMList toggleHomepage={toggleHomepage} toggleDMMessage={toggleDMMessage} toggleNewDM = {toggleNewDM}/>)
     }
     function toggleDMMessage(friendID){
         console.log("Whastup")
@@ -15,6 +25,9 @@ function DMController(props) {
     }
     function toggleOtherProfile(userID,backEvent){
         setDMstate(<OtherProfile userID = {userID} goBackScreen = {backEvent}/>)
+    }
+    function toggleNewDM(){
+        setDMstate(<NewDM toggleDMList = {toggleDMList} toggleOtherProfile = {toggleOtherProfile}/>)
     }
     return (<div>{DMstate}{/* */}</div>);
 

@@ -11,9 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// not done
 // not tested
-// TODO Change to UserPreview
 func GetFriends(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 	stmt, err := postgres.Prepare(`
 		SELECT 
@@ -61,7 +59,6 @@ func GetFriends(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 }
 
 // not tested
-// not documented
 func GetFriendsHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	user_id, err := strconv.Atoi(ctx.Param("user_id"))
@@ -96,7 +93,6 @@ func GetFriendsHandler(ctx *gin.Context) {
 	}
 }
 
-// not tested
 func RemoveFriend(user1_id int, user2_id int, postgres *sql.DB) string {
 	if user1_id > user2_id {
 		temp := user1_id
@@ -121,7 +117,6 @@ func RemoveFriend(user1_id int, user2_id int, postgres *sql.DB) string {
 	return "no error"
 }
 
-// not tested
 func RemoveFriendHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	user1_id, err1 := strconv.Atoi(ctx.Param("id1"))
@@ -342,7 +337,6 @@ func SearchPeople(userID int, searchTerm string, postgres *sql.DB) (string, []Us
 	return "no error", users
 }
 
-// not tested
 func SearchPeopleHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	userID, err := strconv.Atoi(ctx.Param("user_id"))

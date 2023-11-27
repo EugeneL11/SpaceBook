@@ -1,7 +1,7 @@
 ## To Register an Account:
 
 -   Use path (POST request): /register/{email}/{password}/{fullname}/{username}
--   Will return a json object such as the following:
+-   Will return a JSON object such as the following:
 
 ```json
 {
@@ -16,7 +16,8 @@
 }
 ```
 
--   "error" can be :
+-   If no error, then it will say "no error" in "error" field, and user details are given instead of null
+-   Client can just notify if there was an error in general, but the error can be:
     -   "unable to create account at this time" (database error on backend, should never happen)
     -   "user name not availible" - user name already exists in database
     -   "email already in use" - email already exists in database
@@ -25,7 +26,7 @@
 ## To Login:
 
 -   Use path (GET): /login/{username}/{password}
--   will return a json object
+-   Will return a JSON object such as the following
 
 ```json
 {
@@ -40,5 +41,5 @@
 }
 ```
 
--   either error is "unable to find User" or "no error!"
+-   Either error is "unable to find User" or "no error!"
     The rest of the fields are filled out properly if no error
