@@ -4,18 +4,25 @@ import currentUser from "../Static";
 function NewPost(props) {
     const toggleHomepage = props.toggleHomepage
 
-    // IDK how to do this stuff properly so imma just wait for Victor to fix it (thanks Victor)
+    const examplePost = {
+        username: "Duppy",
+        pfp : "./ayylmao.webp",
+        caption: "Finally leaving this planet lmao 😂",
+        date: "Nov 7th",
+        images: ["./swag.jpg", "./ayylmao.webp"],
+        videos: [],
+    }
 
-    // const imageCount = props.post.images.length;
-    // const [imageNum,setImageNum] = useState(0)
-    // const toggleNextImage = () =>{
-    //     const nextImage = imageNum + 1;
-    //     setImageNum(nextImage);
-    // }
-    // const togglePrevImage = () =>{
-    //     const nextImage = imageNum - 1;
-    //     setImageNum(nextImage);
-    // }
+    const imageCount = examplePost.images.length;
+    const [imageNum,setImageNum] = useState(0)
+    const toggleNextImage = () =>{
+        const nextImage = imageNum + 1;
+        setImageNum(nextImage);
+    }
+    const togglePrevImage = () =>{
+        const nextImage = imageNum - 1;
+        setImageNum(nextImage);
+    }
     
     return (
         <div className="flex flex-col items-center">
@@ -33,20 +40,20 @@ function NewPost(props) {
                 <input type="file" class="form-input text-sm"></input>
 
                 <div className="relative w-100 h-100 mt-4 border-black border-2">
-                    {/* {imageNum > 0 ? 
+                    {imageNum > 0 ? 
                         // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl top-52 z-40 cursor-pointer hover:text-purple-400" onClick={togglePrevImage}> {"←"} </div> : null
-                        <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-10 translate-y-10 rotate-180" onClick={togglePrevImage} /> : null
-                    } */}
+                        <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-5 -translate-y-16 rotate-180" onClick={togglePrevImage} /> : null
+                    }
 
-                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-5 -translate-y-16 rotate-180" onClick={toggleHomepage} /> 
-                    <img src="./swag.jpg" className="h-80 object-contain ml-auto mr-auto" alt="" />
-                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-5 -translate-y-16"  onClick={toggleHomepage}/>
+                    {/* <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-5 -translate-y-16 rotate-180" onClick={toggleHomepage} />  */}
+                    <img src={examplePost.images[imageNum]} className="h-80 object-contain ml-auto mr-auto" alt="" />
+                    {/* <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-5 -translate-y-16"  onClick={toggleHomepage}/> */}
 
 
-                    {/* {imageNum < imageCount - 1 ? 
+                    {imageNum < imageCount - 1 ? 
                     // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl cursor-pointer left-85-percent top-52 z-40 hover:text-purple-400" onClick={toggleNextImage}> {"→"} </div> : null
-                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-10 translate-y-10"  onClick={toggleNextImage}/> : null
-                    } */}
+                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-5 -translate-y-16"  onClick={toggleNextImage}/> : null
+                    }
                 </div>
 
                 <button class="bg-red-300 hover:bg-red-400 px-2 py-1 mt-4 w-fit self-center rounded-md text-sm">Remove Selected Image</button>
