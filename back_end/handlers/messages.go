@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gocql/gocql"
@@ -11,6 +13,26 @@ import (
 // not done
 // not tested
 func CreateNewDM(user1 int, user2 int, cassandra *gocql.Session) bool {
+	subsetID := gocql.TimeUUID()
+	emptyMessages := []gocql.Session{}
+	emptyTimes := []time.Time{}
+	emptySenders := []int{}
+	if user1 > user2 {
+		user2, user1 = user1, user2
+	}
+	if err := cassandra.Query("INSERT INTO DMSubset (subsetID, messages, senders, time_sent) VALUES (?, ?, ?, ?)",
+		subsetID, emptyMessages, emptySenders, emptyTimes).Exec(); err != nil {
+		fmt.Println("Error inserting comment:", err)
+		return false
+	}
+	subSetSlice := []gocql.UUID{subsetID}
+	dmID := gocql.TimeUUID()
+
+	if err := cassandra.Query("INSERT INTO DMTABLE (dmID, user1, user2, messageChunks) VALUES (?, ?, ?, ?)",
+		dmID, user1, user2, subSetSlice).Exec(); err != nil {
+		fmt.Println("Error inserting comment:", err)
+		return false
+	}
 	return true
 }
 
@@ -129,8 +151,32 @@ func NewDMListHandler(ctx *gin.Context) {
 
 // not done
 // not tested
-func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session) (bool, []Message) {
+func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session, allDMS *bool) (bool, []Message) {
 	var messages []Message
+	var subset_pointers []gocql.UUID
+	if user1 > user2 {
+		user2, user1 = user1, user2
+	}
+	if err := cassandra.Query("SELECT messageChunks FROM DMTABLE WHERE user1 = ? AND user2 = ?",
+		user1, user2).Scan(&subset_pointers); err != nil {
+		fmt.Println("Error querying messages:", err)
+		return false, nil
+	}
+	if subsetSize >= len(subset_pointers) {
+		*allDMS = true
+		subsetSize = len(subset_pointers)
+	}
+	emptyMessages := []gocql.Session{}
+	emptyTimes := []time.Time{}
+	emptySenders := []int{}
+	for i := len(subset_pointers) - subsetSize; i < len(subset_pointers); i++ {
+		if err := cassandra.Query("SELECT messages, senders, time_sent FROM DMSubset WHERE subsetID = ?",
+			subset_pointers[i]).Scan(&emptyMessages, &emptySenders, &emptyTimes); err != nil {
+			fmt.Println("Error querying messages:", err)
+			return false, nil
+		}
+
+	}
 	return true, messages
 }
 
@@ -146,9 +192,16 @@ func GetMessagesHandler(ctx *gin.Context) {
 		// send error
 		return
 	}
-	success, result := GetMessages(user1, user2, subsetSize, cassandra)
+	var allDMS bool
+	success, result := GetMessages(user1, user2, subsetSize, cassandra, &allDMS)
 	if !success {
 		// send error
 		return
 	}
+	if allDMS {
+
+		return
+	}
+
+	return
 }
