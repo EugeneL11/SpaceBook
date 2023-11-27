@@ -1,6 +1,8 @@
-## To Make a Post (WIP)
+## To Make a Post
 
 -   Use path (POST request): /makepost/{user_id}/{caption}
+-   **_Note: Need to make the post and get the ID before adding pictures!_**
+    -   Refer to Images.md "Upload Post Image", will need to call that route multiple times for multiple pictures
 -   Returns a JSON of following format:
 
 ```json
@@ -10,7 +12,7 @@
 }
 ```
 
-## Get Posts for Homepage (WIP)
+## Get Posts for Homepage
 
 -   Use path (GET): /homepageposts/{user_id}
 -   Returns a JSON of following format:
@@ -35,7 +37,7 @@
 }
 ```
 
-## Get Full Details of a Post from IDs (WIP)
+## Get Full Details of a Post from IDs (WIP?)
 
 -   Use path (GET): /postdetails/{postID}/{userID}
 -   Returns a JSON of following format:
@@ -89,7 +91,7 @@
 }
 ```
 
-## Unlike Post
+## Unlike Post (not done)
 
 -   Use path (POST): /unlike/{postID}/{userID}
 -   Will return a JSON with the following content:

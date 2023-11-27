@@ -199,7 +199,6 @@ func UpdateUserProfileHandler(ctx *gin.Context) {
 
 }
 
-// not tested
 func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 	stmt, err := postgres.Prepare(`
 		SELECT 
@@ -290,9 +289,6 @@ func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
 	return "no requests"
 }
 
-// not done
-// not tested
-// not documented
 func GetUserInfoHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	viewer, err1 := strconv.Atoi(ctx.Param("viewer"))

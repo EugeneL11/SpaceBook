@@ -72,7 +72,7 @@ function App() {
         showNavBar();
         setScreen(null);
         setTimeout(() => {
-            setScreen(<DMController toggleHomePage={showHomeScreen} />);
+            setScreen(<DMController toggleHomepage={showHomeScreen} />);
         }, 0);
     }
     function showMyProfile() {
