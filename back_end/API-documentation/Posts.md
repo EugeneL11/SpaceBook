@@ -1,6 +1,8 @@
 ## To Make a Post
 
 -   Use path (POST request): /makepost/{user_id}/{caption}
+-   **_Note: Need to make the post and get the ID before adding pictures!_**
+    -   Refer to Images.md "Upload Post Image", will need to call that route multiple times for multiple pictures
 -   Returns a JSON of following format:
 
 ```json

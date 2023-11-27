@@ -1,4 +1,4 @@
-## Get Friends (WIP)
+## Get Friends
 
 -   Use path (GET request): /friends/{user_id}
 -   Will return a JSON object with following format:
