@@ -1,9 +1,9 @@
 import { React, useState, useEffect } from "react";
-
 import Planet from "./Planet.jsx";
 import { Canvas } from "@react-three/fiber";
 import axios from 'axios'
 import currentUser from "../Static";
+import {serverpath} from "../Path.js";
 function PlanetCanvas () {
     return (
     <Canvas className="cursor-pointer mt-5 md:mt-0">
@@ -78,7 +78,14 @@ function OtherProfile(props) {
     const examplePosts =[ examplePost,examplePost]
     useEffect(() => {
         // ask bak end for user
-         setUser(duppy)
+        const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
+        axios.get(`${serverpath}${path}`).then(res => {
+            const data = res.data
+            console.log(currentUser.userID)
+            console.log(data)
+            setUser(data.user)
+        })
+
          // ask back end for post
          setPosts(examplePosts);
     }, [])
@@ -87,6 +94,17 @@ function OtherProfile(props) {
         // ask back end
         back()
     }
+
+    function sendOrbit() {
+        console.log(encodeURIComponent(props.userID))
+        const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}}`
+//        const path = `/sendfriendreq/3/1`
+        axios.post(`${serverpath}${path}`).then(res => {
+            const data = res.data
+            console.log(data)
+        })
+    }
+
     return (
         <div className="flex flex-col">
         <div className="w-full flex items-center">
@@ -104,18 +122,18 @@ function OtherProfile(props) {
 
                 <div className="flex flex-row mb-4 align-middle">
 
-                    <img src={user.pfp} alt="My Profile Picture" className="w-20 aspect-square rounded-full"/>
+                    <img src={serverpath + user.profile_picture_path} alt="My Profile Picture" className="w-20 aspect-square rounded-full"/>
 
                     <div className="flex flex-col ml-4 justify-center align-middle">
-                        <p className="text-xl">{user.username}</p>
-                        <p>from {user.homePlanet}</p>
+                        <p className="text-xl">{user.user_name}</p>
+                        <p>from {user.planet}</p>
                     </div>
 
                 </div>
 
                 <p className="mb-4">{user.bio}</p>
 
-                <button className="flex flex-row cursor-pointer mb-3 hover:text-purple-300">
+                <button onClick={sendOrbit} className="flex flex-row cursor-pointer mb-3 hover:text-purple-300">
                     <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
                     <p>Request orbit buddy</p>
                 </button>
