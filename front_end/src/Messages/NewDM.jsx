@@ -2,9 +2,13 @@ import { React, useState , useEffect } from "react";
 import { userID } from "../Static.js";
 import axios from 'axios'
 function Person(props) {
+    const friendID = props.friendID
+    const toggleNewDM = () => {props.toggleNewDM(friendID)}
+    const toggleOtherProfile = () => props.toggleOtherProfile(friendID,toggleNewDM)
     const user_pic_url = props.user_pic_url
     return (
-        <div className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
+        // make it toggle other profile properly
+        <div className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300" onClick={toggleOtherProfile}>
             <img 
                 src={props.user_pic_url}
                 alt={props.username} 

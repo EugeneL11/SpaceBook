@@ -1,10 +1,14 @@
 import { React, useState , useEffect } from "react";
-import { userID } from "../Static.js";
+import currentUser from "../Static.js";
+import {serverpath} from "../Path.js";
 import axios from 'axios'
 function Person(props) {
     const user_pic_url = props.user_pic_url
+    const toggleOtherProfile = () => {
+        props.showOtherProfile(props.userID, props.back)
+    }
     return (
-        <div className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
+        <div onClick={toggleOtherProfile} className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
             <img 
                 src={props.user_pic_url}
                 alt={props.username} 
@@ -31,9 +35,23 @@ function SearchUsers(props) {
 
     useEffect(() => {
         // ask back end for top 10
-        setPeople(samplePeople)
+
 
     },[])
+
+    function searchQuery() {
+        if (searchTerm === "") {
+            return //maybe error message(?)
+        }
+        axios.get(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
+            const data = res.data
+            console.log(data)
+            if (data.error === "no error") {
+                console.log(data.userPreviews[0].profile_picture_path)
+                setPeople(data.userPreviews)
+            } //catch errors later
+        })
+    }
 
     return (
         <div className="flex flex-col justify-start items-center space-y-4">
@@ -47,7 +65,7 @@ function SearchUsers(props) {
                     onChange={e => setSearchTerm(e.target.value)}
                     className="w-full p-2 rounded-bl-md rounded-tl-md text-black"
                 ></input>
-                <div className="relative inset-y-0 right-0 flex items-center px-3 bg-white rounded-tr-md rounded-br-md">
+                <div className="relative inset-y-0 right-0 flex items-center px-3 bg-white rounded-tr-md rounded-br-md" onClick={searchQuery}>
                     <img
                         src="./search.png"
                         alt="search users"
@@ -55,16 +73,18 @@ function SearchUsers(props) {
                     ></img>
                 </div>
             </div>
-            {samplePeople.map(
+            {people ? people.map(
                 (person, index) => (
-                    person.username.toLowerCase().includes(searchTerm.toLowerCase()) ? 
                     <Person
+                        userID = {person.user_id}
+                        back = {toggleSearchUser}
+                        showOtherProfile = {toggleOtherProfile}
                         key={index}
-                        username={person.username} 
-                        user_pic_url={person.user_pic_url}
-                    ></Person> : null
+                        username={person.user_name} 
+                        user_pic_url={serverpath + person.profile_picture_path}
+                    ></Person> 
                 )
-            )}
+            ) : null}
         </div>
     );
 

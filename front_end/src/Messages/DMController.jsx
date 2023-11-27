@@ -26,8 +26,9 @@ function DMController(props) {
     function toggleOtherProfile(userID,backEvent){
         setDMstate(<OtherProfile userID = {userID} goBackScreen = {backEvent}/>)
     }
-    function toggleNewDM(){
-        setDMstate(<NewDM toggleDMList = {toggleDMList} toggleOtherProfile = {toggleOtherProfile}/>)
+    // make it toggle other profile properly
+    function toggleNewDM(friendID){
+        setDMstate(<NewDM friendID={friendID} toggleDMMessage={toggleDMMessage} toggleDMList = {toggleDMList} toggleOtherProfile = {toggleOtherProfile}/>)
     }
     return (<div>{DMstate}{/* */}</div>);
 
