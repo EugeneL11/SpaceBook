@@ -51,10 +51,10 @@ type PostPreview struct {
 	Images            []string   `json:"images"`
 }
 
-// type Message struct {
-// 	senderID int
-// 	message  string
-// }
+type Message struct {
+	senderID int
+	message  string
+}
 
 // type FullDM struct {
 // }
