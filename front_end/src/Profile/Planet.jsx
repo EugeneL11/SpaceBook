@@ -26,25 +26,6 @@ export default function Planet(props) {
         earthRef.current.rotation.y += 0.005;
     })
 
-    // earthRef.rotateX(props.planet == "saturn" ? 90 : 0.0);
-
-
-    // const { setSize, size } = useThree();
-
-    // useEffect(() => {
-    //   function handleResize() {
-    //     setSize(window.innerWidth, window.innerHeight);
-    //   }
-  
-    //   window.addEventListener('resize', handleResize);
-  
-    //   return () => {
-    //     window.removeEventListener('resize', handleResize);
-    //   };
-    // }, [setSize]);
-  
-    // // Use 'size' to adjust your planet as needed
-
     return (
       <>
         <OrbitControls enablePan={false} enableZoom={false} rotateSpeed={0.2}/>
@@ -53,8 +34,6 @@ export default function Planet(props) {
         <primitive ref={earthRef} object={model.scene} scale={
           props.planet == "saturn" ? 0.0025 : 0.006
         }/>
-
-
       </>
     );
 }

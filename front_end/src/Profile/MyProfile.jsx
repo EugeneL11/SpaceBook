@@ -3,12 +3,46 @@ import currentUser from "../Static.js"
 import Planet from "./Planet.jsx";
 import { Canvas, useThree} from "@react-three/fiber";
 import axios from 'axios'
+import * as THREE from 'three';
+
+
+function ResizingCanvas(props) {
+    const { gl, size, camera } = useThree();
+
+
+
+    useEffect(() => {
+        const handleResize = () => {
+            // Update size
+            gl.setSize(300, 300);
+            camera.aspect = 1;
+            camera.updateProjectionMatrix();
+
+            // Update camera position
+            // camera.position.x = 5;
+            // camera.position.y = 5;
+            // camera.position.z = 5;
+
+            // camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        // Clean up on unmount
+        return () => window.removeEventListener('resize', handleResize);
+    }, [gl, camera]);
+
+    return null;
+}
+
 function PlanetCanvas () {
     return (
-    <Canvas className="cursor-pointer pt-5 md:pt-0">
-        <Planet planet="pluto"/>
-    </Canvas>
-    )
+        <Canvas className="cursor-pointer pt-5 lg:pt-0">
+            <Planet planet="pluto"/>
+            <ResizingCanvas className=""/>
+        </Canvas>
+    );
 }
 
 function Post(props) {
@@ -25,7 +59,7 @@ function Post(props) {
         setImageNum(nextImage);
     }
     return(
-        <div className="flex flex-col w-11/12 lg:w-5/12 mx-auto mb-10 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
+        <div className="flex flex-col w-11/12 lg:w-7/12 xl:w-5/12 mx-auto mb-10 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
             <div className="relative w-100 h-100">
             {imageNum > 0 ? 
                 // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl top-52 z-40 cursor-pointer hover:text-purple-400" onClick={togglePrevImage}> {"←"} </div> : null

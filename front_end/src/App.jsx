@@ -13,6 +13,7 @@ import Navbar from "./Navbar/navbar";
 import Background from "./Background/background";
 import FriendsList from "./Buddies/FriendsList";
 import ImageDemo from "./ImageDemo";
+import { TorusKnotGeometry } from "three";
 
 function App() {
     const [navBar, setNavBar] = useState(false);
@@ -33,7 +34,7 @@ function App() {
     };
     function showOtherProfile(personID, backEvent) {
         showNavBar();
-        setScreen(<OtherProfile userID={personID} goBackScreen={backEvent} goDMList={showDMList} />);
+        setScreen(<OtherProfile toggleHomepage={showHomeScreen} userID={personID} goBackScreen={backEvent} goDMList={showDMList} />);
     }
     function showLoginScreen() {
         hideNavBar();
@@ -68,11 +69,11 @@ function App() {
             />
         );
     }
-    function showDMList() {
+    function showDMList(wormhole=false) {
         showNavBar();
         setScreen(null);
         setTimeout(() => {
-            setScreen(<DMController toggleHomepage={showHomeScreen} />);
+            setScreen(<DMController toggleHomepage={showHomeScreen} wormhole={wormhole}/>);
         }, 0);
     }
     function showMyProfile() {

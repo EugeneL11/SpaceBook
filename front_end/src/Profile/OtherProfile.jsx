@@ -5,8 +5,6 @@ import { Canvas } from "@react-three/fiber";
 import axios from 'axios'
 import currentUser from "../Static";
 
-import DMController from "../Messages/DMController"
-
 function PlanetCanvas () {
     return (
     <Canvas className="cursor-pointer mt-5 md:mt-0">
@@ -59,8 +57,9 @@ function Post(props) {
 function OtherProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
-    // const dm = props.goDMList
-    dm = toggleDMMessage
+    const gotothebullshit = props.goDMList
+    // const dm = DMController(toggleHomepage = props.toggleHomepage )
+    // const dm = setScreen(<DMController toggleHomepage={props.toggleHomepage} />);
     const back = props.goBackScreen
 
     const duppy = {
@@ -124,19 +123,16 @@ function OtherProfile(props) {
                     <p>Request orbit buddy</p>
                 </button>
 
-                <button onClick={dm} className="flex flex-row cursor-pointer hover:text-purple-300">
+                <button onClick={gotothebullshit} className="flex flex-row cursor-pointer hover:text-purple-300">
                     <img src="./whitehole.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
                     <p>Launch wormhole chat</p>
                 </button>
 
             </div>
 
-
-
             <div>
                 <PlanetCanvas/>
             </div>
-
 
             </div>
             {
@@ -145,10 +141,7 @@ function OtherProfile(props) {
                 ) : null
             }
 
-
-
         </div>: null}
-
 
     </div>
         
