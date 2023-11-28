@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -76,10 +75,6 @@ func GetFriendsHandler(ctx *gin.Context) {
 		return
 	}
 
-	// TODO should marshal be used here?
-	usersJson, err := json.Marshal(users)
-	log.Println(string(usersJson))
-
 	if err != nil {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error": err,
@@ -88,7 +83,7 @@ func GetFriendsHandler(ctx *gin.Context) {
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error": "no error",
-			"users": usersJson,
+			"users": users,
 		})
 	}
 }
