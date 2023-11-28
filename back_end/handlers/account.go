@@ -52,7 +52,7 @@ func RegisterUser(fullName string, password string, email string, username strin
 	if err != nil {
 		return "unable to connect to db"
 	}
-	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "default", false, "test bio")
+	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "/images/utilities/pp.png", false, "test bio")
 	if err != nil {
 		fmt.Println("Could not execute insert into users")
 		return "unable to connect to db"

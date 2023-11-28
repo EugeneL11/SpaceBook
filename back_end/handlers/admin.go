@@ -18,7 +18,7 @@ func DeleteComments(postID gocql.UUID, cassandra *gocql.Session) bool {
 	return true
 }
 
-// DeletePost deletes a post and associated data
+// not tested
 func DeletePost(postID gocql.UUID, cassandra *gocql.Session) bool {
 	var imagePaths []string
 	if err := cassandra.Query("SELECT imagePaths FROM POST WHERE postID = ?", postID).Iter().Scan(&imagePaths); !err {
@@ -92,9 +92,10 @@ func DeleteUserComments(userID int, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not done not tested
+// not tested
 func DeleteUserLikes(userID int, cassandra *gocql.Session) bool {
-	if err := cassandra.Query("UPDATE POST SET likes = likes - ? WHERE authorID = ? ALLOW FILTERING", userID, userID).Exec(); err != nil {
+	userIDSlice := []int{userID}
+	if err := cassandra.Query("UPDATE POST SET likes = likes - ? WHERE authorID = ? ALLOW FILTERING", userIDSlice, userID).Exec(); err != nil {
 		fmt.Println("Error deleting user likes:", err)
 		return false
 	}
@@ -122,7 +123,36 @@ func DeleteUserPosts(userID int, cassandra *gocql.Session) bool {
 
 // not tested
 func DeleteUserDM(userID int, cassandra *gocql.Session) bool {
+	var user1Keys []int
+	var user2Keys []int
+	var chunkKeys [][]gocql.UUID
 
+	iter := cassandra.Query(`SELECT user1, user2, messageChunks FROM DMTABLE WHERE user2 = ? or user1 = ? 
+	ALLOW FILTERING`, userID, userID).Iter()
+	var user1, user2 int
+	var chunkKey []gocql.UUID
+	for iter.Scan(&user1, &user2, &chunkKey) {
+		user1Keys = append(user1Keys, user1)
+		user2Keys = append(user2Keys, user2)
+		chunkKeys = append(chunkKeys, chunkKey)
+	}
+
+	if err := iter.Close(); err != nil {
+		fmt.Println("Error retrieving user posts:", err)
+		return false
+	}
+	for i := 0; i < len(user1Keys); i++ {
+		for x := 0; x < len(chunkKeys[i]); x++ {
+			if err := cassandra.Query("Delete DMsubset WHERE subsetID = ?", chunkKey[i][x]).Exec(); err != nil {
+				fmt.Println("Error deleting user likes:", err)
+				return false
+			}
+		}
+		if err := cassandra.Query("Delete DMTABLE WHERE user1 = ? and user2 = ?", user1Keys[i], user2Keys[i]).Exec(); err != nil {
+			fmt.Println("Error deleting user likes:", err)
+			return false
+		}
+	}
 	return true
 }
 
@@ -154,10 +184,31 @@ func DeleteUserFriends(userID int, postgres *sql.DB) bool {
 	return false
 }
 
-// not done not tested
+// not tested
 func DeleteUser(user_id int, postgres *sql.DB) bool {
-	// delete profile picture
-	stmt, err := postgres.Prepare("DELETE FROM Users WHERE user_id = $1")
+	stmt, err := postgres.Prepare("Select Profile_picture_path from Users WHERE user_id = $1")
+	if err != nil {
+		return false
+	}
+	defer stmt.Close()
+
+	row, err := stmt.Query(user_id)
+	if err != nil {
+		return false
+	}
+
+	if row.Next() {
+		var path string
+		row.Scan(&path)
+		if path == "/images/utilties/pp.png" {
+
+		} else if DeleteImage(path) != nil {
+			return false
+		}
+	} else {
+		return false
+	}
+	stmt, err = postgres.Prepare("DELETE FROM Users WHERE user_id = $1")
 	if err != nil {
 		return false
 	}

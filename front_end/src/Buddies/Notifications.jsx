@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from "react";
-import {userID} from "../Static.js"
+import currentUser from "../Static.js";
+import {serverpath} from "../Path.js";
 
 import axios from 'axios'
 function Request(props) {
@@ -76,6 +77,19 @@ function Notifications(props) {
 
     ] // placeholder for back-end data
 
+    //WE ARE GETTING THE FRIEND REQUESTS HERE, TO USE FOR DENYING/ACCEPTING (MUST FIX)
+    const path = `/friendsreqs/${encodeURIComponent(currentUser.userID)}`
+    axios.get(`${serverpath}${path}`).then((res) => {
+        const data = res.data
+        if (data.status === "no requests") {
+            setRequests(requests)
+        } else if (data.status === "pending request") {
+            setRequests(requests)
+        } else {
+            console.log("database error")
+        }
+    })
+
         // ask back-end for orbit requests
         setRequests(exampleRequests)
     },[])
@@ -86,6 +100,9 @@ function Notifications(props) {
         )
         setRequests(newRequestList);
         // do back-end stuff
+
+        const path = `/rejectfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent()}`
+
     }
 
     const acceptRequest = (requestToAccept) => {
@@ -94,6 +111,10 @@ function Notifications(props) {
         )
         setRequests(newRequestList);
         // do back-end stuff
+
+        //const path
+
+
     }
 
     return (<div className="flex flex-col">
