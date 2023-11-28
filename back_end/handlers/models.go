@@ -1,6 +1,10 @@
 package handlers
 
-import "github.com/gocql/gocql"
+import (
+	"time"
+
+	"github.com/gocql/gocql"
+)
 
 type User struct {
 	User_id              int    `json:"id"`
@@ -52,8 +56,9 @@ type PostPreview struct {
 }
 
 type Message struct {
-	senderID int
-	message  string
+	SenderID int
+	Message  string
+	Time     time.Time
 }
 
 // type FullDM struct {

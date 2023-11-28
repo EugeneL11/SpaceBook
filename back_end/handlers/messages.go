@@ -152,7 +152,7 @@ func NewDMListHandler(ctx *gin.Context) {
 // not done
 // not tested
 func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session, allDMS *bool) (bool, []Message) {
-	var messages []Message
+	var allMessages []Message
 	var subset_pointers []gocql.UUID
 	if user1 > user2 {
 		user2, user1 = user1, user2
@@ -166,18 +166,23 @@ func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session,
 		*allDMS = true
 		subsetSize = len(subset_pointers)
 	}
-	emptyMessages := []gocql.Session{}
-	emptyTimes := []time.Time{}
-	emptySenders := []int{}
+	messages := []string{}
+	times := []time.Time{}
+	senders := []int{}
 	for i := len(subset_pointers) - subsetSize; i < len(subset_pointers); i++ {
 		if err := cassandra.Query("SELECT messages, senders, time_sent FROM DMSubset WHERE subsetID = ?",
-			subset_pointers[i]).Scan(&emptyMessages, &emptySenders, &emptyTimes); err != nil {
+			subset_pointers[i]).Scan(&messages, &senders, &times); err != nil {
 			fmt.Println("Error querying messages:", err)
 			return false, nil
 		}
-
+		for x := 0; x < len(messages); x++ {
+			var newmsg Message
+			newmsg.Time = times[x]
+			newmsg.Message = messages[x]
+			newmsg.SenderID = senders[x]
+		}
 	}
-	return true, messages
+	return true, allMessages
 }
 
 // not done
