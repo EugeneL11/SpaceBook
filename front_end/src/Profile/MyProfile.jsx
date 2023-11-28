@@ -5,7 +5,6 @@ import { Canvas, useThree} from "@react-three/fiber";
 import axios from 'axios'
 import * as THREE from 'three';
 
-
 function ResizingCanvas(props) {
     const { gl, size, camera } = useThree();
     var glsize
