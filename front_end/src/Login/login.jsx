@@ -1,6 +1,8 @@
 import { React, useState } from "react";
 import currentUser from "../Static.js";
 import axios from 'axios'
+import {serverpath} from "../Path.js";
+
 function Login(props) {
     const toggleHomepage = props.toggleHomepage;
     const toggleRegister = props.toggleRegister;
@@ -11,10 +13,10 @@ function Login(props) {
     const loginAction = async () => {
         //ask backend
         if (username == "" || password == "") {
-            setError("Actually put something in the text fields you jerk");
+            setError("Please Enter Something");
         } else {
             const res = await axios.get(
-                `http://localhost:8080/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
+                `${serverpath}/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
             );
             const data = res.data;
             console.log(data);
