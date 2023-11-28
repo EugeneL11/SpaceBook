@@ -321,15 +321,6 @@ func GetDMHandler(ctx *gin.Context) {
 
 	status := GetAllDM(userID, &usernames, &profile_pics, &recent_messages, postgres, cassandra)
 
-	// TODO is Marshal supposed to be used?
-
-	// usernames_json, err := json.Marshal(usernames)
-	// if err != nil { log.Panic(err) }
-	// profile_pics_json, err := json.Marshal(profile_pics)
-	// if err != nil { log.Panic(err) }
-	// recent_messages_json, err := json.Marshal(recent_messages)
-	// if err != nil { log.Panic(err) }
-
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": status,
 		"usernames": usernames,
@@ -338,48 +329,59 @@ func GetDMHandler(ctx *gin.Context) {
 	})
 }
 
-// not done
 // not tested
-func newDMList(userID int, newDMRes *[]int, postgres *sql.DB, cassandra *gocql.Session) string {
+func newDMList(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserPreview, string) {
 	
 	// get all friends
 	users, err := GetFriends(userID, postgres)
 	if err != "no error" {
-		return "unable to connect to db 1"
+		return nil, "unable to connect to db 1"
 	}
 
-	// get all dm's
+	var otherID int
+	otherIDs := make(map[int]struct{}) // set of friends in dm
+
+	// get all dm's part 1
 	iter := cassandra.Query(
+		`
+			SELECT user1
+			FROM dmtable
+			WHERE user2 = ?
+			ALLOW FILTERING
+		`, userID,
+	).Iter()
+
+	for iter.Scan(&otherID) {
+		otherIDs[otherID] = struct{}{}
+	}
+
+	// get all dm's part 2
+	iter = cassandra.Query(
 		`
 			SELECT user2
 			FROM dmtable
 			WHERE user1 = ?
-			UNION 
-			SELECT user1
-			FROM dmtable
-			WHERE user2 = ?
-		`, userID, userID,
+			ALLOW FILTERING
+		`, userID,
 	).Iter()
 	
-	var dmID int
-	dmIDs := make(map[int]struct{}) // set of friends in dm
-	for iter.Scan(&dmID) {
-		dmIDs[dmID] = struct{}{}
+	for iter.Scan(&otherID) {
+		otherIDs[otherID] = struct{}{}
 	}
 
 	// list all friends except those in dm's
+	newDMRes := []UserPreview{}
 	for f := 0; f < len(users); f++ {
 		user := users[f]
-		if _, exists := dmIDs[user.User_id]; !exists {
+		if _, exists := otherIDs[user.UserID]; !exists {
 			// if it doesn't exist
-			*newDMRes = append(*newDMRes, user.User_id)
+			newDMRes = append(newDMRes, user)
 		}
 	}
 	
-	return "no error"
+	return newDMRes, "no error"
 }
 
-// not tested
 // not documented
 func NewDMListHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
@@ -389,9 +391,7 @@ func NewDMListHandler(ctx *gin.Context) {
 		log.Panic(err)
 	}
 
-	newDMRes := []int{}
-
-	status := newDMList(userID, &newDMRes, postgres, cassandra)
+	newDMRes, status := newDMList(userID, postgres, cassandra)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": status,
