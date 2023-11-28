@@ -56,4 +56,5 @@ func setupDMs(server *gin.Engine) {
 	server.GET("/getallnewDM/:userID", handlers.NewDMListHandler)
 	server.POST("/senddm/:senderID/:receiverID/:message", handlers.SendDMHandler)
 	server.GET("/getalldm/:userID", handlers.GetDMHandler)
+	server.GET("/newdmlist/:userID", handlers.NewDMListHandler)
 }

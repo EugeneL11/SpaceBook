@@ -44,7 +44,6 @@ func DeletePost(postID gocql.UUID, cassandra *gocql.Session) bool {
 
 // not done
 // not tested
-// not documented
 func DeletePostHandler(ctx *gin.Context) {
 	postID, err := gocql.ParseUUID(ctx.Param("postID"))
 	if err != nil {
@@ -65,7 +64,7 @@ func DeletePostHandler(ctx *gin.Context) {
 
 }
 
-// DeleteUserComments deletes comments made by a user
+// DeleteUserComments deletes all comments made by a user
 func DeleteUserComments(userID int, cassandra *gocql.Session) bool {
 	postToComment := make(map[gocql.UUID][]gocql.UUID)
 	rows := cassandra.Query("SELECT commentID, postID FROM COMMENT WHERE commenter = ? ALLOW FILTERING", userID).Iter()
@@ -224,7 +223,6 @@ func DeleteUser(user_id int, postgres *sql.DB) bool {
 
 // not done
 // not tested
-// not documented
 func DeleteUserHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	postrges := ctx.MustGet("postrges").(*sql.DB)

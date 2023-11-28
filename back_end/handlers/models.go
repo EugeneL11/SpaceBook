@@ -70,6 +70,7 @@ type DMPreview struct {
 	AuthorProfilePath string
 	LastDM            string
 }
+
 type Response struct {
 	Error                string `json:"error"`
 	User_id              int    `json:"id"`
