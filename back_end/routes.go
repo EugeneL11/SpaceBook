@@ -42,5 +42,5 @@ func setupPosts(server *gin.Engine) {
 }
 
 func setupDMs(server *gin.Engine) {
-
+	server.POST("/senddm/:senderID/:receiverID/:message", handlers.SendDMHandler)
 }
