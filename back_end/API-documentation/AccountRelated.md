@@ -82,3 +82,32 @@
     "bio": user's bio
 }
 ```
+
+## Change User Profile Pic (WIP)
+
+-   Use route (PUT): /profilepic/{userID}
+-   Returns a string to indicate success
+    -   "Bad Request", "Internal Server Error" are errors
+    -   "File {file_name} uploaded successfully!" if success, where {file_name} is the name of the file uploaded
+
+## Delete User (WIP)
+
+-   Use route (DELETE): /deleteuser/{user_id}
+-   Intended to only be used by _admins_
+-   Deletes all posts, comments, likes, DMs, friends, and friend requests of the user as well
+-   Returns a JSON to indicate success/failure of deletion:
+
+```json
+{
+    "status": "no error" or "failed to delete %s"
+}
+```
+
+-   Where %s can be any of the following:
+    -   "posts"
+    -   "comments"
+    -   "likes"
+    -   "DMs" (case sensitive)
+    -   "friends"
+    -   "friend requests"
+    -   "user"

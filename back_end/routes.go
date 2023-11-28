@@ -40,7 +40,7 @@ func setupPosts(server *gin.Engine) {
 	server.GET("/gethomepageposts/:user_id", handlers.HomepageHandler)
 	server.POST("/makecomment/:postID/:userID/:comment", handlers.CommentHandler)
 	server.PUT("/likepost/:postID/:userID", handlers.LikePostHandler)
-	server.DELETE("delete/:postID", handlers.DeletePostHandler)
+	server.DELETE("deletepost/:postID", handlers.DeletePostHandler)
 }
 
 func setupDMs(server *gin.Engine) {
