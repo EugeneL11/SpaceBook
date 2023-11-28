@@ -8,13 +8,19 @@ import * as THREE from 'three';
 
 function ResizingCanvas(props) {
     const { gl, size, camera } = useThree();
-
-
+    var glsize
 
     useEffect(() => {
         const handleResize = () => {
             // Update size
-            gl.setSize(300, 300);
+
+            if (window.innerWidth < 1024) {
+                glsize = 150
+            } else {
+                glsize = 270
+            }
+
+            gl.setSize(glsize, glsize);
             camera.aspect = 1;
             camera.updateProjectionMatrix();
 
@@ -37,10 +43,11 @@ function ResizingCanvas(props) {
 }
 
 function PlanetCanvas () {
+
     return (
         <Canvas className="cursor-pointer pt-5 lg:pt-0">
             <Planet planet="pluto"/>
-            <ResizingCanvas className=""/>
+            <ResizingCanvas className=" translate-x-full"/>
         </Canvas>
     );
 }
@@ -153,7 +160,7 @@ function MyProfile(props) {
 
             </div>
 
-            <div>
+            <div className="translate-x-1/3 w-2/3 pl-7 md:pl-36 lg:pl-0 lg:translate-x-0 lg:w-auto">
                 <PlanetCanvas/>
             </div>
 
