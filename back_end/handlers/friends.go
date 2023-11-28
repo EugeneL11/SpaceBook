@@ -33,7 +33,6 @@ func GetFriends(user_id int, postgres *sql.DB) ([]User, string) {
 		)
 	`)
 	if err != nil {
-		fmt.Println(err)
 		return nil, "unable to connect to db"
 	}
 	defer stmt.Close()

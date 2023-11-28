@@ -3,7 +3,9 @@ package handlers
 import (
 	"time"
 	"log"
+	// "encoding/json"
 	"fmt"
+	"database/sql"
 	"strconv"
 	"net/http"
 	"github.com/gin-gonic/gin"
@@ -90,8 +92,8 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 		for iter.Scan(&senders) {
 			break
 		}
-		var message_count int
-		message_count = len(senders)
+
+		message_count := len(senders)
 
 		// close iterator
 		if err := iter.Close(); err != nil {
@@ -105,13 +107,7 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 
 	// if (subset count == 0) or (subset is full)
 	if new_subset_needed {
-		// set subset variables
-		var subsetID gocql.UUID
-		// messages := []string{} 
-		// senders := []int{}
-		// time_sent := []time.Time{}
-
-		subsetID = gocql.TimeUUID()
+		subsetID := gocql.TimeUUID()
 
 		// new subset
 		err := cassandra.Query(
@@ -174,9 +170,7 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 	messages_slice := []string{message}
 	senders_slice := []int{senderID}
 	times_slice := []time.Time{time.Now()}
-
 	
-
 	// send message within subset -> modify table
 	err := cassandra.Query(
 		`
@@ -215,17 +209,131 @@ func SendDMHandler(ctx *gin.Context) {
 	})
 }
 
-// not done
 // not tested
-func GetAllDM(userID int, cassandra *gocql.Session) string {
+func GetAllDM(userID int, usernames *[]string, profile_pics *[]string, recent_messages *[]string, postgres *sql.DB, cassandra *gocql.Session) string {
+
+	// requirements:
+		// profile pic
+		// username
+		// most recent message
+	
+	// get all dm's that user is in
+	iter := cassandra.Query(
+		`
+			SELECT *
+			FROM dmtable
+			WHERE user1 = ? OR user2 = ?
+		`, userID, userID,
+	).Iter()
+
+	var user1 int
+	var user2 int
+	var messageChunks []gocql.UUID
+
+	// for each dm user is in
+	for iter.Scan(&user1, &user2, &messageChunks) {
+		// other user's id
+		otherID := user1
+		if user1 == userID {
+			otherID = user2
+		}
+
+		// username, profile pic path
+		stmt, err := postgres.Prepare(
+			`
+				SELECT user_name, profile_picture_path
+				FROM Users
+				WHERE user_id = $1
+			`,
+		)
+
+		if err != nil {
+			return "unable to connect to db 1"
+		}
+		defer stmt.Close()
+
+		res, err := stmt.Query(otherID)
+		if err != nil {
+			return "unable to connect to db 2"
+		}
+		defer res.Close()
+
+		var userPrev UserPreview
+		for res.Next() {
+			err := res.Scan(
+				&userPrev.Full_name, &userPrev.User_name,
+				&userPrev.Profile_picture_path,
+			)
+			if err != nil {
+				return "unable to connect to db 3"
+			}
+			break
+		}
+
+		recent_message := ""
+
+		// most recent message
+		num_subsets := len(messageChunks)
+		if num_subsets > 0 {
+			// most recent subset
+			recent_subsetID := messageChunks[num_subsets - 1]
+
+			// query subset
+			iter = cassandra.Query(
+				`
+					SELECT messages
+					FROM dmsubset
+					WHERE subsetID = ?
+				`, recent_subsetID,
+			).Iter()
+
+			// most recent messages
+			var messages []string
+			for iter.Scan(&messages) {
+				num_messages := len(messages)
+				recent_message = messages[num_messages - 1]
+				break
+			}
+		}
+
+		// append to arrays
+		*usernames = append(*usernames, userPrev.User_name)
+		*profile_pics = append(*profile_pics, userPrev.Profile_picture_path)
+		*recent_messages = append(*recent_messages, recent_message)
+	}
+	
 	return "no error"
 }
 
-// not done
 // not tested
 // not documented
 func GetDMHandler(ctx *gin.Context) {
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
+	userID, err := strconv.Atoi(ctx.Param("userID"))
+	if err != nil {
+		log.Panic(err)
+	}
 
+	usernames := []string{}
+	profile_pics := []string{}
+	recent_messages := []string{}
+
+	status := GetAllDM(userID, &usernames, &profile_pics, &recent_messages, postgres, cassandra)
+	
+	// usernames_json, err := json.Marshal(usernames)
+	// if err != nil { log.Panic(err) }
+	// profile_pics_json, err := json.Marshal(profile_pics)
+	// if err != nil { log.Panic(err) }
+	// recent_messages_json, err := json.Marshal(recent_messages)
+	// if err != nil { log.Panic(err) }
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+		"usernames": usernames,
+		"profile pics": profile_pics,
+		"recent messages": recent_messages,
+	})
 }
 
 // what do I call these functions??
