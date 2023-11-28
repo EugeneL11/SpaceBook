@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -29,15 +28,14 @@ func GetFriends(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 		)
 	`)
 	if err != nil {
-		fmt.Println(err)
-		return nil, "unable to connect to db"
+		return nil, "unable to connect to db 1"
 	}
 	defer stmt.Close()
 
 	rows, err := stmt.Query(user_id)
 	if err != nil {
 		fmt.Println(err)
-		return nil, "unable to connect to db"
+		return nil, "unable to connect to db 2"
 	}
 	defer rows.Close()
 
@@ -50,7 +48,7 @@ func GetFriends(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 		)
 		if err != nil {
 			fmt.Println(err)
-			return nil, "unable to connect to db"
+			return nil, "unable to connect to db 3"
 		}
 		mySlice = append(mySlice, newUser)
 	}
@@ -77,9 +75,6 @@ func GetFriendsHandler(ctx *gin.Context) {
 		return
 	}
 
-	usersJson, err := json.Marshal(users)
-	log.Println(string(usersJson))
-
 	if err != nil {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error": err,
@@ -88,7 +83,7 @@ func GetFriendsHandler(ctx *gin.Context) {
 	} else {
 		ctx.JSON(http.StatusOK, gin.H{
 			"error": "no error",
-			"users": usersJson,
+			"users": users,
 		})
 	}
 }
