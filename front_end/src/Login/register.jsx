@@ -88,6 +88,8 @@ function Register(props) {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}></input>
                 </div>
+                <h1 className="text-red-500">{errorMessage}</h1>
+
                 <button className="bg-purple-200 px-7 py-3 mt-6 rounded-lg" onClick={registerAction}>
                     Sign Up
                 </button>
@@ -96,7 +98,7 @@ function Register(props) {
             <button className="text-xl mt-12" onClick={toggleLogin}>
                 Log In
             </button>
-            <h1>{errorMessage}</h1>
+            {/* <h1>{errorMessage}</h1> */}
         </div>
     );
 }

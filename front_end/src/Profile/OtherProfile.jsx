@@ -1,15 +1,58 @@
 import { React, useState, useEffect } from "react";
 import Planet from "./Planet.jsx";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import axios from 'axios'
 import currentUser from "../Static";
 import {serverpath} from "../Path.js";
+
+
+import * as THREE from 'three';
+
+function ResizingCanvas(props) {
+    const { gl, size, camera } = useThree();
+    var glsize
+
+    useEffect(() => {
+        const handleResize = () => {
+            // Update size
+
+            if (window.innerWidth < 1024) {
+                glsize = 150
+            } else {
+                glsize = 270
+            }
+
+            gl.setSize(glsize, glsize);
+            camera.aspect = 1;
+            camera.updateProjectionMatrix();
+
+            // Update camera position
+            // camera.position.x = 5;
+            // camera.position.y = 5;
+            // camera.position.z = 5;
+
+            // camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        // Clean up on unmount
+        return () => window.removeEventListener('resize', handleResize);
+    }, [gl, camera]);
+
+    return null;
+}
+
+
 function PlanetCanvas () {
+
     return (
-    <Canvas className="cursor-pointer mt-5 md:mt-0">
-        <Planet planet="mars"/>
-    </Canvas>
-    )
+        <Canvas className="cursor-pointer pt-5 lg:pt-0">
+            <Planet planet="pluto"/>
+            <ResizingCanvas className=" translate-x-full"/>
+        </Canvas>
+    );
 }
 
 function Post(props) {
@@ -26,7 +69,7 @@ function Post(props) {
         setImageNum(nextImage);
     }
     return(
-        <div className="flex flex-col w-11/12 lg:w-5/12 mx-auto mb-10 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
+        <div className="flex flex-col w-11/12 lg:w-7/12 xl:w-5/12 mx-auto mb-10 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
             <div className="relative w-100 h-100">
             {imageNum > 0 ? 
                 // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl top-52 z-40 cursor-pointer hover:text-purple-400" onClick={togglePrevImage}> {"←"} </div> : null
@@ -56,7 +99,9 @@ function Post(props) {
 function OtherProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
-    const dm = props.goDMList
+    const gotothebullshit = props.goDMList
+    // const dm = DMController(toggleHomepage = props.toggleHomepage )
+    // const dm = setScreen(<DMController toggleHomepage={props.toggleHomepage} />);
     const back = props.goBackScreen
 
     const duppy = {
@@ -138,19 +183,16 @@ function OtherProfile(props) {
                     <p>Request orbit buddy</p>
                 </button>
 
-                <button onClick={dm} className="flex flex-row cursor-pointer hover:text-purple-300">
+                <button onClick={gotothebullshit} className="flex flex-row cursor-pointer hover:text-purple-300">
                     <img src="./whitehole.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
                     <p>Launch wormhole chat</p>
                 </button>
 
             </div>
 
-
-
-            <div>
+            <div className="translate-x-1/3 w-2/3 pl-7 md:pl-36 lg:pl-0 lg:translate-x-0 lg:w-auto">
                 <PlanetCanvas/>
             </div>
-
 
             </div>
             {
@@ -159,10 +201,7 @@ function OtherProfile(props) {
                 ) : null
             }
 
-
-
         </div>: null}
-
 
     </div>
         

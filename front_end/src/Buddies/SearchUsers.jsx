@@ -4,11 +4,13 @@ import {serverpath} from "../Path.js";
 import axios from 'axios'
 function Person(props) {
     const user_pic_url = props.user_pic_url
+
     const toggleOtherProfile = () => {
         props.showOtherProfile(props.userID, props.back)
     }
     return (
         <div onClick={toggleOtherProfile} className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
+
             <img 
                 src={props.user_pic_url}
                 alt={props.username} 
@@ -80,9 +82,11 @@ function SearchUsers(props) {
                         back = {toggleSearchUser}
                         showOtherProfile = {toggleOtherProfile}
                         key={index}
+
                         username={person.user_name} 
                         user_pic_url={serverpath + person.profile_picture_path}
                     ></Person> 
+
                 )
             ) : null}
         </div>
