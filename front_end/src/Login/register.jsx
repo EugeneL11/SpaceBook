@@ -1,6 +1,8 @@
 import { React, useState } from "react";
 import currentUser from "../Static.js";
 import axios from "axios";
+import {serverpath} from "../Path.js";
+
 function Register(props) {
     const toggleLogin = props.toggleLogin;
     const toggleHomepage = props.toggleHomepage;
@@ -12,25 +14,29 @@ function Register(props) {
     const [errorMessage, setError] = useState(null);
     const registerAction = () => {
         //ask backend
-        const localhost = "http://localhost:8080";
 
-        const path = `/register/${encodeURIComponent(email)}/${encodeURIComponent(password)}/${encodeURIComponent(
-            fullName
-        )}/${encodeURIComponent(username)}`;
-        axios.post(`${localhost}${path}`).then((res) => {
-            const data = res.data;
-            if (data.error === "email already in use") {
-                setError(data.error);
-            } else if (data.error === "unable to create account at this time") {
-                setError(data.error);
-            } else if (data.error === "user name not available") {
-                setError(data.error);
-            } else {
-                currentUser.userID = data.id;
-                console.log(currentUser.userID);
-                toggleHomepage();
-            }
-        });
+
+        if (username == "" || password == "" || fullName == "" || email == "") {
+            setError("Please Enter Something");
+        } else {
+            const path = `/register/${encodeURIComponent(email)}/${encodeURIComponent(password)}/${encodeURIComponent(
+                fullName
+            )}/${encodeURIComponent(username)}`;
+            axios.post(`${serverpath}${path}`).then((res) => {
+                const data = res.data;
+                if (data.error === "email already in use") {
+                    setError(data.error);
+                } else if (data.error === "unable to create account at this time") {
+                    setError(data.error);
+                } else if (data.error === "user name not available") {
+                    setError(data.error);
+                } else {
+                    currentUser.userID = data.id;
+                    console.log(currentUser.userID);
+                    toggleHomepage();
+                }
+            });
+        }
         /*
         const path = "/testInsert/val"
         fetch(`${localhost}${path}`).then(res => {res.json().then(data =>{
