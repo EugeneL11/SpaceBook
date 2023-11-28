@@ -66,8 +66,19 @@
 ```json
 {
     "status": "bad request" or "no error",
-    "user": null or user's info (another JSON) ,
+    "user": null or user's info (another JSON, refer to below) ,
     "friendstatus": null, "already friends", "viewer sent request", "own profile", or "viewed person sent request",
+}
 
+// User info JSON (all are strings unless specified)
+{
+    "id": user's ID (int),
+    "full_name": user's full name,
+    "user_name": user's username,
+    "email": user's email,
+    "planet": home planet of the user,
+    "profile_picture_path": the file path of the user's pfp,
+    "admin": true if user is an admin, or false otherwise (bool),
+    "bio": user's bio
 }
 ```

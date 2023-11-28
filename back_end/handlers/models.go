@@ -76,6 +76,7 @@ type Response struct {
 	Profile_picture_path string `json:"Profile_picture_path"`
 }
 
+// Designed to be used in handlers, pass in corresponding error message
 func ErrorUserResponse(errorMsg string) Response {
 	return Response{
 		Error:                errorMsg,
@@ -89,6 +90,7 @@ func ErrorUserResponse(errorMsg string) Response {
 	}
 }
 
+// To be used in handlers, pass in User struct containing data to send to front end
 func GoodUserResponse(user User) Response {
 	return Response{
 		Error:                "no error!",
