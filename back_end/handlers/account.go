@@ -194,7 +194,6 @@ func UpdateUserProfile(
 
 // not done
 // not tested
-// not documented
 func UpdateUserProfileHandler(ctx *gin.Context) {
 
 }
@@ -237,6 +236,45 @@ func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 	//return "no error"
 }
 
+func GetUserInfoHandler(ctx *gin.Context) {
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	viewer, err1 := strconv.Atoi(ctx.Param("viewer"))
+	viewed, err2 := strconv.Atoi(ctx.Param("viewed"))
+	if err1 != nil || err2 != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       "bad request",
+			"user":         nil,
+			"friendstatus": nil,
+		})
+		return
+	}
+	var user User
+	result := GetUserInfo(viewed, postgres, &user)
+	if result != "no error" {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       "result",
+			"user":         nil,
+			"friendstatus": nil,
+		})
+		return
+	}
+	status := FriendStatus(viewer, viewed, postgres)
+	if status == "unable to connect to db" {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       status,
+			"user":         nil,
+			"friendstatus": nil,
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":       "no error",
+		"user":         user,
+		"friendstatus": status,
+	})
+}
+
+// Used by GetUserInfoHandler to determine friend status
 func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
 	if viewer == viewed {
 		return "own profile"
@@ -287,42 +325,4 @@ func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
 		return "viewed person sent request"
 	}
 	return "no requests"
-}
-
-func GetUserInfoHandler(ctx *gin.Context) {
-	postgres := ctx.MustGet("postgres").(*sql.DB)
-	viewer, err1 := strconv.Atoi(ctx.Param("viewer"))
-	viewed, err2 := strconv.Atoi(ctx.Param("viewed"))
-	if err1 != nil || err2 != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"status":       "bad request",
-			"user":         nil,
-			"friendstatus": nil,
-		})
-		return
-	}
-	var user User
-	result := GetUserInfo(viewed, postgres, &user)
-	if result != "no error" {
-		ctx.JSON(http.StatusOK, gin.H{
-			"status":       "result",
-			"user":         nil,
-			"friendstatus": nil,
-		})
-		return
-	}
-	status := FriendStatus(viewer, viewed, postgres)
-	if status == "unable to connect to db" {
-		ctx.JSON(http.StatusOK, gin.H{
-			"status":       status,
-			"user":         nil,
-			"friendstatus": nil,
-		})
-		return
-	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"status":       "no error",
-		"user":         user,
-		"friendstatus": status,
-	})
 }

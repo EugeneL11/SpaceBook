@@ -29,15 +29,14 @@ func GetFriends(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 		)
 	`)
 	if err != nil {
-		fmt.Println(err)
-		return nil, "unable to connect to db"
+		return nil, "unable to connect to db 1"
 	}
 	defer stmt.Close()
 
 	rows, err := stmt.Query(user_id)
 	if err != nil {
 		fmt.Println(err)
-		return nil, "unable to connect to db"
+		return nil, "unable to connect to db 2"
 	}
 	defer rows.Close()
 
@@ -50,7 +49,7 @@ func GetFriends(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 		)
 		if err != nil {
 			fmt.Println(err)
-			return nil, "unable to connect to db"
+			return nil, "unable to connect to db 3"
 		}
 		mySlice = append(mySlice, newUser)
 	}
@@ -77,6 +76,7 @@ func GetFriendsHandler(ctx *gin.Context) {
 		return
 	}
 
+	// TODO should marshal be used here?
 	usersJson, err := json.Marshal(users)
 	log.Println(string(usersJson))
 

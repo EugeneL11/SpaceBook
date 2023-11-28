@@ -43,3 +43,42 @@
 
 -   Either error is "unable to find User" or "no error!"
     The rest of the fields are filled out properly if no error
+
+## Update User Profile (WIP):
+
+-   Use path (PUT): /updateuserprofile/{userID}/{newFullName}/{newPlanet}/{newBio}
+-   This allows for updating a given user's fullname, home planet and bio description
+-   Some or all fields can be kept the same
+-   Will return a JSON to indicate success/failure status:
+
+```json
+{
+    "status": "unable to connect to db" or "no error"
+}
+```
+
+## Get Users Info:
+
+-   Use path (GET): /getuserinfo/{viewerID}/{viewedID}
+-   Provide the user IDs of the person viewing and the person whose profile is being viewed
+-   Will return a JSON object of the following format:
+
+```json
+{
+    "status": "bad request" or "no error",
+    "user": null or user's info (another JSON, refer to below) ,
+    "friendstatus": null, "already friends", "viewer sent request", "own profile", or "viewed person sent request",
+}
+
+// User info JSON (all are strings unless specified)
+{
+    "id": user's ID (int),
+    "full_name": user's full name,
+    "user_name": user's username,
+    "email": user's email,
+    "planet": home planet of the user,
+    "profile_picture_path": the file path of the user's pfp,
+    "admin": true if user is an admin, or false otherwise (bool),
+    "bio": user's bio
+}
+```

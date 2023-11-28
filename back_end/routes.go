@@ -54,4 +54,6 @@ func setupDMs(server *gin.Engine) {
 	// gets all friends who you do not have a dm with
 	// idk wtf to name this
 	server.GET("/getallnewDM/:userID", handlers.NewDMListHandler)
+	server.POST("/senddm/:senderID/:receiverID/:message", handlers.SendDMHandler)
+	server.GET("/getalldm/:userID", handlers.GetDMHandler)
 }
