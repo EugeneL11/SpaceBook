@@ -38,6 +38,7 @@ func MakePostHandler(ctx *gin.Context) {
 	})
 }
 
+// Used by homepage handler (below)
 func GetNewPostsFromUser(userID int, userProfilePath string, userName string, date time.Time, cassandra *gocql.Session) ([]PostPreview, error) {
 	// Define the SELECT statement
 	selectStmt := cassandra.Query("SELECT postID, imagePaths,caption, date_posted FROM post WHERE authorID = ? AND date_posted > ? ALLOW FILTERING")
@@ -251,7 +252,6 @@ func UnlikePost(userID int, postID int) string {
 
 // not done
 // not tested
-// not documented
 func UnlikePostHandler(ctx *gin.Context) {
 
 }
