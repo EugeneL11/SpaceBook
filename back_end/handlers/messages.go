@@ -379,7 +379,6 @@ func newDMList(userID int, newDMRes *[]int, postgres *sql.DB, cassandra *gocql.S
 	return "no error"
 }
 
-// not done
 // not tested
 // not documented
 func NewDMListHandler(ctx *gin.Context) {
