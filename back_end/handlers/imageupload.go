@@ -1,25 +1,42 @@
 package handlers
 
 import (
+	"database/sql"
 	"fmt"
 	"io"
 	"mime/multipart"
 	"os"
 	"path/filepath"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gocql/gocql"
+	"github.com/google/uuid"
 )
 
-// not tested
 func DeleteImage(filepath string) error {
 	err := os.Remove(filepath)
 	return err
 }
 
-func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (bool, string) {
+// straight from the big gpt
+func generateUniqueFilename() string {
+	// Generate a unique identifier (UUID)
+	uniqueID := uuid.New()
+
+	// Get the current timestamp
+	timestamp := time.Now().Unix()
+
+	// Combine the unique identifier and timestamp to create a unique filename
+	uniqueFilename := fmt.Sprintf("%s_%d.txt", uniqueID, timestamp)
+
+	return uniqueFilename
+}
+
+func UploadPic(file multipart.File, dir string) (bool, string) {
 	// make random somehow
-	filename := filepath.Join("images", dir, header.Filename)
+	filename := filepath.Join("images", dir, generateUniqueFilename())
 
 	// Create the file on the server
 	out, err := os.Create(filename)
@@ -38,8 +55,9 @@ func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (b
 
 // not done
 // not tested
-func UpdateProfilePath() string {
-	return "no error"
+func UpdateProfilePath(userID int, newPath string, postgres *sql.DB) bool {
+
+	return true
 }
 
 // not done
@@ -47,7 +65,13 @@ func UpdateProfilePath() string {
 // not documented
 func ProfilePicHandler(ctx *gin.Context) {
 	// Parse the form data, limit to 10 MB
-	err := ctx.Request.ParseMultipartForm(10 << 20)
+	userID, err := strconv.Atoi(ctx.Param("userID"))
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	if err != nil {
+		ctx.String(400, "Bad Request")
+		return
+	}
+	err = ctx.Request.ParseMultipartForm(10 << 20)
 	if err != nil {
 		ctx.String(400, "Bad Request")
 		return
@@ -62,21 +86,13 @@ func ProfilePicHandler(ctx *gin.Context) {
 	defer file.Close()
 
 	// Create a unique filename for the uploaded file
-	filename := filepath.Join("images", header.Filename)
-
-	// Create the file on the server
-	out, err := os.Create(filename)
-	if err != nil {
+	success, file_name := UploadPic(file, "users")
+	if !success {
 		ctx.String(500, "Internal Server Error")
 		return
 	}
-	defer out.Close()
-
-	// Copy the file data to the server file
-	_, err = io.Copy(out, file)
-	if err != nil {
+	if !UpdateProfilePath(userID, file_name, postgres) {
 		ctx.String(500, "Internal Server Error")
-		return
 	}
 
 	ctx.String(200, fmt.Sprintf("File %s uploaded successfully!", header.Filename))
@@ -115,7 +131,7 @@ func UploadImagePost(ctx *gin.Context) {
 		return
 	}
 	defer file.Close()
-	success, filename := UploadPic(file, header, "posts")
+	success, filename := UploadPic(file, "posts")
 	if !success {
 		ctx.String(200, "Bad Request")
 		return
