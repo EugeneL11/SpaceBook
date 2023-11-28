@@ -37,7 +37,7 @@
 
 ## Get Friend Requests
 
--   Use path (GET): /friendreqs/{user_id}
+-   Use path (GET): /friendrequests/{user_id}
 -   Will return a JSON with following format:
 
 ```json

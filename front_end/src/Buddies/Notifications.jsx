@@ -78,13 +78,14 @@ function Notifications(props) {
     ] // placeholder for back-end data
 
     //WE ARE GETTING THE FRIEND REQUESTS HERE, TO USE FOR DENYING/ACCEPTING (MUST FIX)
-    const path = `/friendsreqs/${encodeURIComponent(currentUser.userID)}`
+    const path = `/friendrequests/${encodeURIComponent(currentUser.userID)}`
     axios.get(`${serverpath}${path}`).then((res) => {
         const data = res.data
+        console.log(data)
         if (data.status === "no requests") {
-            setRequests(requests)
+            
         } else if (data.status === "pending request") {
-            setRequests(requests)
+            setRequests(data.requests)
         } else {
             console.log("database error")
         }
@@ -129,11 +130,11 @@ function Notifications(props) {
             (request, index) => (
                 <div key={index} className="flex flex-col items-center mb-8">
                     <Request 
-                        username={request.username} 
-                        user_pic_url={request.user_pic_url}
+                        username={request.user_name} 
+                        user_pic_url={serverpath + request.profile_picture_path}
                         denyRequest = {denyRequest}
                         acceptRequest = {acceptRequest}
-                        toggleOtherProfile = {() => {toggleOtherProfile(request.username, toggleNotifications)}}
+                        toggleOtherProfile = {() => {toggleOtherProfile(request.user_name, toggleNotifications)}}
                     ></Request>
                 </div>
             )
