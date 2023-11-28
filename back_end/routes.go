@@ -40,9 +40,18 @@ func setupPosts(server *gin.Engine) {
 	server.GET("/gethomepageposts/:user_id", handlers.HomepageHandler)
 	server.POST("/makecomment/:postID/:userID/:comment", handlers.CommentHandler)
 	server.PUT("/likepost/:postID/:userID", handlers.LikePostHandler)
-	server.DELETE("delete/:postID", handlers.DeletePostHandler)
+	server.DELETE("deletepost/:postID", handlers.DeletePostHandler)
 }
 
 func setupDMs(server *gin.Engine) {
+	// only returns most recent 20-40 messages at size 1, returns 40-60 messages at size 2 etc
+	// will return whether or all the messages have been returned
+	server.GET("/getmessages/:user1/:user2/subset_size", handlers.GetMessagesHandler)
+	server.PUT("/sendmessage/:sender/:reciever/:message", handlers.SendDMHandler)
+	server.GET("/getallchats/:userID", handlers.GetDMHandler)
+	server.POST("/createdm/:user1/:user2", handlers.CreateNewDMHandler)
 
+	// gets all friends who you do not have a dm with
+	// idk wtf to name this
+	server.GET("/getallnewDM/:userID", handlers.NewDMListHandler)
 }
