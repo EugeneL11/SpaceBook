@@ -53,10 +53,40 @@ func UploadPic(file multipart.File, dir string) (bool, string) {
 	return true, filename
 }
 
-// not done
 // not tested
 func UpdateProfilePath(userID int, newPath string, postgres *sql.DB) bool {
+	stmt, err := postgres.Prepare("Select Profile_picture_path from Users WHERE user_id = $1")
+	if err != nil {
+		return false
+	}
+	defer stmt.Close()
 
+	row, err := stmt.Query(userID)
+	if err != nil {
+		return false
+	}
+
+	if row.Next() {
+		var path string
+		row.Scan(&path)
+		if path == "/images/utilties/pp.png" {
+
+		} else if DeleteImage(path) != nil {
+			return false
+		}
+	} else {
+		return false
+	}
+	stmt, err = postgres.Prepare("Update Users set Profile_picture_path = $1 WHERE user_id = $2")
+	if err != nil {
+		return false
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(newPath, userID)
+	if err != nil {
+		return false
+	}
 	return true
 }
 
