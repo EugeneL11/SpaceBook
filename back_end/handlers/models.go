@@ -1,59 +1,70 @@
 package handlers
 
+import "github.com/gocql/gocql"
+
 type User struct {
 	User_id              int    `json:"id"`
 	Full_name            string `json:"full_name"`
 	User_name            string `json:"user_name"`
 	Email                string `json:"email"`
-	Password             int    `json:"password"`
 	Home_planet          string `json:"planet"`
 	Profile_picture_path string `json:"profile_picture_path"`
 	Admin                bool   `json:"admin"`
 	Bio                  string `json:"bio"`
 }
 
-type API_UserInfo struct {
-	User_id              int    `json:"id"`
+type UserPreview struct {
+	UserID               int    `json:"user_id"`
 	Full_name            string `json:"full_name"`
 	User_name            string `json:"user_name"`
-	Email                string `json:"email"`
-	Home_planet          string `json:"planet"`
 	Profile_picture_path string `json:"profile_picture_path"`
-	Admin                bool   `json:"admin"`
-	Bio                  string `json:"bio"`
 }
+
 type Comment struct {
+	CommenterID          int    `json:"commenter_id"`
+	CommenterProfilePath string `json:"commenter_profile_path"`
+	CommenterName        string `json:"commenter_name"`
+	Content              string `json:"content"`
+	Date                 string `json:"date"`
 }
+
 type FullPost struct {
-	AuthorID          int
-	AuthorName        string
-	AuthorProfilePath string
-	Images            []string
-	Comments          []Comment
-	Liked             bool
-	NumLikes          int
+	PostID            gocql.UUID `json:"post_id"`
+	AuthorID          int        `json:"author_id"`
+	AuthorName        string     `json:"author_name"`
+	AuthorProfilePath string     `json:"author_profile_path"`
+	Caption           string     `json:"caption"`
+	Date              string     `json:"date"`
+	Images            []string   `json:"images"`
+	Comments          []Comment  `json:"comments"`
+	Liked             bool       `json:"liked"`
+	NumLikes          int        `json:"num_likes"`
 }
+
 type PostPreview struct {
-	AuthorID          int
-	AuthorName        string
-	AuthorProfilePath string
-	Images            []string
+	PostID            gocql.UUID `json:"post_id"`
+	AuthorID          int        `json:"author_id"`
+	AuthorName        string     `json:"author_name"`
+	AuthorProfilePath string     `json:"author_profile_path"`
+	Caption           string     `json:"caption"`
+	Date              string     `json:"date"`
+	Images            []string   `json:"images"`
 }
-type Message struct {
-	senderID int
-	message  string
-}
-type FullDM struct {
-}
+
+// type Message struct {
+// 	senderID int
+// 	message  string
+// }
+
+// type FullDM struct {
+// }
+
 type DMPreview struct {
 	AuthorID          int
 	AuthorName        string
 	AuthorProfilePath string
 	LastDM            string
 }
-
-// TODO Consider refactoring naming scheme to make things consistent
-// Response is a struct to be returned to the front end by handlers
 type Response struct {
 	Error                string `json:"error"`
 	User_id              int    `json:"id"`
@@ -65,9 +76,9 @@ type Response struct {
 	Profile_picture_path string `json:"Profile_picture_path"`
 }
 
-func ErrorResponse() Response {
+func ErrorUserResponse(errorMsg string) Response {
 	return Response{
-		Error:                "generic error",
+		Error:                errorMsg,
 		User_id:              0,
 		User_name:            "null",
 		Admin:                false,
@@ -78,7 +89,7 @@ func ErrorResponse() Response {
 	}
 }
 
-func GoodResponse(user User) Response {
+func GoodUserResponse(user User) Response {
 	return Response{
 		Error:                "no error!",
 		User_id:              user.User_id,

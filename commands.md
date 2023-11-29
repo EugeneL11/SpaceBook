@@ -32,3 +32,5 @@ For initial setup: Go to the SQL-tables.txt in the back_end/database folder and 
 # To access Cassandra Shell (cqlsh), perform a similar command to the previous one
 
 docker-compose exec cassandra cqlsh cassandra
+
+TODO for setup guide => database initialization

@@ -1,35 +1,33 @@
 CREATE TABLE cassandra.POST(
-    postID int PRIMARY KEY,
-    title text,
+    postID UUID PRIMARY KEY,
     authorID int,
     imagePaths list<text>,
     caption text,
     likes set<int>,
     date_posted TIMESTAMP,
-    comments set<int>,
-    numberLikes int,
-    numberComments int
+    comments set<UUID>
 );
 
 CREATE TABLE cassandra.DMTABLE(
     user1 int,
     user2 int,
-    messageChunks list<int>,
+    messageChunks list<UUID>,
     PRIMARY KEY (user1, user2)
 );
 
 CREATE TABLE cassandra.DMSUBSET(
-    subsetID int PRIMARY KEY,
+    subsetID UUID PRIMARY KEY,
     messages list<text>,
     senders list<int>,
     time_sent list<TIMESTAMP>
 );
 
 CREATE TABLE cassandra.COMMENT(
-    commentID int PRIMARY KEY,
+    commentID UUID PRIMARY KEY,
     commenter int,
     content text,
-    time TIMESTAMP
+    time TIMESTAMP,
+    postID UUID
 );
 
 CREATE TABLE cassandra.WORMHOLE(
@@ -37,4 +35,8 @@ CREATE TABLE cassandra.WORMHOLE(
     user2 int,
     messages list<text>,
     PRIMARY KEY (user1, user2)
+);
+CREATE TABLE cassandra.COOKIE(
+    machineID text PRIMARY KEY,
+    userID int
 );

@@ -5,8 +5,8 @@ function ImageDemo() {
     const [image, setImage] = useState(null);
 
     // change these
-    const localhost = "https://space-book-pied.vercel.app";
-    const path = "/upload";
+    const localhost = "http://localhost:8080";
+    const path = `/uploadpostimage/${encodeURIComponent("b86e1293-8bee-11ee-b365-0242ac120004")}`;
 
     const uploadTest = () => {
         const formData = new FormData();
