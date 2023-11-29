@@ -1,5 +1,7 @@
 import { React, useState,useEffect } from "react";
 import axios from 'axios'
+import currentUser from "../Static";
+import { serverpath } from "../Path";
 function Friend(props) {
     const removeFriendEvent = () => {
         props.removeFriend(props.username)
@@ -52,7 +54,12 @@ function FriendsList(props) {
             user_pic_url: "./jupiter.jpg"
         },
 
-    ] // placeholder for back-end data
+        ] // placeholder for back-end data
+        const path = `/friends/${encodeURIComponent(currentUser.userID)}`
+        axios.get(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            console.log(data)
+        })
 
         // ask back-end for friends list
         setFriends(friendstest)
