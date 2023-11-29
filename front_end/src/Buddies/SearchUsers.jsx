@@ -40,6 +40,13 @@ function SearchUsers(props) {
 
 
     },[])
+    const handleKeyPress = (event) => {
+        // Check if the Enter key was pressed (key code 13)
+        if (event.key === 'Enter') {
+            // Trigger the button click action
+            searchQuery();
+        }
+    };
 
     function searchQuery() {
         if (searchTerm === "") {
@@ -65,7 +72,8 @@ function SearchUsers(props) {
                     type="text" 
                     value={searchTerm} 
                     onChange={e => setSearchTerm(e.target.value)}
-                    className="w-full p-2 rounded-bl-md rounded-tl-md text-black"
+                    onKeyPress={handleKeyPress}
+                    className="w-full p-2 rounded-bl-md rounded-tl-md text-black border-1 border-white focus:outline-none focus:border-gray-500 focus:ring-0"
                 ></input>
                 <div className="relative inset-y-0 right-0 flex items-center px-3 bg-white rounded-tr-md rounded-br-md" onClick={searchQuery}>
                     <img
