@@ -139,7 +139,6 @@ function OtherProfile(props) {
 
     function sendOrbit() {
         const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
-//        const path = `/sendfriendreq/3/1`
         axios.post(`${serverpath}${path}`).then(res => {
             const data = res.data
             console.log(data)
