@@ -42,7 +42,6 @@ func CreateNewDM(user1 int, user2 int, cassandra *gocql.Session) bool {
 
 // not done
 // not tested
-// not documented
 func CreateNewDMHandler(ctx *gin.Context) {
 	user1, err1 := strconv.Atoi(ctx.Param("user1"))
 	user2, err2 := strconv.Atoi(ctx.Param("user2"))
@@ -224,7 +223,6 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 	return "no error"
 }
 
-// not documented
 func SendDMHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	senderID, err := strconv.Atoi(ctx.Param("senderID"))
@@ -339,7 +337,6 @@ func GetAllDM(userID int, usernames *[]string, profile_pics *[]string, recent_me
 }
 
 // not tested
-// not documented
 func GetDMHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
@@ -415,7 +412,6 @@ func newDMList(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserPr
 	return newDMRes, "no error"
 }
 
-// not documented
 func NewDMListHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
@@ -470,11 +466,10 @@ func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session,
 
 // not done
 // not tested
-// not documented
 func GetMessagesHandler(ctx *gin.Context) {
 	user1, err1 := strconv.Atoi(ctx.Param("user1"))
 	user2, err2 := strconv.Atoi(ctx.Param("user2"))
-	subsetSize, err3 := strconv.Atoi(ctx.Param("user2"))
+	subsetSize, err3 := strconv.Atoi(ctx.Param("subset_size"))
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	if err2 != nil || err1 != nil || err3 != nil {
 		// send error
