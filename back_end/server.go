@@ -35,7 +35,7 @@ func main() {
 	server.ForwardedByClientIP = true
 	server.SetTrustedProxies([]string{"127.0.0.1"}) // Add any other needed IPs
 	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8080", "http://client", "https://client", "https://localhost:8080"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8080", "http://client", "https://client", "https://localhost:8080", "https://space-book-pied.vercel.app/"},
 		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "DELETE", "OPTIONS", "HEAD"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-CSRF-Token"},
 		ExposeHeaders:    []string{"Content-Length"},
