@@ -16,10 +16,10 @@ function Login(props) {
             setError("Please Enter Something");
         } else {
             const res = await axios.get(
-                `${serverpath}/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
+                `${serverpath}/login/${username}/${password}`
             );
             const data = res.data;
-            // console.log(data);
+            console.log(data);
             if (data.error == "unable to find User") {
                 setError("username or password incorrect");
             } else {
