@@ -1,5 +1,7 @@
 import { React, useState } from "react";
 import currentUser from "../Static.js";
+import { serverpath } from "../Path.js";
+
 import axios from "axios";
 function Register(props) {
     const toggleLogin = props.toggleLogin;
@@ -17,7 +19,7 @@ function Register(props) {
         const path = `/register/${encodeURIComponent(email)}/${encodeURIComponent(password)}/${encodeURIComponent(
             fullName
         )}/${encodeURIComponent(username)}`;
-        axios.post(`${localhost}${path}`).then((res) => {
+        axios.post(`${serverpath}${path}`).then((res) => {
             const data = res.data;
             if (data.error === "email already in use") {
                 setError(data.error);
