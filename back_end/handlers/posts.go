@@ -244,18 +244,6 @@ func LikePostHandler(ctx *gin.Context) {
 	})
 }
 
-// not done
-// not tested
-func UnlikePost(userID int, postID int) string {
-	return "no error"
-}
-
-// not done
-// not tested
-func UnlikePostHandler(ctx *gin.Context) {
-
-}
-
 func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql.Session) bool {
 	currTime := time.Now()
 	commentID := gocql.TimeUUID()
