@@ -225,7 +225,7 @@ func DeleteUser(user_id int, postgres *sql.DB) bool {
 // not tested
 func DeleteUserHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
-	postrges := ctx.MustGet("postrges").(*sql.DB)
+	postgres := ctx.MustGet("postgres").(*sql.DB)
 	userID, err := strconv.Atoi(ctx.Param("userID"))
 	if err != nil {
 		// send message
@@ -251,17 +251,17 @@ func DeleteUserHandler(ctx *gin.Context) {
 		// send message
 		return
 	}
-	result = DeleteUserFriends(userID, postrges)
+	result = DeleteUserFriends(userID, postgres)
 	if !result {
 		// send message
 		return
 	}
-	result = DeleteUserRequests(userID, postrges)
+	result = DeleteUserRequests(userID, postgres)
 	if !result {
 		// send message
 		return
 	}
-	result = DeleteUser(userID, postrges)
+	result = DeleteUser(userID, postgres)
 	if !result {
 		// send message
 		return
