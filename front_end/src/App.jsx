@@ -115,7 +115,7 @@ function App() {
             {navBar ? <Navbar clickHandlers={clickHandlers} /> : null}
             <div className={navBar ? "mt-20" : "mt=0"}>{screen}</div>
         </div>
-        //  <ImageDemo/>
+        //<ImageDemo/>
     );
 }
 
