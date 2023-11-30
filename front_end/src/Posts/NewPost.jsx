@@ -1,45 +1,7 @@
 import { React, useState, useRef } from "react";
 import axios from 'axios'
 import currentUser from "../Static";
-
-function UploadImage(props) {
-    const [selectedImage, setSelectedImage] = useState(null);
-    const fileInputRef = useRef(null);
-    const saveEvent = props.saveEvent
-    const defaultImage = (props.image == null) 
-    ? ("http://localhost:8080/images/header.jpg") : (props.image);
-    const handleAreaClick = () => {
-      fileInputRef.current.click();
-    };
-  
-    const handleFileInputChange = (e) => {
-      const file = e.target.files[0];
-      saveEvent(file);
-      previewImage(file);
-    };
-  
-    const previewImage = (file) => {
-      const reader = new FileReader();
-  
-      reader.onload = () => {
-        setSelectedImage(reader.result);
-      };
-  
-      reader.readAsDataURL(file);
-    };
-  
-    return (
-      <div className= "upload_image">
-          <div className='image_space'>
-         <img src={selectedImage ? (selectedImage):(defaultImage)} alt="Selected" className="preview_image" />
-        </div>
-        <button onClick={handleAreaClick}> Upload image
-        <input type="file" ref={fileInputRef} onChange={handleFileInputChange} style={{ display: 'none' }} />
-        </button>
-      </div>
-    );
-  }
-
+import ImageDemo from "../ImageDemo";
 function NewPost(props) {
     const toggleHomepage = props.toggleHomepage
 
@@ -51,37 +13,35 @@ function NewPost(props) {
         images: ["./swag.jpg", "./ayylmao.webp"],
         videos: [],
     }
-
-    const imageCount = examplePost.images.length;
     const [imageNum,setImageNum] = useState(0)
     const [images, setImages] = useState([])
     const [selectedImage, setSelectedImage] = useState(null)
     const fileInputRef = useRef(null)
-    const uploadImage = () => {
-        fileInputRef.current.click()
-    }
+
     const toggleNextImage = () =>{
-        const nextImage = imageNum + 1;
+
+        let nextImage = imageNum + 1;
+        if(nextImage >= images.length){
+            nextImage--;
+        }
+        console.log(imageNum)
+
         setImageNum(nextImage);
     }
     const togglePrevImage = () =>{
-        const nextImage = imageNum - 1;
+        let nextImage = imageNum - 1;
+        if(nextImage < 0){
+            nextImage++;
+        }
+        console.log(imageNum)
+
         setImageNum(nextImage);
     }
 
-    const imageUpload = (event) => {
-        const file = event.target.files[0];
+    const imageUpload = (file) => {
         const newImages = [...images, file]
         setImages(newImages)
     };
-
-    function previewImage(file){
-        const reader = new FileReader();
-        reader.onload = () => {
-            setSelectedImage(reader.result)
-        }
-        reader.readAsDataURL(file)
-    }
     function makePost() {
 
     }
@@ -99,13 +59,15 @@ function NewPost(props) {
                 <textarea className="form-textarea border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" rows="3" placeholder=" Write a caption..."></textarea>
             
                 <div className="mt-4">Add images </div>
-                <input onChange={imageUpload} ref={fileInputRef} type="file" class="form-input text-sm"></input>
-                <button onClick={uploadImage}>Upload</button>
+          
+
+                 <ImageDemo saveEvent = {imageUpload} image = {images[imageNum]}/> 
+               
 
                 <div className="relative w-100 h-100 mt-4 border-black border-2">
-                <UploadImage saveEvent ={ imageUpload}/>
                 </div>
-
+                <button onClick={toggleNextImage}> Next </button>
+                <button onClick={togglePrevImage}> Back </button>
                 <button className="bg-red-300 hover:bg-red-400 px-2 py-1 mt-4 w-fit self-center rounded-md text-sm">Remove Selected Image</button>
 
                 <button onClick={makePost} className="bg-purple-300 hover:bg-purple-400 px-5 py-2 mt-5 w-fit self-center rounded-lg">Post!</button>

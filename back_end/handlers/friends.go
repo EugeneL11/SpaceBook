@@ -64,8 +64,6 @@ func GetFriendsHandler(ctx *gin.Context) {
 		return
 	}
 
-	var users []UserPreview
-
 	users, err2 := GetFriends(user_id, postgres)
 	if err2 != "no error" {
 		ctx.JSON(http.StatusOK, gin.H{
