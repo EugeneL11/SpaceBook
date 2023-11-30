@@ -78,7 +78,7 @@ function FriendsList(props) {
                                 username={friend.user_name} 
                                 user_pic_url={serverpath + friend.profile_picture_path}
                                 removeFriend = {() => removeFriend(friend.user_id)}
-                                toggleOtherProfile = {() => {toggleOtherProfile(friend.user_name, toggleFriendsList)}}
+                                toggleOtherProfile = {() => {toggleOtherProfile(friend.user_id, toggleFriendsList)}}
                             ></Friend>
                         </div>
                     )

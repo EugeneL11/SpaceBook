@@ -32,6 +32,7 @@ function SearchUsers(props) {
     const toggleOtherProfile = props.toggleOtherProfile
     const toggleSearchUser = props.toggleSearchUser
 
+    const [noMatch, setNoMatch] = useState("")
     const [searchTerm, setSearchTerm] = useState("")
     const [people, setPeople] = useState(null)
 
@@ -52,12 +53,17 @@ function SearchUsers(props) {
         if (searchTerm === "") {
             return //maybe error message(?)
         }
+        setNoMatch("")
         axios.get(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
             const data = res.data
             console.log(data)
             if (data.error === "no error") {
                 console.log(data.userPreviews[0].profile_picture_path)
                 setPeople(data.userPreviews)
+                setNoMatch("")
+            } else if (data.error === "no users found") {
+                setNoMatch("No Match Found")
+                setPeople(null)
             } //catch errors later
         })
     }
@@ -83,6 +89,12 @@ function SearchUsers(props) {
                     ></img>
                 </div>
             </div>
+            {(noMatch === "No Match Found") ? 
+                <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
+                    {noMatch}
+                </div> 
+                : null
+            }
             {people ? people.map(
                 (person, index) => (
                     <Person

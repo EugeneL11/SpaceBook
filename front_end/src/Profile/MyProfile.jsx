@@ -4,6 +4,7 @@ import Planet from "./Planet.jsx";
 import { Canvas, useThree} from "@react-three/fiber";
 import axios from 'axios'
 import * as THREE from 'three';
+import { serverpath } from "../Path.js";
 
 function ResizingCanvas(props) {
     const { gl, size, camera } = useThree();
@@ -116,9 +117,15 @@ function MyProfile(props) {
     const examplePosts =[ examplePost,examplePost]
     useEffect(() => {
         // ask bak end for user
-         setUser(duppy)
-         // ask back end for post
-         setPosts(examplePosts);
+        const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(currentUser.userID)}`
+        axios.get(`${serverpath}${path}`).then(res => {
+            const data = res.data
+            if ((data.status === "no error") && (data.friendstatus === "own profile")) {
+                setUser(data.user)
+            }
+        })
+        // ask back end for post
+        setPosts(examplePosts);
     }, [])
 
     return (
@@ -136,11 +143,11 @@ function MyProfile(props) {
 
                 <div className="flex flex-row mb-4 align-middle">
 
-                    <img src={user.pfp} alt="My Profile Picture" className="w-20 aspect-square rounded-full"/>
+                    <img src={serverpath + user.profile_picture_path} alt="My Profile Picture" className="w-20 aspect-square rounded-full"/>
 
                     <div className="flex flex-col ml-4 justify-center align-middle">
-                        <p className="text-xl">{user.username}</p>
-                        <p>from {user.homePlanet}</p>
+                        <p className="text-xl">{user.user_name}</p>
+                        <p>from {user.planet}</p>
                     </div>
 
                 </div>
@@ -171,10 +178,7 @@ function MyProfile(props) {
                 ) : null
             }
 
-
-
         </div>: null}
-
 
     </div>
         
