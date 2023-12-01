@@ -74,6 +74,8 @@ function NewPost(props) {
                 console.log(imageData)
             }
         }
+        
+        //take to homepage
     }
     
     return (
