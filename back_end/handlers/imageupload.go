@@ -34,7 +34,7 @@ func generateUniqueFilename() string {
 	return uniqueFilename
 }
 
-func UploadPic(file multipart.File, dir string) (bool, string) {
+func UploadPic(file multipart.File, dir string), head (bool, string) {
 	// make random somehow
 	filename := filepath.Join("images", dir, generateUniqueFilename())
 
