@@ -4,8 +4,6 @@ import { serverpath } from "./Path";
 
 function ImageDemo(props) {
 
-console.log("hi")
-
     const [image, setImage] = useState(null);
     const [previewImage, setPreview] = useState(null)
     const saveEvent = props.saveEvent
