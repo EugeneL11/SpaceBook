@@ -143,7 +143,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 			}
 		}
 		post.NumLikes = len(likes)
-		stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
+		stmt, err := postgres.Prepare("select user_name, profile_picture_path from users where user_id = $1")
 		if err != nil {
 			return "unable to connect to db 1"
 		}
