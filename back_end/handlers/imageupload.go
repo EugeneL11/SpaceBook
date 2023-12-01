@@ -4,8 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
+	"mime"
 	"mime/multipart"
+	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -19,9 +22,30 @@ func DeleteImage(filepath string) error {
 	err := os.Remove(filepath)
 	return err
 }
+func getFileExtension(file multipart.File) string {
+	fileHeader := make([]byte, 512) // Read the first 512 bytes to detect the file type
+	_, err := file.Read(fileHeader)
+	if err != nil {
+		fmt.Println("Error reading file header:", err)
+		return ""
+	}
+
+	fileType := http.DetectContentType(fileHeader)
+	switch fileType {
+	case "image/jpeg":
+		return "jpg"
+	case "image/png":
+		return "png"
+	// Add more cases for other file types if needed
+	default:
+		// If the file type is not recognized, you can use the file name to extract the extension
+		_, fileHeaderParams, _ := mime.ParseMediaType(fileType)
+		return path.Ext(fileHeaderParams["name"])
+	}
+}
 
 // straight from the big gpt
-func generateUniqueFilename() string {
+func generateUniqueFilename(ext string) string {
 	// Generate a unique identifier (UUID)
 	uniqueID := uuid.New()
 
@@ -29,14 +53,14 @@ func generateUniqueFilename() string {
 	timestamp := time.Now().Unix()
 
 	// Combine the unique identifier and timestamp to create a unique filename
-	uniqueFilename := fmt.Sprintf("%s_%d.txt", uniqueID, timestamp)
+	uniqueFilename := fmt.Sprintf("%s_%d.%s", uniqueID, timestamp, ext)
 
 	return uniqueFilename
 }
 
-func UploadPic(file multipart.File, dir string) (bool, string) {
+func UploadPic(file multipart.File, dir string, ext string) (bool, string) {
 	// make random somehow
-	filename := filepath.Join("images", dir, generateUniqueFilename())
+	filename := filepath.Join("images", dir, generateUniqueFilename(ext))
 
 	// Create the file on the server
 	out, err := os.Create(filename)
@@ -115,9 +139,9 @@ func ProfilePicHandler(ctx *gin.Context) {
 		return
 	}
 	defer file.Close()
-
+	fileExt := getFileExtension(file)
 	// Create a unique filename for the uploaded file
-	success, file_name := UploadPic(file, "users")
+	success, file_name := UploadPic(file, "users", fileExt)
 	if !success {
 		ctx.String(500, "Internal Server Error")
 		return
@@ -161,7 +185,8 @@ func UploadImagePost(ctx *gin.Context) {
 		return
 	}
 	defer file.Close()
-	success, filename := UploadPic(file, "posts")
+	fileExt := getFileExtension(file)
+	success, filename := UploadPic(file, "posts", fileExt)
 	if !success {
 		ctx.String(400, "Bad Request")
 		return
