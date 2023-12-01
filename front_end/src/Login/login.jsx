@@ -10,23 +10,26 @@ function Login(props) {
     const [password, setPassword] = useState("");
 
     const [errorMessage, setError] = useState("");
-    const loginAction = async () => {
+    const loginAction = () => {
         //ask backend
         if (username == "" || password == "") {
             setError("Please Enter Something");
-        } else {
-            const res = await axios.get(
-                `${serverpath}/login/${username}/${password}`
-            );
-            const data = res.data;
-            console.log(data);
-            if (data.error == "unable to find User") {
-                setError("username or password incorrect");
-            } else {
-                currentUser.userID = data.id;
-         
-                toggleHomepage();
-            }
+            return;
+        } 
+        else {
+            const path = `/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`;
+            console.log(`${serverpath}${path}`)
+            axios.get(`${serverpath}${path}`).then(res => {
+                const data = res.data;
+                console.log(res);
+                if (data.error == "unable to find User") {
+                    setError("username or password incorrect");
+                } else {
+                    currentUser.userID = data.id;
+                    console.log(currentUser.userID);
+                    toggleHomepage();
+                }
+            })
         }
     };
 
