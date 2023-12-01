@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from "react";
-import {userID} from "../Static.js"
+import currentUser, {userID} from "../Static.js"
 import axios from 'axios'
+import { serverpath } from "../Path.js";
 
 function Post(props) {
     const imageCount = props.post.images.length;
@@ -107,6 +108,11 @@ function Homepage(props) {
     const examplePosts = [examplePost, examplePost];
 
     useEffect(() => {
+        const path = `/homepageposts/${encodeURIComponent(currentUser.userID)}`
+        axios.get(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            console.log(data)
+        })
          // ask back end for post
          setPosts(examplePosts);
     }, [])

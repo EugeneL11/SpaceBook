@@ -63,6 +63,8 @@ function NewPost(props) {
         if (data.status === "no error") {
             console.log(data.post_id)
             setPostID(data.post_id)
+        } else {
+            console.log(data.status)
         }
         for (let i = 0; i < 5; i++) {
             if (images[i] !== null) {

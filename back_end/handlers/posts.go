@@ -16,7 +16,7 @@ func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID,
 	postID := gocql.TimeUUID()
 	time := time.Now()
 	insertStmt := cassandra.Query(`INSERT INTO Post (postID, caption, authorID, comments, date_posted, imagepaths, 
-		likes, numbercomments, numberlikes) VALUES (?, ?, ?, {}, ?, [], {}, 0, 0 )`)
+		likes) VALUES (?, ?, ?, {}, ?, [], {} )`)
 
 	if err := insertStmt.Bind(postID, caption, userID, time).Exec(); err != nil {
 		return gocql.UUID{}, "unable to connect to db"
