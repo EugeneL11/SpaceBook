@@ -71,7 +71,7 @@ func GetNewPostsFromUser(userID int, userProfilePath string, userName string, da
 
 func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *gocql.Session) ([]PostPreview, string) {
 	stmt, err := postgres.Prepare(`Select user2_id from orbit_buddies where user1_id = $1 union 
-	select user2_id from orbit_buddies where user1_id = $1`)
+	select user1_id from orbit_buddies where user2_id = $1`)
 	if err != nil {
 		return nil, "unable to connect to db"
 	}
