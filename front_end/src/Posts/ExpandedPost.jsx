@@ -62,6 +62,15 @@ function ExpandedPost(props) {
         toggleHomepage();
     }
 
+    const [isLiked, setIsLiked] = useState(false);
+    
+    const handleClick = () => {
+        if (!isLiked) {
+        setIsLiked(true);
+        // Perform any additional actions when liked
+        }
+    };
+
     return (
     <>
     {post === null ? <div></div> : (
@@ -95,6 +104,19 @@ function ExpandedPost(props) {
                 </div>
 
                 <div className="flex flex-col w-full bg-purple-200 rounded-xl p-2 my-5">
+                    <div className="flex justify-between">
+                        <div>156 Likes</div>
+                        <div
+                            className="cursor-pointer transition duration-300 ease-in-out"
+                            onClick={handleClick}
+                            >
+                            <img
+                                src={isLiked ? 'redHeart.png' : 'blackHeart.png'}
+                                alt="Heart"
+                                className="h-8 w-8"
+                            />
+                        </div>
+                    </div>
                     <div className="flex w-full bg-purple-300 rounded-lg p-2 my-2">
                         <input  
                             className="w-full bg-transparent border-b-2 border-gray-600 focus:outline-none focus:border-gray-300 focus:ring-0 text-black placeholder-gray-500"
