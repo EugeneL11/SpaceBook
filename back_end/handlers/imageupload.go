@@ -58,9 +58,9 @@ func generateUniqueFilename(ext string) string {
 	return uniqueFilename
 }
 
-func UploadPic(file multipart.File, dir string, ext string) (bool, string) {
+func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (bool, string) {
 	// make random somehow
-	filename := filepath.Join("images", dir, generateUniqueFilename(ext))
+	filename := filepath.Join("images", dir, header.Filename)
 
 	// Create the file on the server
 	out, err := os.Create(filename)
@@ -139,9 +139,8 @@ func ProfilePicHandler(ctx *gin.Context) {
 		return
 	}
 	defer file.Close()
-	fileExt := getFileExtension(file)
 	// Create a unique filename for the uploaded file
-	success, file_name := UploadPic(file, "users", fileExt)
+	success, file_name := UploadPic(file, header, "users")
 	if !success {
 		ctx.String(500, "Internal Server Error")
 		return
@@ -185,8 +184,7 @@ func UploadImagePost(ctx *gin.Context) {
 		return
 	}
 	defer file.Close()
-	fileExt := getFileExtension(file)
-	success, filename := UploadPic(file, "posts", fileExt)
+	success, filename := UploadPic(file, header, "posts")
 	if !success {
 		ctx.String(400, "Bad Request")
 		return
