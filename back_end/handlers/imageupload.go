@@ -60,9 +60,12 @@ func generateUniqueFilename(ext string) string {
 
 func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (bool, string) {
 	// make random somehow
-	filename := filepath.Join("images", dir, header.Filename)
+	fileExt := filepath.Ext(header.Filename)
+
+	filename := filepath.Join("images", dir, generateUniqueFilename(fileExt))
 
 	// Create the file on the server
+
 	out, err := os.Create(filename)
 	if err != nil {
 		return false, ""
