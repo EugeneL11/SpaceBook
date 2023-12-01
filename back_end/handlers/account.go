@@ -192,9 +192,24 @@ func UpdateUserProfile(
 	return "no error"
 }
 
-// not done
 // not tested
 func UpdateUserProfileHandler(ctx *gin.Context) {
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	userID, err1 := strconv.Atoi(ctx.Param("userID"))
+	newName := ctx.Param("newFullName")
+	newPlanet := ctx.Param("newPlanet")
+	newBio := ctx.Param("newBio")
+
+	if err1 != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to parse input",
+		})
+		return
+	}
+	status := UpdateUserProfile(userID, newName, newPlanet, newBio, postgres)
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+	})
 
 }
 

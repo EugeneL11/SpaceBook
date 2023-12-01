@@ -117,10 +117,8 @@ func UpdateProfilePath(userID int, newPath string, postgres *sql.DB) bool {
 	return true
 }
 
-// not done
 // not tested
-// not documented
-// TODO: Rename files to match user ID
+// Handles API call for changing a user's pfp
 func ProfilePicHandler(ctx *gin.Context) {
 	// Parse the form data, limit to 10 MB
 	userID, err := strconv.Atoi(ctx.Param("userID"))
@@ -142,6 +140,7 @@ func ProfilePicHandler(ctx *gin.Context) {
 		return
 	}
 	defer file.Close()
+
 	// Create a unique filename for the uploaded file
 	success, file_name := UploadPic(file, header, "users")
 	if !success {

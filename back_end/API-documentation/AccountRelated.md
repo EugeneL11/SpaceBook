@@ -44,7 +44,7 @@
 -   Either error is "unable to find User" or "no error!"
     The rest of the fields are filled out properly if no error
 
-## Update User Profile (WIP):
+## Update User Profile:
 
 -   Use path (PUT): /updateuserprofile/{userID}/{newFullName}/{newPlanet}/{newBio}
 -   This allows for updating a given user's fullname, home planet and bio description
@@ -53,7 +53,7 @@
 
 ```json
 {
-    "status": "unable to connect to db" or "no error"
+    "status": "unable to parse input", "unable to connect to db", or "no error"
 }
 ```
 
@@ -83,7 +83,7 @@
 }
 ```
 
-## Change User Profile Pic (WIP)
+## Change User Profile Pic
 
 -   Use route (PUT): /profilepic/{userID}
 -   Returns a string to indicate success
