@@ -38,13 +38,13 @@ function ExpandedPost(props) {
     const [userComment, setUserComment] = useState(null);
     const [userCommentValue, setUserCommentValue] = useState("");
 
+    const path = `/postdetails/${encodeURIComponent(props.postID)}/${encodeURIComponent(currentUser.userID)}`
+
     useEffect(() => {
-        const path = `/postdetails/${encodeURIComponent(props.postID)}/${encodeURIComponent(currentUser.userID)}`
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
             console.log(data)
             setPost(data.post)
-            console.log(data.post.comments)
             setUserComment(data.post.comments);
         })
         // ask back end for post
@@ -68,6 +68,13 @@ function ExpandedPost(props) {
             const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
             setUserComment(newArr)
             setUserCommentValue("")
+        })
+
+        axios.get(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            setPost(data.post)
+            setUserComment(data.post.comments);
+            console.log(data.post.comments)
         })
 
 //        const newArr = [...userComment, {username: currentUser.userID, content: userCommentValue}]
