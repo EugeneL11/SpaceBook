@@ -71,13 +71,6 @@ type Message struct {
 // type FullDM struct {
 // }
 
-type DMPreview struct {
-	AuthorID          int    `json:"id"`
-	AuthorName        string `json:"username"`
-	AuthorProfilePath string `json:"profile_path"`
-	LastDM            string `json:"recentdm"`
-}
-
 type Response struct {
 	Error                string `json:"error"`
 	User_id              int    `json:"id"`
