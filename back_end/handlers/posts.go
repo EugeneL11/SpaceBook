@@ -133,7 +133,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 	iter := stmt.Bind(postID).Iter()
 	post.PostID = postID
 	var likes []int
-	var comments []int
+	var comments []gocql.UUID
 	var postDate time.Time
 	if iter.Scan(&post.AuthorID, &post.Caption, &post.Images,
 		&postDate, &comments, &likes) {
