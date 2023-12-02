@@ -102,7 +102,7 @@
 }
 ```
 
-## Unlike Post (not done)
+## Unlike Post (not intended for release v1.0)
 
 -   Use path (POST): /unlikepost/{postID}/{userID}
 -   Will return a JSON with the following content:
