@@ -210,28 +210,55 @@ func SendDMHandler(ctx *gin.Context) {
 }
 
 // not tested
-func GetAllDM(userID int, usernames *[]string, profile_pics *[]string, recent_messages *[]string, postgres *sql.DB, cassandra *gocql.Session) string {
-
-	// requirements:
-		// profile pic
-		// username
-		// most recent message
-	
-	// get all dm's that user is in
-	iter := cassandra.Query(
-		`
-			SELECT *
-			FROM dmtable
-			WHERE user1 = ? OR user2 = ?
-		`, userID, userID,
-	).Iter()
+func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMPreview, string) {
 
 	var user1 int
 	var user2 int
 	var messageChunks []gocql.UUID
 
-	// for each dm user is in
+	var userDMPrev UserDMPreview
+	allDMRes := []UserDMPreview{}
+
+	user1_slice := []int{}
+	user2_slice := []int{}
+	messageChunks_slice := [][]gocql.UUID{}
+	
+	// get all dm's that user is in -> part 1
+	iter := cassandra.Query(
+		`
+			SELECT *
+			FROM dmtable
+			WHERE user1 = ?
+		`, userID,
+	).Iter()
+
 	for iter.Scan(&user1, &user2, &messageChunks) {
+		user1_slice = append(user1_slice, user1)
+		user2_slice = append(user2_slice, user2)
+		messageChunks_slice = append(messageChunks_slice, messageChunks)
+	}
+
+	// get all dm's that user is in -> part 2
+	iter = cassandra.Query(
+		`
+			SELECT *
+			FROM dmtable
+			WHERE user2 = ?
+		`, userID,
+	).Iter()
+
+	for iter.Scan(&user1, &user2, &messageChunks) {
+		user1_slice = append(user1_slice, user1)
+		user2_slice = append(user2_slice, user2)
+		messageChunks_slice = append(messageChunks_slice, messageChunks)
+	}
+
+	// for each dm user is in
+	for i := 0; i < len(user1_slice); i++ {
+		user1 = user1_slice[i]
+		user2 = user2_slice[i]
+		messageChunks = messageChunks_slice[i]
+
 		// other user's id
 		otherID := user1
 		if user1 == userID {
@@ -241,31 +268,32 @@ func GetAllDM(userID int, usernames *[]string, profile_pics *[]string, recent_me
 		// username, profile pic path
 		stmt, err := postgres.Prepare(
 			`
-				SELECT user_name, profile_picture_path
+				SELECT user_id, user_name, profile_picture_path
 				FROM Users
 				WHERE user_id = $1
 			`,
 		)
 
 		if err != nil {
-			return "unable to connect to db 1"
+			return nil, "unable to connect to db 1"
 		}
 		defer stmt.Close()
 
 		res, err := stmt.Query(otherID)
 		if err != nil {
-			return "unable to connect to db 2"
+			return nil, "unable to connect to db 2"
 		}
 		defer res.Close()
 
 		var userPrev UserPreview
 		for res.Next() {
 			err := res.Scan(
-				&userPrev.Full_name, &userPrev.User_name,
+				&userPrev.UserID,
+				&userPrev.User_name,
 				&userPrev.Profile_picture_path,
 			)
 			if err != nil {
-				return "unable to connect to db 3"
+				return nil, "unable to connect to db 3"
 			}
 			break
 		}
@@ -296,13 +324,14 @@ func GetAllDM(userID int, usernames *[]string, profile_pics *[]string, recent_me
 			}
 		}
 
-		// append to arrays
-		*usernames = append(*usernames, userPrev.User_name)
-		*profile_pics = append(*profile_pics, userPrev.Profile_picture_path)
-		*recent_messages = append(*recent_messages, recent_message)
+		userDMPrev.UserID = userPrev.UserID
+		userDMPrev.User_name = userPrev.User_name
+		userDMPrev.Profile_picture_path = userPrev.Profile_picture_path
+		userDMPrev.Most_recent_message = recent_message
+		allDMRes = append(allDMRes, userDMPrev)
 	}
 	
-	return "no error"
+	return allDMRes, "no error"
 }
 
 // not tested
@@ -315,17 +344,15 @@ func GetDMHandler(ctx *gin.Context) {
 		log.Panic(err)
 	}
 
-	usernames := []string{}
-	profile_pics := []string{}
-	recent_messages := []string{}
+	allDMRes, status := GetAllDM(userID, postgres, cassandra)
 
-	status := GetAllDM(userID, &usernames, &profile_pics, &recent_messages, postgres, cassandra)
+	for i := 0; i < len(allDMRes); i++ {
+		fmt.Println(allDMRes[i].UserID) // TODO remove this
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": status,
-		"usernames": usernames,
-		"profile pics": profile_pics,
-		"recent messages": recent_messages,
+		"all_dms": allDMRes,
 	})
 }
 

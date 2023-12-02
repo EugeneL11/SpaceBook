@@ -20,6 +20,13 @@ type UserPreview struct {
 	Profile_picture_path string `json:"profile_picture_path"`
 }
 
+type UserDMPreview struct {
+	UserID 				 int	`json:"user_id"`
+	User_name			 string	`json:"user_name"`
+	Profile_picture_path string `json:"profile_picture_path"`
+	Most_recent_message  string `json:"most_recent_message"`
+}
+
 type Comment struct {
 	CommenterID          int    `json:"commenter_id"`
 	CommenterProfilePath string `json:"commenter_profile_path"`
