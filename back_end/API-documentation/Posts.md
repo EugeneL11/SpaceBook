@@ -16,6 +16,8 @@
 
 -   Use route (POST): /uploadpostimage/{postID}
 -   Returns a string indicating "Bad Request" or "File {name} uploaded successfully!"
+    -   Access as a JSON and use .data
+    -   Refer to ImageTest.jsx for example
 -   **_NOTE: Requires a postID, which can be retrieved from making a post (refer to above)_**
 
 ## Get Posts for Homepage

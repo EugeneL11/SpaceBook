@@ -198,7 +198,7 @@ func UploadImagePost(ctx *gin.Context) {
 	}
 	success = UpdatePostPath(uuid, filename, cassandra)
 	if !success {
-		ctx.String(400, "Bad Rdsdfsdfdsequest")
+		ctx.String(400, "Bad Request")
 		return
 	}
 

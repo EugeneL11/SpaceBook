@@ -14,7 +14,6 @@ import (
 	"github.com/gocql/gocql"
 )
 
-// not done
 // not tested
 func CreateNewDM(user1 int, user2 int, cassandra *gocql.Session) bool {
 	subsetID := gocql.TimeUUID()
@@ -40,7 +39,6 @@ func CreateNewDM(user1 int, user2 int, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not done
 // not tested
 func CreateNewDMHandler(ctx *gin.Context) {
 	user1, err1 := strconv.Atoi(ctx.Param("user1"))
@@ -48,14 +46,21 @@ func CreateNewDMHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	if err2 != nil || err1 != nil {
 		// send error
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to parse input",
+		})
 		return
 	}
 	result := CreateNewDM(user1, user2, cassandra)
+	var status string
 	if !result {
-		// send error
-		return
+		status = "unable to create dm"
+	} else {
+		status = "no error"
 	}
-	// send success
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+	})
 }
 
 func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Session) string {
@@ -428,8 +433,8 @@ func NewDMListHandler(ctx *gin.Context) {
 	})
 }
 
-// not done
 // not tested
+// Returns a bool to indicate success, and a slice of Message structs (allDMS is updated by reference)
 func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session, allDMS *bool) (bool, []Message) {
 	var allMessages []Message
 	var subset_pointers []gocql.UUID
@@ -459,12 +464,12 @@ func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session,
 			newmsg.Time = times[x]
 			newmsg.Message = messages[x]
 			newmsg.SenderID = senders[x]
+			allMessages = append(allMessages, newmsg)
 		}
 	}
 	return true, allMessages
 }
 
-// not done
 // not tested
 func GetMessagesHandler(ctx *gin.Context) {
 	user1, err1 := strconv.Atoi(ctx.Param("user1"))
@@ -472,20 +477,24 @@ func GetMessagesHandler(ctx *gin.Context) {
 	subsetSize, err3 := strconv.Atoi(ctx.Param("subset_size"))
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	if err2 != nil || err1 != nil || err3 != nil {
-		// send error
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to parse input",
+		})
 		return
 	}
 	var allDMS bool
 	success, result := GetMessages(user1, user2, subsetSize, cassandra, &allDMS)
 	if !success {
 		// send error
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       "failed to retrieve messages",
+			"moreMessages": false,
+		})
 		fmt.Println(result[0].Message)
 		return
 	}
-	if allDMS {
-
-		return
-	}
-
-	return
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":       "no error",
+		"moreMessages": !allDMS,
+	})
 }
