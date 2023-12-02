@@ -44,9 +44,10 @@ function ExpandedPost(props) {
             const data = res.data
             console.log(data)
             setPost(data.post)
+            console.log(data.post.comments)
+            setUserComment(data.post.comments);
         })
         // ask back end for post
-        setUserComment(examplePost.comments);
     }, []);
 
     const handleKeyPress = (event) => {
@@ -58,9 +59,20 @@ function ExpandedPost(props) {
     };
     const makeComment = () => {
         // ask backend
-        const newArr = [...userComment, {username: currentUser.userID, content: userCommentValue}]
-        setUserComment(newArr);
-        setUserCommentValue("");
+        const commentPath = `/makecomment/${encodeURIComponent(post.post_id)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
+        axios.post(`${serverpath}${commentPath}`).then((res) => {
+            const commentData = res.data
+            console.log(commentData)
+            console.log(post.comments)
+            const userCommentArr = userComment || [];
+            const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
+            setUserComment(newArr)
+            setUserCommentValue("")
+        })
+
+//        const newArr = [...userComment, {username: currentUser.userID, content: userCommentValue}]
+//        setUserComment(newArr);
+//        setUserCommentValue("");
     };
     
     //for admin
@@ -136,14 +148,14 @@ function ExpandedPost(props) {
                         </input>
                         <button className="p-2 bg-blue-300 hover:bg-blue-400 text-white rounded-md ml-2" onClick={makeComment}><img src="arrow-up.png" className="w-4"></img></button>
                     </div>
-                    {userComment.map((comment, index) => (
+                    {userComment ? userComment.map((comment, index) => (
                         <div key = {index}>
                             <div className="w-full flex justify-between bg-purple-400 rounded-lg p-2 my-2">
                                 <div className="text-white mr-6 text-left">{comment.username}</div>
                                 <div className="h-14 overflow-y-scroll text-right">{comment.content}</div>
                             </div>
                         </div>)
-                    )}
+                    ) : null}
                 </div>
             </div>
         </div>
