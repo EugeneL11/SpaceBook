@@ -1,6 +1,10 @@
 package handlers
 
-import "github.com/gocql/gocql"
+import (
+	"time"
+
+	"github.com/gocql/gocql"
+)
 
 type User struct {
 	User_id              int    `json:"id"`
@@ -58,19 +62,20 @@ type PostPreview struct {
 	Images            []string   `json:"images"`
 }
 
-// type Message struct {
-// 	senderID int
-// 	message  string
-// }
+type Message struct {
+	SenderID int       `json:"id"`
+	Message  string    `json:"message"`
+	Time     time.Time `json:"time"`
+}
 
 // type FullDM struct {
 // }
 
 type DMPreview struct {
-	AuthorID          int
-	AuthorName        string
-	AuthorProfilePath string
-	LastDM            string
+	AuthorID          int    `json:"id"`
+	AuthorName        string `json:"username"`
+	AuthorProfilePath string `json:"profile_path"`
+	LastDM            string `json:"recentdm"`
 }
 
 type Response struct {

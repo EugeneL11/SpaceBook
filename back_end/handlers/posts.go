@@ -16,7 +16,7 @@ func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID,
 	postID := gocql.TimeUUID()
 	time := time.Now()
 	insertStmt := cassandra.Query(`INSERT INTO Post (postID, caption, authorID, comments, date_posted, imagepaths, 
-		likes, numbercomments, numberlikes) VALUES (?, ?, ?, {}, ?, [], {}, 0, 0 )`)
+		likes) VALUES (?, ?, ?, {}, ?, [], {} )`)
 
 	if err := insertStmt.Bind(postID, caption, userID, time).Exec(); err != nil {
 		return gocql.UUID{}, "unable to connect to db"
@@ -38,6 +38,7 @@ func MakePostHandler(ctx *gin.Context) {
 	})
 }
 
+// Used by homepage handler (below)
 func GetNewPostsFromUser(userID int, userProfilePath string, userName string, date time.Time, cassandra *gocql.Session) ([]PostPreview, error) {
 	// Define the SELECT statement
 	selectStmt := cassandra.Query("SELECT postID, imagePaths,caption, date_posted FROM post WHERE authorID = ? AND date_posted > ? ALLOW FILTERING")
@@ -70,7 +71,7 @@ func GetNewPostsFromUser(userID int, userProfilePath string, userName string, da
 
 func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *gocql.Session) ([]PostPreview, string) {
 	stmt, err := postgres.Prepare(`Select user2_id from orbit_buddies where user1_id = $1 union 
-	select user2_id from orbit_buddies where user1_id = $1`)
+	select user1_id from orbit_buddies where user2_id = $1`)
 	if err != nil {
 		return nil, "unable to connect to db"
 	}
@@ -142,7 +143,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 			}
 		}
 		post.NumLikes = len(likes)
-		stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
+		stmt, err := postgres.Prepare("select user_name, profile_picture_path from users where user_id = $1")
 		if err != nil {
 			return "unable to connect to db 1"
 		}
@@ -241,19 +242,6 @@ func LikePostHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": status,
 	})
-}
-
-// not done
-// not tested
-func UnlikePost(userID int, postID int) string {
-	return "no error"
-}
-
-// not done
-// not tested
-// not documented
-func UnlikePostHandler(ctx *gin.Context) {
-
 }
 
 func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql.Session) bool {

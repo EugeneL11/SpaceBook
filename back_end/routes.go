@@ -21,6 +21,7 @@ func setupAccount(server *gin.Engine) {
 	server.GET("/getuserinfo/:viewer/:viewed", handlers.GetUserInfoHandler)
 	server.POST("/uploadprofileimage/:userID", handlers.ProfilePicHandler)
 	server.DELETE("/deleteuser/:userID", handlers.DeleteUserHandler)
+	server.PUT("/updateuserprofile/:userID/:newFullName/:newPlanet/:newBio", handlers.UpdateUserProfileHandler)
 }
 
 func setupFriends(server *gin.Engine) {
@@ -40,11 +41,16 @@ func setupPosts(server *gin.Engine) {
 	server.GET("/gethomepageposts/:user_id", handlers.HomepageHandler)
 	server.POST("/makecomment/:postID/:userID/:comment", handlers.CommentHandler)
 	server.PUT("/likepost/:postID/:userID", handlers.LikePostHandler)
-	server.DELETE("delete/:postID", handlers.DeletePostHandler)
+	server.DELETE("deletepost/:postID", handlers.DeletePostHandler)
 }
 
 func setupDMs(server *gin.Engine) {
+	// only returns most recent 20-40 messages at size 1, returns 40-60 messages at size 2 etc
+	// will return whether or all the messages have been returned
+	server.GET("/getmessages/:user1/:user2/subset_size", handlers.GetMessagesHandler)
+	server.POST("/newdm/:user1/:user2", handlers.CreateNewDMHandler)
 	server.POST("/senddm/:senderID/:receiverID/:message", handlers.SendDMHandler)
-	server.GET("/getalldm/:userID", handlers.GetDMHandler)
-	server.GET("/newdmlist/:userID", handlers.NewDMListHandler)
+	server.GET("/userdms/:userID", handlers.GetDMHandler)
+	// gets all friends who you do not have a dm with
+	server.GET("/getallnewdm/:userID", handlers.NewDMListHandler)
 }

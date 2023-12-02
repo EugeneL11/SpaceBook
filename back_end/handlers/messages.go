@@ -1,28 +1,66 @@
 package handlers
 
 import (
+	"database/sql"
+	"fmt"
+	"strconv"
 	"time"
+
 	"log"
 	// "encoding/json"
-	"fmt"
-	"database/sql"
-	"strconv"
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gocql/gocql"
 )
 
-// not done
 // not tested
-func CreateNewDM(user1 int, user2 int, cassandra *gocql.Session) string {
-	return "no error"
+func CreateNewDM(user1 int, user2 int, cassandra *gocql.Session) bool {
+	subsetID := gocql.TimeUUID()
+	emptyMessages := []gocql.Session{}
+	emptyTimes := []time.Time{}
+	emptySenders := []int{}
+	if user1 > user2 {
+		user2, user1 = user1, user2
+	}
+	if err := cassandra.Query("INSERT INTO DMSubset (subsetID, messages, senders, time_sent) VALUES (?, ?, ?, ?)",
+		subsetID, emptyMessages, emptySenders, emptyTimes).Exec(); err != nil {
+		fmt.Println("Error inserting comment:", err)
+		return false
+	}
+	subSetSlice := []gocql.UUID{subsetID}
+	dmID := gocql.TimeUUID()
+
+	if err := cassandra.Query("INSERT INTO DMTABLE (dmID, user1, user2, messageChunks) VALUES (?, ?, ?, ?)",
+		dmID, user1, user2, subSetSlice).Exec(); err != nil {
+		fmt.Println("Error inserting comment:", err)
+		return false
+	}
+	return true
 }
 
-// not done
 // not tested
-// not documented
 func CreateNewDMHandler(ctx *gin.Context) {
-
+	user1, err1 := strconv.Atoi(ctx.Param("user1"))
+	user2, err2 := strconv.Atoi(ctx.Param("user2"))
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
+	if err2 != nil || err1 != nil {
+		// send error
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to parse input",
+		})
+		return
+	}
+	result := CreateNewDM(user1, user2, cassandra)
+	var status string
+	if !result {
+		status = "unable to create dm"
+	} else {
+		status = "no error"
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+	})
 }
 
 func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Session) string {
@@ -52,13 +90,13 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 
 	// get DM between users (execute)
 	iter := stmt.Iter()
-	
+
 	// check how many message subsets there are
 	var messageChunks []gocql.UUID
 	for iter.Scan(&messageChunks) {
 		break
 	}
-	
+
 	num_subsets := len(messageChunks)
 
 	// catch error
@@ -75,8 +113,8 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 	// if at least one subset
 	if num_subsets > 0 {
 		// get most recent subset
-		recent_subsetID = messageChunks[num_subsets - 1]
-		
+		recent_subsetID = messageChunks[num_subsets-1]
+
 		// get subset
 		stmt := cassandra.Query(
 			`
@@ -86,7 +124,7 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 			`, recent_subsetID,
 		)
 		iter := stmt.Iter()
-		
+
 		// count messages
 		var senders []int
 		for iter.Scan(&senders) {
@@ -103,7 +141,6 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 		// see if subset is full
 		new_subset_needed = (message_count >= 20)
 	}
-		
 
 	// if (subset count == 0) or (subset is full)
 	if new_subset_needed {
@@ -145,7 +182,7 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 	}
 
 	fmt.Println(recent_subsetID)
-		
+
 	// send message within subset -> get messages
 	stmt = cassandra.Query(
 		`
@@ -170,7 +207,7 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 	messages_slice := []string{message}
 	senders_slice := []int{senderID}
 	times_slice := []time.Time{time.Now()}
-	
+
 	// send message within subset -> modify table
 	err := cassandra.Query(
 		`
@@ -187,11 +224,10 @@ func sendDM(senderID int, receiverID int, message string, cassandra *gocql.Sessi
 	if err != nil {
 		return "unable to connect to db 5"
 	}
-	
+
 	return "no error"
 }
 
-// not documented
 func SendDMHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	senderID, err := strconv.Atoi(ctx.Param("senderID"))
@@ -265,7 +301,7 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 			otherID = user2
 		}
 
-		// username, profile pic path
+		// get username, profile pic path
 		stmt, err := postgres.Prepare(
 			`
 				SELECT user_id, user_name, profile_picture_path
@@ -285,7 +321,7 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 		}
 		defer res.Close()
 
-		var userPrev UserPreview
+		var preview DMPreview
 		for res.Next() {
 			err := res.Scan(
 				&userPrev.UserID,
@@ -304,7 +340,7 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 		num_subsets := len(messageChunks)
 		if num_subsets > 0 {
 			// most recent subset
-			recent_subsetID := messageChunks[num_subsets - 1]
+			recent_subsetID := messageChunks[num_subsets-1]
 
 			// query subset
 			iter = cassandra.Query(
@@ -319,10 +355,13 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 			var messages []string
 			for iter.Scan(&messages) {
 				num_messages := len(messages)
-				recent_message = messages[num_messages - 1]
+				recent_message = messages[num_messages-1]
 				break
 			}
 		}
+		preview.AuthorID = otherID
+		preview.LastDM = recent_message
+		*previews = append(*previews, preview)
 
 		userDMPrev.UserID = userPrev.UserID
 		userDMPrev.User_name = userPrev.User_name
@@ -335,7 +374,6 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 }
 
 // not tested
-// not documented
 func GetDMHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
@@ -358,7 +396,7 @@ func GetDMHandler(ctx *gin.Context) {
 
 // not tested
 func newDMList(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserPreview, string) {
-	
+
 	// get all friends
 	users, err := GetFriends(userID, postgres)
 	if err != "no error" {
@@ -391,7 +429,7 @@ func newDMList(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserPr
 			ALLOW FILTERING
 		`, userID,
 	).Iter()
-	
+
 	for iter.Scan(&otherID) {
 		otherIDs[otherID] = struct{}{}
 	}
@@ -405,11 +443,10 @@ func newDMList(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserPr
 			newDMRes = append(newDMRes, user)
 		}
 	}
-	
+
 	return newDMRes, "no error"
 }
 
-// not documented
 func NewDMListHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
@@ -421,20 +458,73 @@ func NewDMListHandler(ctx *gin.Context) {
 	newDMRes, status := newDMList(userID, postgres, cassandra)
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": status,
+		"status":   status,
 		"newDMRes": newDMRes,
 	})
 }
 
-// not done
 // not tested
-func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session) string {
-	return "no error"
+// Returns a bool to indicate success, and a slice of Message structs (allDMS is updated by reference)
+func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session, allDMS *bool) (bool, []Message) {
+	var allMessages []Message
+	var subset_pointers []gocql.UUID
+	if user1 > user2 {
+		user2, user1 = user1, user2
+	}
+	if err := cassandra.Query("SELECT messageChunks FROM DMTABLE WHERE user1 = ? AND user2 = ?",
+		user1, user2).Scan(&subset_pointers); err != nil {
+		fmt.Println("Error querying messages:", err)
+		return false, nil
+	}
+	if subsetSize >= len(subset_pointers) {
+		*allDMS = true
+		subsetSize = len(subset_pointers)
+	}
+	messages := []string{}
+	times := []time.Time{}
+	senders := []int{}
+	for i := len(subset_pointers) - subsetSize; i < len(subset_pointers); i++ {
+		if err := cassandra.Query("SELECT messages, senders, time_sent FROM DMSubset WHERE subsetID = ?",
+			subset_pointers[i]).Scan(&messages, &senders, &times); err != nil {
+			fmt.Println("Error querying messages:", err)
+			return false, nil
+		}
+		for x := 0; x < len(messages); x++ {
+			var newmsg Message
+			newmsg.Time = times[x]
+			newmsg.Message = messages[x]
+			newmsg.SenderID = senders[x]
+			allMessages = append(allMessages, newmsg)
+		}
+	}
+	return true, allMessages
 }
 
-// not done
 // not tested
-// not documented
 func GetMessagesHandler(ctx *gin.Context) {
-
+	user1, err1 := strconv.Atoi(ctx.Param("user1"))
+	user2, err2 := strconv.Atoi(ctx.Param("user2"))
+	subsetSize, err3 := strconv.Atoi(ctx.Param("subset_size"))
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
+	if err2 != nil || err1 != nil || err3 != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to parse input",
+		})
+		return
+	}
+	var allDMS bool
+	success, result := GetMessages(user1, user2, subsetSize, cassandra, &allDMS)
+	if !success {
+		// send error
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       "failed to retrieve messages",
+			"moreMessages": false,
+		})
+		fmt.Println(result[0].Message)
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"status":       "no error",
+		"moreMessages": !allDMS,
+	})
 }

@@ -32,6 +32,7 @@ function SearchUsers(props) {
     const toggleOtherProfile = props.toggleOtherProfile
     const toggleSearchUser = props.toggleSearchUser
 
+    const [noMatch, setNoMatch] = useState("")
     const [searchTerm, setSearchTerm] = useState("")
     const [people, setPeople] = useState(null)
 
@@ -40,17 +41,29 @@ function SearchUsers(props) {
 
 
     },[])
+    const handleKeyPress = (event) => {
+        // Check if the Enter key was pressed (key code 13)
+        if (event.key === 'Enter') {
+            // Trigger the button click action
+            searchQuery();
+        }
+    };
 
     function searchQuery() {
         if (searchTerm === "") {
             return //maybe error message(?)
         }
+        setNoMatch("")
         axios.get(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
             const data = res.data
             console.log(data)
             if (data.error === "no error") {
                 console.log(data.userPreviews[0].profile_picture_path)
                 setPeople(data.userPreviews)
+                setNoMatch("")
+            } else if (data.error === "no users found") {
+                setNoMatch("No Match Found")
+                setPeople(null)
             } //catch errors later
         })
     }
@@ -65,7 +78,8 @@ function SearchUsers(props) {
                     type="text" 
                     value={searchTerm} 
                     onChange={e => setSearchTerm(e.target.value)}
-                    className="w-full p-2 rounded-bl-md rounded-tl-md text-black"
+                    onKeyPress={handleKeyPress}
+                    className="w-full p-2 rounded-bl-md rounded-tl-md text-black border-1 border-white focus:outline-none focus:border-gray-500 focus:ring-0"
                 ></input>
                 <div className="relative inset-y-0 right-0 flex items-center px-3 bg-white rounded-tr-md rounded-br-md" onClick={searchQuery}>
                     <img
@@ -75,6 +89,12 @@ function SearchUsers(props) {
                     ></img>
                 </div>
             </div>
+            {(noMatch === "No Match Found") ? 
+                <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
+                    {noMatch}
+                </div> 
+                : null
+            }
             {people ? people.map(
                 (person, index) => (
                     <Person

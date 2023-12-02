@@ -26,13 +26,6 @@ function ResizingCanvas(props) {
             camera.aspect = 1;
             camera.updateProjectionMatrix();
 
-            // Update camera position
-            // camera.position.x = 5;
-            // camera.position.y = 5;
-            // camera.position.z = 5;
-
-            // camera.lookAt(new THREE.Vector3(0, 0, 0));
-
         };
 
         window.addEventListener('resize', handleResize);
@@ -45,11 +38,11 @@ function ResizingCanvas(props) {
 }
 
 
-function PlanetCanvas () {
+function PlanetCanvas (props) {
 
     return (
         <Canvas className="cursor-pointer pt-5 lg:pt-0">
-            <Planet planet="pluto"/>
+            <Planet planet={props.planet}/>
             <ResizingCanvas className=" translate-x-full"/>
         </Canvas>
     );
@@ -121,6 +114,9 @@ function OtherProfile(props) {
         videos: [],
     }
     const examplePosts =[ examplePost,examplePost]
+
+    const [friendStatus, setFriendStatus] = useState("")
+
     useEffect(() => {
         // ask bak end for user
         const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
@@ -129,6 +125,7 @@ function OtherProfile(props) {
             console.log(currentUser.userID)
             console.log(data)
             setUser(data.user)
+            setFriendStatus(data.friendstatus)
         })
 
          // ask back end for post
@@ -141,13 +138,65 @@ function OtherProfile(props) {
     }
 
     function sendOrbit() {
-        console.log(encodeURIComponent(props.userID))
-        const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}}`
+        const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
+        axios.post(`${serverpath}${path}`).then(res => {
+            const data = res.data
+            console.log(data)
+
+            if (data.status === "no error") {
+                setFriendStatus("viewer sent request")
+            }
+        })
+    }
+
+    function unorbit() {
+        const path = `/removefriend/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
+//        const path = `/sendfriendreq/3/1`
+        axios.delete(`${serverpath}${path}`).then(res => {
+            const data = res.data
+            console.log(data)
+
+            if (data.status === "no error") {
+                setFriendStatus("no requests")
+            }
+        })
+    }
+
+    function rejectOrbitRequest() {
+        const path = `/rejectfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
+//        const path = `/sendfriendreq/3/1`
+        axios.delete(`${serverpath}${path}`).then(res => {
+            const data = res.data
+            console.log(data)
+
+            if (data.status === "no error") {
+                setFriendStatus("no requests")
+            }
+        })
+    }
+
+    function acceptFriendRequest() {
+        const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
 //        const path = `/sendfriendreq/3/1`
         axios.post(`${serverpath}${path}`).then(res => {
             const data = res.data
             console.log(data)
+
+            if (data.status === "no error") {
+                setFriendStatus("already friends")
+            }
         })
+    }
+
+    const table = {
+        "" : null,
+        "already friends": <div onClick={unorbit}>Unorbit this buddy</div>,
+        "no requests": <div onClick={sendOrbit}>Request orbit buddy</div>,
+        "viewer sent request": <div>Orbit request pending</div>,
+        "viewed person sent request": <div className="flex flex-col">
+            <div onClick={acceptFriendRequest}>Accept orbit request</div>
+            <div onClick={rejectOrbitRequest}>Reject orbit request</div>
+        </div>
     }
 
     return (
@@ -180,18 +229,18 @@ function OtherProfile(props) {
 
                 <button onClick={sendOrbit} className="flex flex-row cursor-pointer mb-3 hover:text-purple-300">
                     <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
-                    <p>Request orbit buddy</p>
+                    { table[friendStatus] }
                 </button>
 
-                <button onClick={dm} className="flex flex-row cursor-pointer hover:text-purple-300">
+                {/* <button onClick={dm} className="flex flex-row cursor-pointer hover:text-purple-300">
                     <img src="./whitehole.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
                     <p>Launch wormhole chat</p>
-                </button>
+                </button> */}
 
             </div>
 
             <div className="translate-x-1/3 w-2/3 pl-7 md:pl-36 lg:pl-0 lg:translate-x-0 lg:w-auto">
-                <PlanetCanvas/>
+                <PlanetCanvas planet={user.planet}/>
             </div>
 
             </div>

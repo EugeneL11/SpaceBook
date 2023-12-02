@@ -20,11 +20,11 @@ func GetFriends(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 		WHERE EXISTS (
 			SELECT * 
 			FROM Orbit_Buddies 
-			WHERE user1_id = $1 and u.user_id = user2_id
-		) or exists(
+			WHERE user1_id = $1 and user2_id= u.user_id
+		) or exists (
 			SELECT * 
 			FROM Orbit_Buddies 
-			WHERE user2_id = $1 and u.user_id = user1_id
+			WHERE user2_id = $1 and user1_id = u.user_id
 		)
 	`)
 	if err != nil {
@@ -63,8 +63,6 @@ func GetFriendsHandler(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-
-	var users []UserPreview
 
 	users, err2 := GetFriends(user_id, postgres)
 	if err2 != "no error" {

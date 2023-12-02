@@ -8,12 +8,8 @@ function Request(props) {
     //     props.removeFriend(props.username)
     // }
     const othersProfileEvent = props.toggleOtherProfile
-    const denyRequestEvent = () => {
-        props.denyRequest(props.username)
-    }
-    const acceptRequestEvent = () => {
-        props.acceptRequest(props.username)
-    }
+    const denyRequestEvent = props.denyRequest
+    const acceptRequestEvent = props.acceptRequest
 
     console.log(othersProfileEvent)
     return (
@@ -51,7 +47,8 @@ function Request(props) {
 
 function Notifications(props) {
     const [requests, setRequests] = useState(null)
-
+    const [noReqs, setNoReqs] = useState(null)
+    
     const toggleHomepage = props.toggleHomepage
     const toggleOtherProfile = props.toggleOtherProfile
     const toggleNotifications = props.toggleNotifications
@@ -78,43 +75,52 @@ function Notifications(props) {
     ] // placeholder for back-end data
 
     //WE ARE GETTING THE FRIEND REQUESTS HERE, TO USE FOR DENYING/ACCEPTING (MUST FIX)
-    const path = `/friendsreqs/${encodeURIComponent(currentUser.userID)}`
+    const path = `/friendrequests/${encodeURIComponent(currentUser.userID)}`
     axios.get(`${serverpath}${path}`).then((res) => {
         const data = res.data
+        console.log(data)
         if (data.status === "no requests") {
-            setRequests(requests)
+            setNoReqs(true)
         } else if (data.status === "pending request") {
-            setRequests(requests)
+            setNoReqs(false)
+            setRequests(data.requests)
         } else {
             console.log("database error")
         }
     })
 
         // ask back-end for orbit requests
-        setRequests(exampleRequests)
     },[])
 
-    const denyRequest = (requestToDeny) => {
-        const newRequestList = requests.filter(
-            (request) => request.username !== requestToDeny
-        )
-        setRequests(newRequestList);
-        // do back-end stuff
-
-        const path = `/rejectfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent()}`
-
+    const denyRequest = (userToDeny) => {
+        const path = `/rejectfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userToDeny)}`
+        axios.delete(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            if (data.status === "no error") {
+                const newRequestList = requests.filter(
+                    (request) => request.user_id !== userToDeny
+                )
+                setRequests(newRequestList);
+            } else {
+                console.log(data.status)
+            }
+        })
     }
 
-    const acceptRequest = (requestToAccept) => {
-        const newRequestList = requests.filter(
-            (request) => request.username !== requestToAccept
-        )
-        setRequests(newRequestList);
-        // do back-end stuff
-
-        //const path
-
-
+    const acceptRequest = (userToAccept) => {
+        const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userToAccept)}`
+        axios.post(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            if (data.status === "no error") {
+                const newRequestList = requests.filter(
+                    (request) => request.user_id !== userToAccept
+                )
+                setRequests(newRequestList);
+                console.log("accepted")
+            } else {
+                console.log(data.status)
+            }
+        })
     }
 
     return (<div className="flex flex-col">
@@ -124,16 +130,20 @@ function Notifications(props) {
         {/* {exampleRequests.map((friend) =>(
             <button onClick={() => {toggleOtherProfile(friend, toggleNotifications)}}> See Other Profile: {friend}</button>
         ))} */}
-
+        {noReqs ? 
+            <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
+                No Friend Requests... LOSER
+            </div> 
+        : null}
         {requests ? requests.map(
             (request, index) => (
                 <div key={index} className="flex flex-col items-center mb-8">
                     <Request 
-                        username={request.username} 
-                        user_pic_url={request.user_pic_url}
-                        denyRequest = {denyRequest}
-                        acceptRequest = {acceptRequest}
-                        toggleOtherProfile = {() => {toggleOtherProfile(request.username, toggleNotifications)}}
+                        username={request.user_name} 
+                        user_pic_url={serverpath + request.profile_picture_path}
+                        denyRequest = {() => denyRequest(request.user_id)}
+                        acceptRequest = {() => acceptRequest(request.user_id)}
+                        toggleOtherProfile = {() => {toggleOtherProfile(request.user_name, toggleNotifications)}}
                     ></Request>
                 </div>
             )

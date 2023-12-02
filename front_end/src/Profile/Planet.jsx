@@ -20,15 +20,15 @@ export default function Planet(props) {
 
     // Create a Map
     const lightMap = new Map([
-      ["mercury", 10],
-      ["venus", 1],
-      ["earth", 30],
-      ["mars", 1.5],
-      ["jupiter", 1.5],
-      ["saturn", 1],
-      ["uranus", 1],
-      ["neptune", 1],
-      ["pluto", 5]
+      ["Mercury", 10],
+      ["Venus", 1],
+      ["Earth", 30],
+      ["Mars", 1.5],
+      ["Jupiter", 1.5],
+      ["Saturn", 1],
+      ["Uranus", 1],
+      ["Neptune", 1],
+      ["Pluto", 5]
     ]);
 
     useFrame(() => {
