@@ -168,13 +168,13 @@ func LoginHandler(ctx *gin.Context) {
 
 // not tested
 func UpdateUserProfile(
-	user_id int, new_fullname string,
+	user_id int, new_username string,
 	new_home_planet string,
 	bio string, postgres *sql.DB,
 ) string {
 	stmt, err := postgres.Prepare(`
 		UPDATE Users 
-		SET full_name = $2,
+		SET user_name = $2,
 		home_planet = $3,
 		bio = $4
 		WHERE user_id = $1
@@ -184,7 +184,7 @@ func UpdateUserProfile(
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(user_id, new_fullname, new_home_planet, bio)
+	_, err = stmt.Exec(user_id, new_username, new_home_planet, bio)
 	if err != nil {
 		return "unable to connect to db"
 	}
@@ -196,7 +196,7 @@ func UpdateUserProfile(
 func UpdateUserProfileHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	userID, err1 := strconv.Atoi(ctx.Param("userID"))
-	newName := ctx.Param("newFullName")
+	newUsername := ctx.Param("newUsername")
 	newPlanet := ctx.Param("newPlanet")
 	newBio := ctx.Param("newBio")
 
@@ -206,7 +206,7 @@ func UpdateUserProfileHandler(ctx *gin.Context) {
 		})
 		return
 	}
-	status := UpdateUserProfile(userID, newName, newPlanet, newBio, postgres)
+	status := UpdateUserProfile(userID, newUsername, newPlanet, newBio, postgres)
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": status,
 	})

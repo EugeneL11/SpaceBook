@@ -21,7 +21,7 @@ func setupAccount(server *gin.Engine) {
 	server.GET("/getuserinfo/:viewer/:viewed", handlers.GetUserInfoHandler)
 	server.POST("/uploadprofileimage/:userID", handlers.ProfilePicHandler)
 	server.DELETE("/deleteuser/:userID", handlers.DeleteUserHandler)
-	server.PUT("/updateuserprofile/:userID/:newFullName/:newPlanet/:newBio", handlers.UpdateUserProfileHandler)
+	server.PUT("/updateuserprofile/:userID/:newUsername/:newPlanet/:newBio", handlers.UpdateUserProfileHandler)
 }
 
 func setupFriends(server *gin.Engine) {
