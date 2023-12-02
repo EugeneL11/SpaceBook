@@ -99,7 +99,7 @@
 
 ```json
 {
-    "status": "no error" or "failed to delete %s"
+    "status": "no error", "error parsing input", or "failed to delete %s"
 }
 ```
 
