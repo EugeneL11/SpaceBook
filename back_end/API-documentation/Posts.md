@@ -46,7 +46,9 @@
 ## Get Full Details of a Post from IDs
 
 -   Use path (GET): /postdetails/{postID}/{userID}
--   Retrieve full details (refer to JSON) of a post from a user (give the IDs for both)
+-   Retrieve full details (refer to JSON) of a post from a viewing user's perspective (give the IDs for both)
+    -   postID is the ID of the post being looked at
+    -   userID is the ID of the user who is looking at the post (used to determine whether the user has liked the post or not)
 -   Returns a JSON of following format:
 
 ```json
