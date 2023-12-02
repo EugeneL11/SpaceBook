@@ -246,13 +246,8 @@ func SendDMHandler(ctx *gin.Context) {
 }
 
 // not tested
-func GetAllDM(userID int, usernames *[]string, profile_pics *[]string, recent_messages *[]string, postgres *sql.DB, cassandra *gocql.Session) string {
-
-	// requirements:
-	// profile pic
-	// username
-	// most recent message
-
+// Populates a slice of DMPreviews by reference
+func GetAllDM(userID int, previews *[]DMPreview, postgres *sql.DB, cassandra *gocql.Session) string {
 	// get all dm's that user is in
 	iter := cassandra.Query(
 		`
@@ -274,7 +269,7 @@ func GetAllDM(userID int, usernames *[]string, profile_pics *[]string, recent_me
 			otherID = user2
 		}
 
-		// username, profile pic path
+		// get username, profile pic path
 		stmt, err := postgres.Prepare(
 			`
 				SELECT user_name, profile_picture_path
@@ -294,11 +289,10 @@ func GetAllDM(userID int, usernames *[]string, profile_pics *[]string, recent_me
 		}
 		defer res.Close()
 
-		var userPrev UserPreview
+		var preview DMPreview
 		for res.Next() {
 			err := res.Scan(
-				&userPrev.Full_name, &userPrev.User_name,
-				&userPrev.Profile_picture_path,
+				&preview.AuthorName, &preview.AuthorProfilePath,
 			)
 			if err != nil {
 				return "unable to connect to db 3"
@@ -331,11 +325,10 @@ func GetAllDM(userID int, usernames *[]string, profile_pics *[]string, recent_me
 				break
 			}
 		}
+		preview.AuthorID = otherID
+		preview.LastDM = recent_message
+		*previews = append(*previews, preview)
 
-		// append to arrays
-		*usernames = append(*usernames, userPrev.User_name)
-		*profile_pics = append(*profile_pics, userPrev.Profile_picture_path)
-		*recent_messages = append(*recent_messages, recent_message)
 	}
 
 	return "no error"
@@ -350,17 +343,13 @@ func GetDMHandler(ctx *gin.Context) {
 		log.Panic(err)
 	}
 
-	usernames := []string{}
-	profile_pics := []string{}
-	recent_messages := []string{}
+	previews := []DMPreview{}
 
-	status := GetAllDM(userID, &usernames, &profile_pics, &recent_messages, postgres, cassandra)
+	status := GetAllDM(userID, &previews, postgres, cassandra)
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"status":          status,
-		"usernames":       usernames,
-		"profile pics":    profile_pics,
-		"recent messages": recent_messages,
+		"status":     status,
+		"dmpreviews": previews,
 	})
 }
 
