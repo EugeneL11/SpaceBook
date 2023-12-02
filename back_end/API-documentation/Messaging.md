@@ -1,4 +1,4 @@
-## Create a New DM (WIP)
+## Create a New DM
 
 -   Use path (POST): /newdm/{id1}/{id2}
 -   Where id1 and id2 are the user IDs of the users in the DM-to-be-created
@@ -6,7 +6,7 @@
 
 ```json
 {
-    "status": "no error" or "unable to create dm"
+    "status": "no error" or "unable to create dm" or "unable to parse input"
 }
 ```
 
@@ -61,7 +61,7 @@
 }
 ```
 
-## Get All Messages Sent Between Two Users (WIP)
+## Get All Messages Sent Between Two Users
 
 -   Use path (GET): /getmessages/{id1}/{id2}/{subset_size}
 -   id1 and id2 are user IDs
@@ -73,7 +73,9 @@
 
 ```json
 {
-    "status": "no error" or "failed to retrieve messages"
+    "status": "no error" or "failed to retrieve messages" or "unable to parse input"
     "moreMessages": "false" if there are no more messages, "true" otherwise (bool)
 }
 ```
+
+-   Note: "moreMessages" defaults to "false" if there was an error
