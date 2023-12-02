@@ -46,8 +46,8 @@
 
 ## Update User Profile:
 
--   Use path (PUT): /updateuserprofile/{userID}/{newUsername}/{newPlanet}/{newBio}
--   This allows for updating a given user's username, home planet and bio description
+-   Use path (PUT): /updateuserprofile/{userID}/{newFullName}/{newPlanet}/{newBio}
+-   This allows for updating a given user's fullname, home planet and bio description
 -   Some or all fields can be kept the same
 -   Will return a JSON to indicate success/failure status:
 
