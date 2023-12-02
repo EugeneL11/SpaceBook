@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -42,26 +43,28 @@ func DeletePost(postID gocql.UUID, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not done
 // not tested
 func DeletePostHandler(ctx *gin.Context) {
 	postID, err := gocql.ParseUUID(ctx.Param("postID"))
 	if err != nil {
-		// send messgage
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "error parsing input",
+		})
 		return
 	}
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	result := DeleteComments(postID, cassandra)
+	var status string
 	if !result {
-		// send message
-		return
+		status = "error deleting comments"
 	}
 	result = DeletePost(postID, cassandra)
 	if !result {
-		// send message
-		return
+		status = "error deleting post"
 	}
-
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+	})
 }
 
 // DeleteUserComments deletes all comments made by a user

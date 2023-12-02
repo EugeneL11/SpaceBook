@@ -113,13 +113,13 @@
 }
 ```
 
-## Delete a Post by postID (not done)
+## Delete a Post by postID
 
 -   Use path (DELETE): /deletepost/{postID}
 -   Returns a JSON to indicate success/failure of deletion:
 
 ```json
 {
-    "status": "no error" or "failed to delete post"
+    "status": "no error" or "error deleting post" or "error parsing input" or "error deleting comments"
 }
 ```
