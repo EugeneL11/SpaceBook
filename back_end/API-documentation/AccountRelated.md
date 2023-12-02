@@ -90,7 +90,7 @@
     -   "Bad Request", "Internal Server Error" are errors
     -   "File {file_name} uploaded successfully!" if success, where {file_name} is the name of the file uploaded
 
-## Delete User (WIP)
+## Delete User
 
 -   Use route (DELETE): /deleteuser/{user_id}
 -   Intended to only be used by _admins_
@@ -99,7 +99,7 @@
 
 ```json
 {
-    "status": "no error" or "failed to delete %s"
+    "status": "no error", "error parsing input", or "failed to delete %s"
 }
 ```
 

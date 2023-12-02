@@ -16,6 +16,8 @@
 
 -   Use route (POST): /uploadpostimage/{postID}
 -   Returns a string indicating "Bad Request" or "File {name} uploaded successfully!"
+    -   Access as a JSON and use .data
+    -   Refer to ImageTest.jsx for example
 -   **_NOTE: Requires a postID, which can be retrieved from making a post (refer to above)_**
 
 ## Get Posts for Homepage
@@ -100,7 +102,7 @@
 }
 ```
 
-## Unlike Post (not done)
+## Unlike Post (not intended for release v1.0)
 
 -   Use path (POST): /unlikepost/{postID}/{userID}
 -   Will return a JSON with the following content:
@@ -111,13 +113,13 @@
 }
 ```
 
-## Delete a Post by postID (not done)
+## Delete a Post by postID
 
 -   Use path (DELETE): /deletepost/{postID}
 -   Returns a JSON to indicate success/failure of deletion:
 
 ```json
 {
-    "status": "no error" or "failed to delete post"
+    "status": "no error" or "error deleting post" or "error parsing input" or "error deleting comments"
 }
 ```

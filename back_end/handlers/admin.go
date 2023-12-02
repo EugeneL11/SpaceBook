@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -42,26 +43,28 @@ func DeletePost(postID gocql.UUID, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not done
 // not tested
 func DeletePostHandler(ctx *gin.Context) {
 	postID, err := gocql.ParseUUID(ctx.Param("postID"))
 	if err != nil {
-		// send messgage
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "error parsing input",
+		})
 		return
 	}
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	result := DeleteComments(postID, cassandra)
+	var status string
 	if !result {
-		// send message
-		return
+		status = "error deleting comments"
 	}
 	result = DeletePost(postID, cassandra)
 	if !result {
-		// send message
-		return
+		status = "error deleting post"
 	}
-
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+	})
 }
 
 // DeleteUserComments deletes all comments made by a user
@@ -221,50 +224,55 @@ func DeleteUser(user_id int, postgres *sql.DB) bool {
 	return true
 }
 
-// not done
+// Define some helper struct to make DeleteUserHandler more condensed
+type CTXStatus struct {
+	Status string `json:"status"`
+}
+
 // not tested
 func DeleteUserHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	userID, err := strconv.Atoi(ctx.Param("userID"))
 	if err != nil {
-		// send message
+		ctx.JSON(http.StatusOK, CTXStatus{Status: "error parsing input"})
 		return
 	}
 	result := DeleteUserPosts(userID, cassandra)
 	if !result {
-		// send message
+		ctx.JSON(http.StatusOK, CTXStatus{Status: "failed to delete posts"})
 		return
 	}
 	result = DeleteUserComments(userID, cassandra)
 	if !result {
-		// send message
+		ctx.JSON(http.StatusOK, CTXStatus{Status: "failed to delete comments"})
 		return
 	}
 	result = DeleteUserLikes(userID, cassandra)
 	if !result {
-		// send message
+		ctx.JSON(http.StatusOK, CTXStatus{Status: "failed to delete likes"})
 		return
 	}
 	result = DeleteUserDM(userID, cassandra)
 	if !result {
-		// send message
+		ctx.JSON(http.StatusOK, CTXStatus{Status: "failed to delete DMs"})
 		return
 	}
 	result = DeleteUserFriends(userID, postgres)
 	if !result {
-		// send message
+		ctx.JSON(http.StatusOK, CTXStatus{Status: "failed to delete friends"})
 		return
 	}
 	result = DeleteUserRequests(userID, postgres)
 	if !result {
-		// send message
+		ctx.JSON(http.StatusOK, CTXStatus{Status: "failed to delete friend requests"})
 		return
 	}
 	result = DeleteUser(userID, postgres)
 	if !result {
-		// send message
+		ctx.JSON(http.StatusOK, CTXStatus{Status: "failed to delete user"})
 		return
 	}
-	// send messgae
+	// send message
+	ctx.JSON(http.StatusOK, CTXStatus{Status: "no error"})
 }
