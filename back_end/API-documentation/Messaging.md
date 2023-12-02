@@ -25,7 +25,7 @@
 
 -   Use path (GET): /userdms/{userID}
 -   Retrieves usernames, profile pictures, and recent messages of all DMs involving the user
--   The JSON will include a DMPreviews JSON, which will be described below as well
+-   The JSON will include a UserDMPreviews JSON, which will be described below as well
 -   The JSON has the following format:
 
 ```json
@@ -34,7 +34,7 @@
     "dmpreviews": null or list of JSONs containing id/username/pfp of users that have DMs involving the given user (refer to below for format of dmpreviews) + most recent message sent
 }
 
-DMPreviews JSON format:
+UserDMPreviews JSON format:
 {
     "id": int containing id,
     "username": string containing username,
