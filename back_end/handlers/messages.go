@@ -269,13 +269,15 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 	).Iter()
 
 	for iter.Scan(&user1, &user2, &messageChunks) {
+		fmt.Println("no")
+
 		user1_slice = append(user1_slice, user1)
 		user2_slice = append(user2_slice, user2)
 		messageChunks_slice = append(messageChunks_slice, messageChunks)
 	}
 
 	// get all dm's that user is in -> part 2
-	iter = cassandra.Query(
+	iter2 := cassandra.Query(
 		`
 			SELECT *
 			FROM dmtable
@@ -283,7 +285,9 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 		`, userID,
 	).Iter()
 
-	for iter.Scan(&user1, &user2, &messageChunks) {
+	for iter2.Scan(&user1, &user2, &messageChunks) {
+		fmt.Println("yes")
+
 		user1_slice = append(user1_slice, user1)
 		user2_slice = append(user2_slice, user2)
 		messageChunks_slice = append(messageChunks_slice, messageChunks)
@@ -300,6 +304,8 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 		if user1 == userID {
 			otherID = user2
 		}
+
+		fmt.Println(otherID)
 
 		// get username, profile pic path
 		stmt, err := postgres.Prepare(
@@ -321,16 +327,18 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 		}
 		defer res.Close()
 
-		var preview DMPreview
 		for res.Next() {
 			err := res.Scan(
-				&userPrev.UserID,
-				&userPrev.User_name,
-				&userPrev.Profile_picture_path,
+				&userDMPrev.UserID,
+				&userDMPrev.User_name,
+				&userDMPrev.Profile_picture_path,
 			)
 			if err != nil {
 				return nil, "unable to connect to db 3"
 			}
+
+			fmt.Println(userDMPrev.UserID)
+			
 			break
 		}
 
@@ -355,17 +363,13 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 			var messages []string
 			for iter.Scan(&messages) {
 				num_messages := len(messages)
-				recent_message = messages[num_messages-1]
+				if num_messages > 0 {
+					recent_message = messages[num_messages-1]
+				}
 				break
 			}
 		}
-		preview.AuthorID = otherID
-		preview.LastDM = recent_message
-		*previews = append(*previews, preview)
 
-		userDMPrev.UserID = userPrev.UserID
-		userDMPrev.User_name = userPrev.User_name
-		userDMPrev.Profile_picture_path = userPrev.Profile_picture_path
 		userDMPrev.Most_recent_message = recent_message
 		allDMRes = append(allDMRes, userDMPrev)
 	}
@@ -384,9 +388,9 @@ func GetDMHandler(ctx *gin.Context) {
 
 	allDMRes, status := GetAllDM(userID, postgres, cassandra)
 
-	for i := 0; i < len(allDMRes); i++ {
-		fmt.Println(allDMRes[i].UserID) // TODO remove this
-	}
+	// for i := 0; i < len(allDMRes); i++ {
+	// 	fmt.Println(allDMRes[i].UserID) // TODO remove this
+	// }
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": status,

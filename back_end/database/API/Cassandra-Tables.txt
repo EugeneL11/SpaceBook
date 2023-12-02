@@ -15,6 +15,8 @@ CREATE TABLE cassandra.DMTABLE(
     PRIMARY KEY (user1, user2)
 );
 
+CREATE INDEX ON cassandra.DMTABLE (user2);
+
 CREATE TABLE cassandra.DMSUBSET(
     subsetID UUID PRIMARY KEY,
     messages list<text>,
