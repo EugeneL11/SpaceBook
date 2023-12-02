@@ -56,19 +56,19 @@ type PostPreview struct {
 }
 
 type Message struct {
-	SenderID int
-	Message  string
-	Time     time.Time
+	SenderID int       `json:"id"`
+	Message  string    `json:"message"`
+	Time     time.Time `json:"time"`
 }
 
 // type FullDM struct {
 // }
 
 type DMPreview struct {
-	AuthorID          int
-	AuthorName        string
-	AuthorProfilePath string
-	LastDM            string
+	AuthorID          int    `json:"id"`
+	AuthorName        string `json:"username"`
+	AuthorProfilePath string `json:"profile_path"`
+	LastDM            string `json:"recentdm"`
 }
 
 type Response struct {
