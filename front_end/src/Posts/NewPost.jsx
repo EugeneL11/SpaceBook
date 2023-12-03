@@ -76,7 +76,7 @@ function NewPost(props) {
                 console.log(imageData)
             }
         }
-        
+        toggleHomepage();
         //take to homepage
     }
     

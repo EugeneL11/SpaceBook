@@ -4,13 +4,12 @@ import pPic from '../images/pp.png';
 import axios from 'axios'
 import { serverpath } from "../Path.js";
 function ExpandedPost(props) {
-    const postID = props.postID
+    const postID = props.post_id
+    console.log(postID)
     const exampleFriends = ["Kevin", "Omar" , "Raine", "Eugene"]
     const toggleHomepage = props.toggleHomepage
     const toggleOtherProfile = props.toggleOtherProfile
     const togglePost = () => props.toggleExpandPost(postID)
-
-    const [user, setUser] = useState(null)
     const [post, setPost] = useState(null);
     const examplePost = {
         postId: 5,
@@ -38,9 +37,10 @@ function ExpandedPost(props) {
     const [userComment, setUserComment] = useState(null);
     const [userCommentValue, setUserCommentValue] = useState("");
 
-    const path = `/postdetails/${encodeURIComponent(props.postID)}/${encodeURIComponent(currentUser.userID)}`
+    
 
     useEffect(() => {
+        const path = `/postdetails/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
             console.log(data)
@@ -58,38 +58,17 @@ function ExpandedPost(props) {
         }
     };
     const makeComment = () => {
-        // ask backend
-        // const commentPath = `/makecomment/${encodeURIComponent(post.post_id)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
-        // axios.post(`${serverpath}${commentPath}`).then((res) => {
-        //     const commentData = res.data
-        //     console.log(commentData)
-        //     console.log(post.comments)
-        //     const userCommentArr = userComment || [];
-        //     const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
-        //     setUserComment(newArr)
-        //     setUserCommentValue("")
-        // })
-
-        axios.get(`${serverpath}${path}`).then((res) => {
+        const commentPath = `/makecomment/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
+        axios.post(`${serverpath}${commentPath}`).then((res) => {
             const data = res.data
-            const commentPath = `/makecomment/${encodeURIComponent(data.post.post_id)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
-            axios.post(`${serverpath}${commentPath}`).then((res) => {
-                const commentData = res.data
-                console.log(data.post.comments)
-                const userCommentArr = userComment || [];
-                const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
-                setPost(data.post)
-                setUserComment(newArr)
-                console.log(userComment)
-                setUserCommentValue("")
-            })
-            // setUserComment(data.post.comments);
-            // console.log(data.post.comments)
+            console.log(data)
+            const userCommentArr = userComment || [];
+            const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
+            //setPost(data.post)
+            //setUserComment(newArr)
+            console.log(userComment)
+            setUserCommentValue("")
         })
-
-//        const newArr = [...userComment, {username: currentUser.userID, content: userCommentValue}]
-//        setUserComment(newArr);
-//        setUserCommentValue("");
     };
     
     //for admin

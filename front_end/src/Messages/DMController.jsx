@@ -8,7 +8,7 @@ function DMController(props) {
     const toggleHomepage = props.toggleHomepage
     const [DMstate, setDMstate] = useState(null);
     useEffect(() => {
-        if (props.wormhole) {
+        if (props.wormhole === true) {
             toggleDMMessage(props.friendID)
         } else {
             toggleDMList()
@@ -16,11 +16,11 @@ function DMController(props) {
     }, [])
 
     function toggleDMList(){
-        console.log(toggleHomepage)
+        //console.log(toggleHomepage)
         setDMstate(<DMList toggleHomepage={toggleHomepage} toggleDMMessage={toggleDMMessage} toggleNewDM = {toggleNewDM}/>)
     }
     function toggleDMMessage(friendID){
-        console.log("Whastup")
+        //console.log("Whastup")
         setDMstate(<DMMessage friendID={friendID} toggleDMList={toggleDMList} toggleOtherProfile={toggleOtherProfile} toggleDMMessage={toggleDMMessage}/>)
     }
     function toggleOtherProfile(userID,backEvent){
