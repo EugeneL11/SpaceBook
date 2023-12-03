@@ -34,7 +34,7 @@ function DMMessage(props) {
         })
     }
     useEffect(() => {
-        const intervalId = setInterval(updateDM, 10000);
+        const intervalId = setInterval(updateDM, 1000);
        
         return () => {
           clearInterval(intervalId);
@@ -67,12 +67,12 @@ function DMMessage(props) {
     <div className="flex flex-col items-center min-h-screen">
 
         <button className="mb-5 w-fit ml-6 mr-auto text-3xl hover:text-purple-300" onClick={toggleDMList}> {'←'} </button>
-
-        {messages ? (
+       
             <div className="bg-white min-h-[70%] w-full sm:w-3/4 lg:w-1/2 min-w-fit mt-[-20px] pt-6 pb-12 px-10 lg:px-16 rounded-xl">
                 <div className="bg-purple-700 w-full rounded-md py-5 mb-10 flex justify-center items-center">
                     <div onClick={toggleOtherProfile} className="text-white text-3xl absolute hover:cursor-pointer">{friendID}</div>
                 </div>
+            {messages ? (
                 <div className="flex flex-col gap-1">
                     {messages.map((message, index) => (
                         message.id === currentUser.userID ? 
@@ -80,12 +80,8 @@ function DMMessage(props) {
                         <div key={index} className="bg-purple-400 bg-opacity-50 w-fit mr-auto p-2 rounded-lg text-black text-left"> {message.message}</div>
                     ))}
                 </div>
-                
-                
-                
-            </div>
-        ) : null}
-        <div className="flex items-center mt-10">
+            ) : null}
+                <div className="flex items-center mt-10">
                     <input  
                         className="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0 text-black"
                         placeholder="Enter a Wormhole Message"
@@ -95,7 +91,8 @@ function DMMessage(props) {
                         onChange = {(e) => {setmessageValue(e.target.value)}}>
                     </input>
                     <button onClick={sendMessage} className="ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Send</button>
-        </div>
+                </div>
+            </div>
     </div>
     );
 }
