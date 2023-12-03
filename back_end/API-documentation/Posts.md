@@ -112,7 +112,7 @@
     "status": "no error" or "unable to like"
 }
 ```
-
+ 
 ## Delete a Post by postID
 
 -   Use path (DELETE): /deletepost/{postID}
