@@ -31,8 +31,11 @@ function Register(props) {
                 } else if (data.error === "user name not available") {
                     setError(data.error);
                 } else {
-                    currentUser.userID = data.id;
-                    console.log(currentUser.userID);
+                    currentUser.userID = data.user.id;
+                currentUser.userName = data.user.user_name;
+                currentUser.planet = data.user.planet
+                currentUser.pfp = data.user.profile_picture_path;
+                currentUser.bio = data.user.bio
                     toggleHomepage();
                 }
             });
