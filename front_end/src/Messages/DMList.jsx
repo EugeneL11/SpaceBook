@@ -56,7 +56,7 @@ function DMList(props) {
                         <div className="overflow-x-auto whitespace-nowrap">
                             <div className="font-bold text-xl pb-2">{msgObject.user_name}</div>
                             <div className="text-lg ml-10">
-                                {msgObject.recentdm}
+                                {msgObject.most_recent_message}
                             </div>
                         </div>
                     </div> 
