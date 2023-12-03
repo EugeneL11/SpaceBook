@@ -142,7 +142,7 @@ func LoginCorrect(username string, password string, postgres *sql.DB, user *User
 	// fmt.Println("Entered password", password, "correctly matches hashed password!")
 
 	// Get user's information to give frontend
-	stmt, err = postgres.Prepare("SELECT * FROM users WHERE user_name = $1 and password = $2")
+	stmt, err = postgres.Prepare("SELECT user_id, full_name, user_name, email, home_planet, profile_picture_path, isadmin, bio FROM users WHERE user_name = $1 and password = $2")
 	if err != nil {
 		log.Panic(err)
 		return false
@@ -155,9 +155,10 @@ func LoginCorrect(username string, password string, postgres *sql.DB, user *User
 		return false
 	}
 	if rows.Next() {
+
 		err := rows.Scan(&user.User_id, &user.Full_name, &user.User_name,
-			&user.Email, nil, &user.Home_planet, &user.Profile_picture_path, &user.Admin, &user.Bio)
-		fmt.Println(user.User_name)
+			&user.Email, &user.Home_planet, &user.Profile_picture_path, &user.Admin, &user.Bio)
+		fmt.Println(user)
 		log.Println(err)
 		return true
 
