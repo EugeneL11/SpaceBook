@@ -3,6 +3,7 @@ import currentUser from "../Static.js";
 import {serverpath} from "../Path.js";
 import axios from 'axios'
 function Person(props) {
+    const recieverID = props.userID
     const user_pic_url = props.user_pic_url
     const toggleDMMessage = props.toggleDMMessage
     //clicking the profile should toggle to the dm message page with that user, while also posting the following
@@ -12,8 +13,21 @@ function Person(props) {
     //     console.log(data)
     // })
 
+    const handleNewDM = () => {
+        const path = `/newdm/${currentUser.userID}/${recieverID}`
+        axios.post(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            console.log(data)
+        })
+        // toggleDMMessage(props.userID)
+    }
+
     return (
-        <div onClick={() => {toggleDMMessage(props.username)}} className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
+        <div onClick={() => {
+            handleNewDM
+        }
+        } 
+        className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
 
             <img 
                 src={props.user_pic_url}
