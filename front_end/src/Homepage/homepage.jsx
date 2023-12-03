@@ -134,10 +134,20 @@ function Homepage(props) {
                     toggleExpandPost = {() =>{toggleExpandPost(post.post_id)}} 
                     toggleHomePage = {toggleHomePage} 
                     toggleOtherProfile = {toggleOtherProfile}/>)
-            ) : null
+            ) : <NoPosts/>
         }
-    </div>);
+    </div>
+    );
 
+}
+
+function NoPosts() {
+    return(
+        <div className="flex flex-col mt-5 pt-5"> 
+            <p className="text-3xl text-center">No Posts Yet.</p>
+            <p className="text-3xl text-center">To see posts, follow another user and have them make a post!</p>
+        </div>
+    )
 }
 
 export default Homepage;
