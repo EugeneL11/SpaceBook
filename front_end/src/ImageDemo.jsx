@@ -11,7 +11,7 @@ function ImageDemo(props) {
 
     const [imageNum,setImageNum] = useState(0)
 
-    const [images, setImages] = useState([null,null,null,null,null])
+    const [images, setImages] = useState([])
 
     const imageUpload = (file) => {
         const newImages = [...images, file]
