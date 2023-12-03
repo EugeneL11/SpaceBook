@@ -79,10 +79,14 @@ function ExpandedPost(props) {
 
     const [isLiked, setIsLiked] = useState(false);
     
-    const handleClick = () => {
+    const handleLike = () => {
         if (!isLiked) {
         setIsLiked(true);
         // Perform any additional actions when liked
+            const path  = `/likepost/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
+            axios.put(`${serverpath}${path}`).then(res =>{
+                console.log(res.data)
+            })
         }
     };
 
@@ -123,7 +127,7 @@ function ExpandedPost(props) {
                         <div>156 Likes</div>
                         <div
                             className="cursor-pointer transition duration-300 ease-in-out"
-                            onClick={handleClick}
+                            onClick={handleLike}
                             >
                             <img
                                 src={isLiked ? 'redHeart.png' : 'blackHeart.png'}
