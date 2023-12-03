@@ -1,3 +1,5 @@
+CREATE KEYSPACE cassandra WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
 CREATE TABLE cassandra.POST(
     postID UUID PRIMARY KEY,
     authorID int,

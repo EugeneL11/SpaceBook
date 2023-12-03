@@ -78,7 +78,7 @@ function ImageDemo(props) {
                 <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-5 -translate-y-16 rotate-180" onClick={togglePrevImage} /> : null
             } */}
 
-            <img src= {previewImage ? previewImage: defaultIMG}></img>
+            <img src= {previewImage ? previewImage: defaultIMG} className="my-4 mx-auto h-40  object-contain"></img>
 
 
             {/* {imageNum < images.length - 1 ? 
@@ -86,9 +86,10 @@ function ImageDemo(props) {
             } */}
 
             </div>
-
-            <button onClick={toggleNextImage}> Next </button>
-            <button onClick={togglePrevImage}> Back </button>
+            <div className="flex justify-center gap-10">
+                <button onClick={togglePrevImage} className="hover:text-gray-300"> Back </button>
+                <button onClick={toggleNextImage} className="hover:text-gray-300"> Next </button>
+            </div>
 
             {/* <button onClick={uploadTest}>Send post message to server</button> */}
         </div>
