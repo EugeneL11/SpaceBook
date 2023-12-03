@@ -91,13 +91,25 @@ func RegisterHandler(ctx *gin.Context) {
 	var user User
 	err := RegisterUser(fullName, password, email, username, postgres, &user)
 	if err == "unable to connect to db" || err == "unable to hash password" {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("unable to create account at this time"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to create account at this time",
+			"user":   nil,
+		})
 	} else if err == "user name taken" {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("user name not available"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "user name not available",
+			"user":   nil,
+		})
 	} else if err == "email taken" {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("email already in use"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "email already in use",
+			"user":   nil,
+		})
 	} else {
-		ctx.JSON(http.StatusOK, GoodUserResponse(user))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "no error!",
+			"user":   user,
+		})
 	}
 }
 
@@ -160,9 +172,15 @@ func LoginHandler(ctx *gin.Context) {
 	var user User
 	correct := LoginCorrect(username, password, postgres, &user)
 	if !correct {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("unable to find User"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to find User",
+			"user":   nil,
+		})
 	} else {
-		ctx.JSON(http.StatusOK, GoodUserResponse(user))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "no error!",
+			"user":   user,
+		})
 	}
 }
 
