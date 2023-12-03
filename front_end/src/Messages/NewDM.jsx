@@ -1,14 +1,20 @@
 import { React, useState , useEffect } from "react";
-import { userID } from "../Static.js";
+import currentUser from "../Static.js";
+import {serverpath} from "../Path.js";
 import axios from 'axios'
 function Person(props) {
-    const friendID = props.friendID
-    const toggleNewDM = () => {props.toggleNewDM(friendID)}
-    const toggleOtherProfile = () => props.toggleOtherProfile(friendID,toggleNewDM)
     const user_pic_url = props.user_pic_url
+    const toggleDMMessage = props.toggleDMMessage
+    //clicking the profile should toggle to the dm message page with that user, while also posting the following
+    // const path = `/newdm/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.username)}`
+    // axios.get(`${serverpath}${path}`).then((res) => {
+    //     const data = res.data
+    //     console.log(data)
+    // })
+
     return (
-        // make it toggle other profile properly
-        <div className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300" onClick={toggleOtherProfile}>
+        <div onClick={() => {toggleDMMessage(props.username)}} className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
+
             <img 
                 src={props.user_pic_url}
                 alt={props.username} 
@@ -26,16 +32,47 @@ function NewDM(props) {
         {username: "Kevin", user_pic_url: "./jupiter.jpg"}
     ]
 
+    const toggleHomepage = props.toggleHomepage
+    const toggleDMMessage = props.toggleDMMessage
     const toggleDMList = props.toggleDMList
+    const toggleOtherProfile = props.toggleOtherProfile
+    const toggleSearchUser = props.toggleSearchUser
 
+    const [noMatch, setNoMatch] = useState("")
     const [searchTerm, setSearchTerm] = useState("")
     const [people, setPeople] = useState(null)
 
     useEffect(() => {
         // ask back end for top 10
-        setPeople(samplePeople)
+
 
     },[])
+    const handleKeyPress = (event) => {
+        // Check if the Enter key was pressed (key code 13)
+        if (event.key === 'Enter') {
+            // Trigger the button click action
+            searchQuery();
+        }
+    };
+
+    function searchQuery() {
+        if (searchTerm === "") {
+            return //maybe error message(?)
+        }
+        setNoMatch("")
+        axios.get(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
+            const data = res.data
+            console.log(data)
+            if (data.error === "no error") {
+                console.log(data.userPreviews[0].profile_picture_path)
+                setPeople(data.userPreviews)
+                setNoMatch("")
+            } else if (data.error === "no users found") {
+                setNoMatch("No Match Found")
+                setPeople(null)
+            } //catch errors later
+        })
+    }
 
     return (
         <div className="flex flex-col justify-start items-center space-y-4">
@@ -47,9 +84,10 @@ function NewDM(props) {
                     type="text" 
                     value={searchTerm} 
                     onChange={e => setSearchTerm(e.target.value)}
-                    className="w-full p-2 rounded-bl-md rounded-tl-md text-black"
+                    onKeyPress={handleKeyPress}
+                    className="w-full p-2 rounded-bl-md rounded-tl-md text-black border-1 border-white focus:outline-none focus:border-gray-500 focus:ring-0"
                 ></input>
-                <div className="relative inset-y-0 right-0 flex items-center px-3 bg-white rounded-tr-md rounded-br-md">
+                <div className="relative inset-y-0 right-0 flex items-center px-3 bg-white rounded-tr-md rounded-br-md" onClick={searchQuery}>
                     <img
                         src="./search.png"
                         alt="search users"
@@ -57,16 +95,26 @@ function NewDM(props) {
                     ></img>
                 </div>
             </div>
-            {samplePeople.map(
+            {(noMatch === "No Match Found") ? 
+                <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
+                    {noMatch}
+                </div> 
+                : null
+            }
+            {people ? people.map(
                 (person, index) => (
-                    person.username.toLowerCase().includes(searchTerm.toLowerCase()) ? 
                     <Person
+                        userID = {person.user_id}
+                        back = {toggleSearchUser}
+                        showOtherProfile = {toggleOtherProfile}
                         key={index}
-                        username={person.username} 
-                        user_pic_url={person.user_pic_url}
-                    ></Person> : null
+
+                        username={person.user_name} 
+                        user_pic_url={serverpath + person.profile_picture_path}
+                    ></Person> 
+
                 )
-            )}
+            ) : null}
         </div>
     );
 

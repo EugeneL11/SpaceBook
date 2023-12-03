@@ -1,5 +1,6 @@
 import { React, useState,useEffect } from "react";
 import currentUser from "../Static.js";
+import {serverpath} from "../Path.js";
 import pPic from '../images/pp.png';
 import Background from '../Background/background'
 import axios from 'axios'
@@ -25,8 +26,18 @@ function DMList(props) {
     
     const [msgs, setMsgs] = useState(null)
         useEffect(()=>{
+            const path = `/userdms/${encodeURIComponent(currentUser.userID)}`
+            axios.get(`${serverpath}${path}`).then((res) => {
+                const data = res.data
+                console.log(data)
+                if (data.status === "no error") {
+                    setMsgs(data.dmpreviews)
+                } else {
+                    console.log(data.status)
+                }
+            })
+
             // ask back end for dms
-            setMsgs(examplefriends)
         },[])
 
     return (
@@ -44,7 +55,7 @@ function DMList(props) {
                         <div className="overflow-x-auto whitespace-nowrap">
                             <div className="font-bold text-xl pb-2">{msgObject.username}</div>
                             <div className="text-lg ml-10">
-                                {msgObject.msg}
+                                {msgObject.recentdm}
                             </div>
                         </div>
                     </div> 
