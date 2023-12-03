@@ -170,7 +170,7 @@ function ExpandedPost(props) {
                     {userComment ? userComment.map((comment, index) => (
                         <div key = {index}>
                             <div className="w-full flex justify-between bg-purple-400 rounded-lg p-2 my-2">
-                                <div className="text-white mr-6 text-left">{comment.username}</div>
+                                <div className="text-white mr-6 text-left">{comment.commenter_name}</div>
                                 <div className="h-14 overflow-y-scroll text-right">{comment.content}</div>
                             </div>
                         </div>)
