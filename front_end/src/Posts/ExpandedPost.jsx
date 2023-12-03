@@ -61,6 +61,7 @@ function ExpandedPost(props) {
         }
     };
     const makeComment = () => {
+        console.log("the comment is " + userCommentValue)
         const commentPath = `/makecomment/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
         axios.post(`${serverpath}${commentPath}`).then((res) => {
             const data = res.data
@@ -162,11 +163,11 @@ function ExpandedPost(props) {
                             placeholder="Add comment..."
                             type="text"
                             value = {userCommentValue}
-                            onKeyPress={handleKeyPress}
+                            onKeyPress={userCommentValue ? handleKeyPress : null}
                             onChange = {(e) => {setUserCommentValue(e.target.value)}}
                             >
                         </input>
-                        <button className="p-2 bg-blue-300 hover:bg-blue-400 text-white rounded-md ml-2" onClick={makeComment}><img src="arrow-up.png" className="w-4"></img></button>
+                        <button className="p-2 bg-blue-300 hover:bg-blue-400 text-white rounded-md ml-2" onClick={userCommentValue ? makeComment : null}><img src="arrow-up.png" className="w-4"></img></button>
                     </div>
                     {userComment ? userComment.map((comment, index) => (
                         <div key = {index}>
