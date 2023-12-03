@@ -7,7 +7,7 @@ CREATE TABLE Users (
     email varchar(60) UNIQUE NOT NULL,
     password varchar(255) NOT NULL,
     home_planet planet,
-    profile_picture_path varchar(70),
+    profile_picture_path varchar(150),
     isAdmin bool,
     bio varchar(2000)
 );

@@ -76,6 +76,13 @@ function ExpandedPost(props) {
     
     //for admin
     const removePost = () =>{
+
+        const path = `/deletepost/${postID}`
+        axios.delete(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            console.log(data)
+        })
+
         // ask back end
         toggleHomepage();
     }
@@ -129,12 +136,12 @@ function ExpandedPost(props) {
                     <img src={post.images[imageNum]} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
                 </div> */}
                 <div> Hisdasd</div>
-                {post.images.map((image, index) => (
+                {post.images ? post.images.map((image, index) => (
                     <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
                         <img src={serverpath + image} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
                         sdkjahdhasdkh
                     </div>
-                ))}
+                )) : null}
                 <div className="flex flex-col w-full bg-purple-200 rounded-xl p-2 my-5">
                     <div className="flex justify-between">
                         <div>{numLikes} likes</div>
