@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from 'axios';
 import { serverpath } from "./Path";
 
@@ -6,11 +6,45 @@ function ImageDemo(props) {
 
     const [image, setImage] = useState(null);
     const [previewImage, setPreview] = useState(null)
-    const saveEvent = props.saveEvent
-    const defaultIMG = (props.image ? props.image : `${serverpath}/images/header.jpg`)
+    const defaultIMG = (`${serverpath}/images/header.jpg`)
     // change these
     const localhost = "http://localhost:8080";
     const path = `/uploadpostimage/${encodeURIComponent("b86e1293-8bee-11ee-b365-0242ac120004")}`;
+    const [imageNum,setImageNum] = useState(0)
+
+    const [images, setImages] = useState([])
+    const [selectedImage, setSelectedImage] = useState(null)
+    const fileInputRef = useRef(null)
+
+    const imageUpload = (file) => {
+        const newImages = [...images, file]
+        setImages(newImages)
+        console.log(newImages)
+    };
+
+    const saveEvent = imageUpload
+
+    const toggleNextImage = () =>{
+        let num = imageNum;
+        if(num < images.length-1){
+            num++;
+        }
+        console.log(num)
+
+        setImageNum(num);
+        handleImageChange({target: {files: [images[num]]}})
+    }
+
+    const togglePrevImage = () =>{
+        let num = imageNum;
+        if(num > 0){
+            num--;
+        }
+        console.log(num)
+
+        setImageNum(num);
+        handleImageChange({target: {files: [images[num]]}})
+    }
 
     const uploadTest = () => {
         const formData = new FormData();
@@ -22,14 +56,25 @@ function ImageDemo(props) {
                 console.log(response);
             })
             .catch(error => {
-
+ 
                 console.error(error);
             });
     };
-    const handleImageChange = (e) => {
+
+    const imageIsUploaded = (e) => {
+        console.log("fack")
         const selectedImage = e.target.files[0];
         setImage(selectedImage);
         saveEvent(selectedImage)
+
+        handleImageChange(e);
+    }
+
+    const handleImageChange = (e) => {
+
+        const selectedImage = e.target.files[0];
+        console.log(selectedImage)
+
         // Read and set the preview image
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -37,16 +82,33 @@ function ImageDemo(props) {
         };
         if (selectedImage) {
             reader.readAsDataURL(selectedImage);
-        }
+    }
     };
+
     return (
         <div>
-            <h1>Click Below to upload image</h1>
-            <input type="file" onChange={handleImageChange} />
+            <input type="file" onChange={imageIsUploaded} />
+
+            <div className="relative w-100 h-100 mt-4 border-black border-2">
+
+
+            {/* { imageNum > 0 ? 
+                <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-5 -translate-y-16 rotate-180" onClick={togglePrevImage} /> : null
+            } */}
+
             <img src= {previewImage ? previewImage: defaultIMG}></img>
-            
-            <img src={props.image} alt="" />
-            <button onClick={uploadTest}>Send post message to server</button>
+
+
+            {/* {imageNum < images.length - 1 ? 
+            <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-5 -translate-y-16"  onClick={toggleNextImage}/> : null
+            } */}
+
+            </div>
+
+            <button onClick={toggleNextImage}> Next </button>
+            <button onClick={togglePrevImage}> Back </button>
+
+            {/* <button onClick={uploadTest}>Send post message to server</button> */}
         </div>
     );
 }
