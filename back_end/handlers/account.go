@@ -6,9 +6,11 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/EugeneL11/SpaceBook/pkg"
 	"github.com/gin-gonic/gin"
+	"github.com/gocql/gocql"
 )
 
 // Add new non-admin user to SQL db, returning error message if unsuccessful
@@ -91,13 +93,25 @@ func RegisterHandler(ctx *gin.Context) {
 	var user User
 	err := RegisterUser(fullName, password, email, username, postgres, &user)
 	if err == "unable to connect to db" || err == "unable to hash password" {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("unable to create account at this time"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to create account at this time",
+			"user":   nil,
+		})
 	} else if err == "user name taken" {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("user name not available"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "user name not available",
+			"user":   nil,
+		})
 	} else if err == "email taken" {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("email already in use"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "email already in use",
+			"user":   nil,
+		})
 	} else {
-		ctx.JSON(http.StatusOK, GoodUserResponse(user))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "no error!",
+			"user":   user,
+		})
 	}
 }
 
@@ -128,7 +142,7 @@ func LoginCorrect(username string, password string, postgres *sql.DB, user *User
 	// fmt.Println("Entered password", password, "correctly matches hashed password!")
 
 	// Get user's information to give frontend
-	stmt, err = postgres.Prepare("SELECT * FROM users WHERE user_name = $1 and password = $2")
+	stmt, err = postgres.Prepare("SELECT user_id, full_name, user_name, email, home_planet, profile_picture_path, isadmin, bio FROM users WHERE user_name = $1 and password = $2")
 	if err != nil {
 		log.Panic(err)
 		return false
@@ -141,9 +155,10 @@ func LoginCorrect(username string, password string, postgres *sql.DB, user *User
 		return false
 	}
 	if rows.Next() {
+
 		err := rows.Scan(&user.User_id, &user.Full_name, &user.User_name,
-			&user.Email, nil, &user.Home_planet, &user.Profile_picture_path, &user.Admin, &user.Bio)
-		fmt.Println(user.User_name)
+			&user.Email, &user.Home_planet, &user.Profile_picture_path, &user.Admin, &user.Bio)
+		fmt.Println(user)
 		log.Println(err)
 		return true
 
@@ -160,9 +175,15 @@ func LoginHandler(ctx *gin.Context) {
 	var user User
 	correct := LoginCorrect(username, password, postgres, &user)
 	if !correct {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("unable to find User"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to find User",
+			"user":   nil,
+		})
 	} else {
-		ctx.JSON(http.StatusOK, GoodUserResponse(user))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "no error!",
+			"user":   user,
+		})
 	}
 }
 
@@ -253,6 +274,7 @@ func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 
 func GetUserInfoHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	viewer, err1 := strconv.Atoi(ctx.Param("viewer"))
 	viewed, err2 := strconv.Atoi(ctx.Param("viewed"))
 	if err1 != nil || err2 != nil {
@@ -282,10 +304,21 @@ func GetUserInfoHandler(ctx *gin.Context) {
 		})
 		return
 	}
+	min_time := time.Date(2004, time.January, 1, 0, 0, 0, 0, time.UTC)
+	posts, err := GetNewPostsFromUser(viewed, user.Profile_picture_path, user.User_name, min_time, cassandra)
+	if err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       "bad request",
+			"user":         nil,
+			"friendstatus": nil,
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":       "no error",
 		"user":         user,
 		"friendstatus": status,
+		"posts":        posts,
 	})
 }
 

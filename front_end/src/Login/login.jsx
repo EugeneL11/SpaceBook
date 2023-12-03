@@ -20,12 +20,14 @@ function Login(props) {
             );
             const data = res.data;
             console.log(data);
-            if (data.error == "unable to find User") {
+            if (data.status == "unable to find User") {
                 setError("username or password incorrect");
             } else {
-                currentUser.userID = data.id;
-                currentUser.userName = data.username;
-                currentUser.pfp = data.Profile_picture_path;
+                currentUser.userID = data.user.id;
+                currentUser.userName = data.user.user_name;
+                currentUser.planet = data.user.planet
+                currentUser.pfp = data.user.profile_picture_path;
+                currentUser.bio = data.user.bio
                 toggleHomepage();
             }
         }

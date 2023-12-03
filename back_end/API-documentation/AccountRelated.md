@@ -5,23 +5,26 @@
 
 ```json
 {
-    "error": "unable to create account at this time",
-    "id": "null",
-    "username": "null",
-    "admin": "null",
-    "full_name": "null",
-    "Email": "null",
-    "Home_planet": "null",
-    "Profile_picture_path": "null"
+    "status": "unable to create account at this time" or "user name not available" or "email already in use" or "no error!",
+    "user": null if error occurred, or a JSON (refer to below for User JSON format)
 }
+
+// User JSON format
+{
+    "id": user's ID (int),
+    "username": user's username,
+    "admin": true if user is an admin, false otherwise (bool),
+    "full_name": user's full name,
+    "Email": user's email,
+    "Home_planet": user's home planet,
+    "Profile_picture_path": path to the user's profile picture,
+    "bio": user's bio for profile
+}
+
 ```
 
--   If no error, then it will say "no error" in "error" field, and user details are given instead of null
--   Client can just notify if there was an error in general, but the error can be:
-    -   "unable to create account at this time" (database error on backend, should never happen)
-    -   "user name not availible" - user name already exists in database
-    -   "email already in use" - email already exists in database
-    -   "no error" - successful, all the other fields should be correctly filled out
+-   If no error, then it will say "no error" in "error" field, and user details are given instead of null user
+-   Client can just notify if there was an error in general, but the error can be any of the above options in "status"
 
 ## To Login:
 
@@ -30,19 +33,26 @@
 
 ```json
 {
-    "error": "unable to find User",
-    "id": "null",
-    "username": "null",
-    "admin": "null",
-    "full_name": "null",
-    "Email": "null",
-    "Home_planet": "null",
-    "Profile_picture_path": "null"
+    "status": "unable to find User" or "no error!",
+    "user": null if error occurred, or a JSON (refer to below for User JSON format)
 }
+
+// User JSON format
+{
+    "id": user's ID (int),
+    "username": user's username,
+    "admin": true if user is an admin, false otherwise (bool),
+    "full_name": user's full name,
+    "Email": user's email,
+    "Home_planet": user's home planet,
+    "Profile_picture_path": path to the user's profile picture,
+    "bio": user's bio for profile
+}
+
 ```
 
--   Either error is "unable to find User" or "no error!"
-    The rest of the fields are filled out properly if no error
+-   Either status is "unable to find User" or "no error!"
+-   The rest of the fields are filled out properly if there is no error
 
 ## Update User Profile:
 
