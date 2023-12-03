@@ -6,9 +6,11 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/EugeneL11/SpaceBook/pkg"
 	"github.com/gin-gonic/gin"
+	"github.com/gocql/gocql"
 )
 
 // Add new non-admin user to SQL db, returning error message if unsuccessful
@@ -253,6 +255,7 @@ func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 
 func GetUserInfoHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	viewer, err1 := strconv.Atoi(ctx.Param("viewer"))
 	viewed, err2 := strconv.Atoi(ctx.Param("viewed"))
 	if err1 != nil || err2 != nil {
@@ -282,10 +285,13 @@ func GetUserInfoHandler(ctx *gin.Context) {
 		})
 		return
 	}
+	min_time := time.Date(2004, time.January, 1, 0, 0, 0, 0, time.UTC)
+	posts, err := GetNewPostsFromUser(viewed, user.Profile_picture_path, user.User_name, min_time, cassandra)
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":       "no error",
 		"user":         user,
 		"friendstatus": status,
+		"posts":        posts,
 	})
 }
 
