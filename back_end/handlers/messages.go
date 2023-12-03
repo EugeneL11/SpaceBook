@@ -526,7 +526,6 @@ func GetMessagesHandler(ctx *gin.Context) {
 			"moreMessages": false,
 			"messages":     nil,
 		})
-		fmt.Println(result[0].Message)
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{

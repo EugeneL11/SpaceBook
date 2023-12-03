@@ -2,7 +2,7 @@
 -   "E:" is short for (E)xpected result:
 -   Begin from an empty Postgres/Cassandra database
 
-## 1. Creating Accounts
+## 1. Creating Accounts:
 
 ### Check for Errors/Required Features
 
@@ -49,7 +49,7 @@ Go to Sign Up page and create 3 accounts with the following example credentials.
 -   Change the email AND username
     -   E: Should be able to create an account with same password/full name
 
-## 2. Finding Users and Orbit Requests
+## 2. Finding Users and Orbit Requests:
 
 -   On Desktop, Enter key and clicking search button should be same
 -   Preferably case-insensitive so capitals in usernames do not need to be exact match
@@ -62,10 +62,7 @@ Go to Sign Up page and create 3 accounts with the following example credentials.
 -   Eugene clicks on "Duppy" user preview
     -   E: Page changes to user profile for Duppy, from the perspective of Eugene. Username, profile picture, bio, friend/orbit status and home planet show at minimum. Posts may also be seen (hidden if public/private profile feature is added).
 -   Eugene clicks on a "Request Orbit" button that is visible on Omar's profile
-    -   E: Orbit request is sent to Omar. Omar receives a notification or red dot as indication on his end.
-    -   E: The "Request Orbit" button changes on Eugene's screen to indicate a pending request, which should persist until Omar accepts or rejects the request. Unless a user can "retract" a request, the button should no longer do anything, or maybe display a message.
--   Omar searches Eugene's profile (before checking request)
-    -   E: Profile either allows for accepting/rejecting request from Eugene, or shows pending status and indicates to check Requests page for further action
+    -   E: Orbit request is nd indicates to check Requests page for further action
 -   Omar checks notification/goes to Requests page
     -   E: Omar sees a user preview for Eugene (incl. username "Gene" and pfp at minimum) and buttons to allow for accepting or rejecting request (ex. green checkmark and red X)
     -   Optionally, there is a confirmation required to reject and/or accept
@@ -87,9 +84,12 @@ Go to Sign Up page and create 3 accounts with the following example credentials.
 -   Eugene and Victor check each other's profiles
     -   E: They both see that they are orbiting each other and can unorbit
 
-Note: Need to confirm that other people's profiles are viewed from perspective of current user (ex. Victor should have the option to request either Eugene or Omar, and it should not say pending or orbiting)
+## 3. DM A Friend
 
-## 3. Making Posts
+-   blah
+-
+
+## 4. Making Posts
 
 -   Make a post with no images
 -
