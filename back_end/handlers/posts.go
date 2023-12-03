@@ -16,7 +16,7 @@ func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID,
 	postID := gocql.TimeUUID()
 	time := time.Now()
 	insertStmt := cassandra.Query(`INSERT INTO Post (postID, caption, authorID, comments, date_posted, imagepaths, 
-		likes, numbercomments, numberlikes) VALUES (?, ?, ?, {}, ?, [], {}, 0, 0 )`)
+		likes) VALUES (?, ?, ?, {}, ?, [], {} )`)
 
 	if err := insertStmt.Bind(postID, caption, userID, time).Exec(); err != nil {
 		return gocql.UUID{}, "unable to connect to db"
@@ -71,7 +71,7 @@ func GetNewPostsFromUser(userID int, userProfilePath string, userName string, da
 
 func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *gocql.Session) ([]PostPreview, string) {
 	stmt, err := postgres.Prepare(`Select user2_id from orbit_buddies where user1_id = $1 union 
-	select user2_id from orbit_buddies where user1_id = $1`)
+	select user1_id from orbit_buddies where user2_id = $1`)
 	if err != nil {
 		return nil, "unable to connect to db"
 	}
@@ -133,7 +133,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 	iter := stmt.Bind(postID).Iter()
 	post.PostID = postID
 	var likes []int
-	var comments []int
+	var comments []gocql.UUID
 	var postDate time.Time
 	if iter.Scan(&post.AuthorID, &post.Caption, &post.Images,
 		&postDate, &comments, &likes) {
@@ -143,7 +143,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 			}
 		}
 		post.NumLikes = len(likes)
-		stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
+		stmt, err := postgres.Prepare("select user_name, profile_picture_path from users where user_id = $1")
 		if err != nil {
 			return "unable to connect to db 1"
 		}

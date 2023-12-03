@@ -24,6 +24,13 @@ type UserPreview struct {
 	Profile_picture_path string `json:"profile_picture_path"`
 }
 
+type UserDMPreview struct {
+	UserID 				 int	`json:"user_id"`
+	User_name			 string	`json:"user_name"`
+	Profile_picture_path string `json:"profile_picture_path"`
+	Most_recent_message  string `json:"most_recent_message"`
+}
+
 type Comment struct {
 	CommenterID          int    `json:"commenter_id"`
 	CommenterProfilePath string `json:"commenter_profile_path"`
@@ -56,20 +63,13 @@ type PostPreview struct {
 }
 
 type Message struct {
-	SenderID int
-	Message  string
-	Time     time.Time
+	SenderID int       `json:"id"`
+	Message  string    `json:"message"`
+	Time     time.Time `json:"time"`
 }
 
 // type FullDM struct {
 // }
-
-type DMPreview struct {
-	AuthorID          int
-	AuthorName        string
-	AuthorProfilePath string
-	LastDM            string
-}
 
 type Response struct {
 	Error                string `json:"error"`

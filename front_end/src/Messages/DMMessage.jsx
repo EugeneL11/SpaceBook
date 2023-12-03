@@ -1,6 +1,7 @@
 import { React, useState, useEffect} from "react";
 import backPic from '../images/back.png';
 import currentUser from "../Static.js";
+import {serverpath} from "../Path.js";
 import axios from 'axios'
 function DMMessage(props) {
     const friendID = props.friendID
@@ -21,10 +22,19 @@ function DMMessage(props) {
     ]
     const [messages, setMessages] = useState(null)
     const [messageValue, setmessageValue] = useState("")
-        useEffect(()=>{
-            // ask back end for dms
-            setMessages(exampleDMs)
-        },[])
+    const subsetSize = 10
+    useEffect(()=>{
+        const path = `/getmessages/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(subsetSize)}`
+        console.log(path)
+        axios.get(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            console.log(data)
+            //setMessages() what do i set this as? it only returns a status and a bool for moreMessages
+        })
+
+        // ask back end for dms
+        //setMessages(exampleDMs)
+    },[])
     
     const handleKeyPress = (event) => {
         // Check if the Enter key was pressed (key code 13)
@@ -34,10 +44,21 @@ function DMMessage(props) {
         }
     };
     const sendMessage = () =>{
+        const sendPath = `/senddm/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(messageValue)}`
+        axios.post(`${serverpath}${sendPath}`).then((res) => {
+            const sendData = res.data
+            console.log(sendData)
+            //what does this axios post even do? we only get sent back a status
+            if (sendData.status === "no error") {
+                const newArr = [...messages, {sender: currentUser.userID, text: messageValue}]
+                setMessages(newArr)
+                setmessageValue("")
+            } else {
+                console.log(sendData.status)
+            }
+        })
+
         // tell back end
-        const newArr = [...messages, {sender: currentUser.userID, text: messageValue}]
-        setMessages(newArr)
-        setmessageValue("")
     }
     return (
     <div className="flex flex-col items-center min-h-screen">

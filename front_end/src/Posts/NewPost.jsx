@@ -3,7 +3,11 @@ import axios from 'axios'
 import currentUser from "../Static";
 import ImageDemo from "../ImageDemo";
 
+
 import {imageNum, togglePrevImage, toggleNextImage, images} from "../ImageDemo"
+
+
+import { serverpath } from "../Path";
 
 function NewPost(props) {
     const toggleHomepage = props.toggleHomepage
@@ -17,8 +21,32 @@ function NewPost(props) {
         videos: [],
     }
 
-    function makePost() {
 
+   // function makePost() {
+
+
+    async function makePost() {
+        const path = `/makepost/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(caption)}`
+        const res = await axios.post(`${serverpath}${path}`)
+        const data = res.data
+        if (data.status === "no error") {
+            console.log(data.post_id)
+            setPostID(data.post_id)
+        } else {
+            console.log(data.status)
+        }
+        for (let i = 0; i < 5; i++) {
+            if (images[i] !== null) {
+                const formData = new FormData();
+                formData.append(`image`, images[i])
+                const imagePath = `/uploadpostimage/${encodeURIComponent(data.post_id)}`
+                const imageRes = await axios.post(`${serverpath}${imagePath}`, formData)
+                const imageData = imageRes.data
+                console.log(imageData)
+            }
+        }
+        
+        //take to homepage
     }
     
     return (
@@ -31,7 +59,11 @@ function NewPost(props) {
                 </div>
 
                 <label className=" mt-3 lg:mt-4">Write a caption </label>
-                <textarea className="form-textarea border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" rows="3" placeholder=" Write a caption..."></textarea>
+                <textarea 
+                    className="form-textarea border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" 
+                    rows="3" placeholder=" Write a caption..."
+                    value={caption} onChange={handleCaption}    
+                ></textarea>
             
                 <div className="mt-4">Add images </div>
           
@@ -39,9 +71,11 @@ function NewPost(props) {
 
 
 
+
                 <h1>Click Below to upload image</h1>
 
                
+
 
 <ImageDemo/> 
 
