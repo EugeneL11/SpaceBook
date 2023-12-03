@@ -305,6 +305,14 @@ func GetUserInfoHandler(ctx *gin.Context) {
 	}
 	min_time := time.Date(2004, time.January, 1, 0, 0, 0, 0, time.UTC)
 	posts, err := GetNewPostsFromUser(viewed, user.Profile_picture_path, user.User_name, min_time, cassandra)
+	if err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       "bad request",
+			"user":         nil,
+			"friendstatus": nil,
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":       "no error",
 		"user":         user,
