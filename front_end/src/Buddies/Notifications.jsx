@@ -132,7 +132,7 @@ function Notifications(props) {
         ))} */}
         {noReqs ? 
             <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
-                No Friend Requests... LOSER
+                No Orbit Requests... LOSER (jk)
             </div> 
         : null}
         {requests ? requests.map(

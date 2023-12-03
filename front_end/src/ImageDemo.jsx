@@ -86,9 +86,10 @@ function ImageDemo(props) {
             } */}
 
             </div>
-
-            <button onClick={toggleNextImage}> Next </button>
-            <button onClick={togglePrevImage}> Back </button>
+            <div className="flex justify-center gap-10">
+                <button onClick={togglePrevImage} className="hover:text-gray-300"> Back </button>
+                <button onClick={toggleNextImage} className="hover:text-gray-300"> Next </button>
+            </div>
 
             {/* <button onClick={uploadTest}>Send post message to server</button> */}
         </div>

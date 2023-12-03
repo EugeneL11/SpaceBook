@@ -86,8 +86,6 @@ function NewPost(props) {
                         setImages = {setImages}
                     /> 
 
-                <button className="bg-red-300 hover:bg-red-400 px-2 py-1 mt-4 w-fit self-center rounded-md text-sm">Remove Selected Image</button>
-
                 <button onClick={makePost} className="bg-purple-300 hover:bg-purple-400 px-5 py-2 mt-5 w-fit self-center rounded-lg">Post!</button>
 
             </div>
