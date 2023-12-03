@@ -161,32 +161,37 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 		post.AuthorName = userName
 		post.AuthorProfilePath = profilePath
 		post.Date = postDate.Format(time.RFC3339)
-		for _, key := range comments {
-			stmt := cassandra.Query("Select * from comment where commentID = ?")
-			iter := stmt.Bind(key).Iter()
+		for i := range comments {
+
+			stmt := cassandra.Query("Select commenter, content, time from comment where commentID = ?")
+			iter2 := stmt.Bind(comments[i]).Iter()
 			var comment Comment
 			var commentDate time.Time
-			for iter.Scan(nil, &comment.CommenterID, &comment.Content, &commentDate) {
-				stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
+			if iter2.Scan(&comment.CommenterID, &comment.Content, &commentDate) {
+				fmt.Println("sup")
+				getuserInfo, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
 				if err != nil {
 					return "unable to connect to db 4"
 				}
-				defer stmt.Close()
-				userInfo, err := stmt.Query(post.AuthorID)
+				defer userInfo.Close()
+				userInfo, err := getuserInfo.Query(&comment.CommenterID)
 				if err != nil {
 					return "unable to connect to db 5"
 				}
 				userName, profilePath := "", ""
 				if userInfo.Next() {
-					userInfo.Scan(&userName, &profilePath)
+					userInfo.Scan(&profilePath, &userName)
 				} else {
 					return "unable to connect to db 6"
 				}
 				comment.CommenterName = userName
-				comment.CommenterName = profilePath
+				comment.CommenterProfilePath = profilePath
 				comment.Date = commentDate.Format(time.RFC3339)
 				post.Comments = append(post.Comments, comment)
+			} else {
+				return "unable to connect to db 8"
 			}
+			fmt.Println(comment.Content, comments[i])
 		}
 	} else {
 		return "unable to connect to db 7"

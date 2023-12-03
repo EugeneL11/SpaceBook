@@ -3,22 +3,20 @@ import axios from 'axios';
 import { serverpath } from "./Path";
 
 function ImageDemo(props) {
+    const updateImage = props.setImages;
 
     const [image, setImage] = useState(null);
     const [previewImage, setPreview] = useState(null)
     const defaultIMG = (`${serverpath}/images/header.jpg`)
-    // change these
-    const localhost = "http://localhost:8080";
-    const path = `/uploadpostimage/${encodeURIComponent("b86e1293-8bee-11ee-b365-0242ac120004")}`;
+
     const [imageNum,setImageNum] = useState(0)
 
-    const [images, setImages] = useState([])
-    const [selectedImage, setSelectedImage] = useState(null)
-    const fileInputRef = useRef(null)
+    const [images, setImages] = useState([null,null,null,null,null])
 
     const imageUpload = (file) => {
         const newImages = [...images, file]
         setImages(newImages)
+        updateImage(newImages)
         console.log(newImages)
     };
 
@@ -46,23 +44,7 @@ function ImageDemo(props) {
         handleImageChange({target: {files: [images[num]]}})
     }
 
-    const uploadTest = () => {
-        const formData = new FormData();
-        formData.append("image", image);
-
-        axios.post(`${localhost}${path}`, formData)
-            .then(response => {
-
-                console.log(response);
-            })
-            .catch(error => {
- 
-                console.error(error);
-            });
-    };
-
     const imageIsUploaded = (e) => {
-        console.log("fack")
         const selectedImage = e.target.files[0];
         setImage(selectedImage);
         saveEvent(selectedImage)
