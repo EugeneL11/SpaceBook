@@ -258,7 +258,7 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 	user1_slice := []int{}
 	user2_slice := []int{}
 	messageChunks_slice := [][]gocql.UUID{}
-	
+
 	// get all dm's that user is in -> part 1
 	iter := cassandra.Query(
 		`
@@ -338,7 +338,7 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 			}
 
 			fmt.Println(userDMPrev.UserID)
-			
+
 			break
 		}
 
@@ -373,7 +373,7 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 		userDMPrev.Most_recent_message = recent_message
 		allDMRes = append(allDMRes, userDMPrev)
 	}
-	
+
 	return allDMRes, "no error"
 }
 
@@ -393,7 +393,7 @@ func GetDMHandler(ctx *gin.Context) {
 	// }
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"status": status,
+		"status":  status,
 		"all_dms": allDMRes,
 	})
 }
@@ -512,7 +512,9 @@ func GetMessagesHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	if err2 != nil || err1 != nil || err3 != nil {
 		ctx.JSON(http.StatusOK, gin.H{
-			"status": "unable to parse input",
+			"status":       "unable to parse input",
+			"moreMessages": false,
+			"messages":     nil,
 		})
 		return
 	}
@@ -523,6 +525,7 @@ func GetMessagesHandler(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"status":       "failed to retrieve messages",
 			"moreMessages": false,
+			"messages":     nil,
 		})
 		fmt.Println(result[0].Message)
 		return
@@ -530,5 +533,6 @@ func GetMessagesHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":       "no error",
 		"moreMessages": !allDMS,
+		"messages":     result,
 	})
 }
