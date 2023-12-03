@@ -15,9 +15,10 @@ Sign up for an account with the following credentials, which will be made into a
 ### Make the Account Into Admin Manually
 
 The following assumes you have the docker container running.
-Inside of the base level directory (/SpaceBook), enter the following commands:
+Inside of the base level directory (/SpaceBook), enter the following commands in a shell:
 
 -   docker compose exec postgres psql -U postgres -d postgres
+    -   Password is "postgres"
 -   UPDATE USERS SET isadmin = true WHERE user_name = 'profSteve';
 
 If `SELECT * FROM users;` displays `t` under the isadmin column for the row with the user, then the account should now be an admin.
