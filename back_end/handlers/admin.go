@@ -12,10 +12,18 @@ import (
 
 // DeleteComments deletes comments associated with a postID
 func DeleteComments(postID gocql.UUID, cassandra *gocql.Session) bool {
-	if err := cassandra.Query("DELETE FROM COMMENT WHERE postID = ? ALLOW FILTERING", postID).Exec(); err != nil {
+	var comments []gocql.UUID
+	if err := cassandra.Query("Select comments from post where postid = $1", postID).Scan(&comments); err != nil {
 		fmt.Println("Error deleting comments:", err)
 		return false
 	}
+	for i := range comments {
+		if err2 := cassandra.Query("DELETE FROM COMMENT WHERE commentID = ?", comments[i]).Exec(); err2 != nil {
+			fmt.Println("Error deleting comments:", err2)
+			return false
+		}
+	}
+
 	return true
 }
 
