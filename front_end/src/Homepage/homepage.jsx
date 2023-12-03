@@ -9,28 +9,31 @@ function Post(props) {
     const toggleExpandPost = props.toggleExpandPost;
     const toggleHomePage = props.toggleHomePage;
     const expandPost = props.expandPost;
+    
     const [imageNum,setImageNum] = useState(0)
+
     const toggleNextImage = () =>{
-        const nextImage = imageNum + 1;
-        setImageNum(nextImage);
+        let num = imageNum;
+        if(num < props.images.length-1){
+            num++;
+        }
+        console.log(num)
+
+        setImageNum(num);
     }
+
     const togglePrevImage = () =>{
-        const nextImage = imageNum - 1;
-        setImageNum(nextImage);
+        let num = imageNum;
+        if(num > 0){
+            num--;
+        }
+        console.log(num)
+
+        setImageNum(num);
     }
     return(
         <div className="flex flex-col w-11/12 lg:w-7/12 mx-auto mb-10 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
-            {/* <div className="relative w-100 h-100">
-                {imageNum > 0 ? 
-                    // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl top-52 z-40 cursor-pointer hover:text-purple-400" onClick={togglePrevImage}> {"←"} </div> : null
-                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-10 translate-y-10 rotate-180" onClick={togglePrevImage} /> : null
-                }
-                {imageNum < imageCount - 1 ? 
-                    // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl cursor-pointer left-85-percent top-52 z-40 hover:text-purple-400" onClick={toggleNextImage}> {"→"} </div> : null
-                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-10 translate-y-10"  onClick={toggleNextImage}/> : null
-
-                }
-            </div> */}
+            
             <div className="flex flex-row p-3 justify-between">
                 <div onClick={() => toggleOtherProfile(props.authorID, toggleHomePage)} className="flex flex-row justify-center align-middle pl-2 pt-2 hover:cursor-pointer hover:text-purple-100">
                     <img src={props.authorPP} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
@@ -42,7 +45,7 @@ function Post(props) {
             <p className="mt-2 pl-5"> {props.caption}</p>
             {/* no resize on image */}
             {/* <img src={props.images[imageNum]} className="m-4 h-80  object-contain " alt="" /> */}
-            {(props.images && props.images.length > 0) ? (
+            {/* {(props.images && props.images.length > 0) ? (
                 <div className="flex flex-wrap gap-4 mx-auto">
                 {props.images.map((image, index) => (
                     <img
@@ -53,8 +56,26 @@ function Post(props) {
                     />
                 ))}
                 </div>
-            ) : null}
-            <button onClick={toggleExpandPost} className="bg-purple-300 hover:bg-purple-400 px-7 py-3 m-6 w-fit self-center rounded-lg">Expand Post</button>
+            ) : null} */}
+
+            {
+                props.images ?
+                
+                    props.images[imageNum] ?
+                        <img src={serverpath + props.images[imageNum]} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
+                    : null
+
+                : null
+            }
+
+            {/* {console.log("image is " + props.post.images)} */}
+
+            <div className="flex justify-center gap-10">
+                <button onClick={togglePrevImage} className="hover:text-gray-300"> Back </button>
+                <button onClick={toggleNextImage} className="hover:text-gray-300"> Next </button>
+            </div>
+
+            <button onClick={toggleExpandPost} className="bg-purple-300 hover:bg-purple-400 px-7 py-3 m-6 w-fit self-center rounded-lg">Expand Post To View Comments</button>
         </div>
     )
 }

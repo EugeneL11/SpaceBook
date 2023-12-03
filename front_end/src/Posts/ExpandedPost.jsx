@@ -165,12 +165,13 @@ function ExpandedPost(props) {
                     </div>
                 )) : null} */}
 
-                {post.images[imageNum] ?
-
-                    <img src={serverpath + post.images[imageNum]} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
-                    
-                
-                : null}
+                {
+                post.images ?
+                    post.images[imageNum] ?
+                        <img src={serverpath + post.images[imageNum]} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
+                    : null
+                : null
+                }
 
                 <div className="flex justify-center gap-10">
                     <button onClick={togglePrevImage} className="hover:text-gray-300"> Back </button>
