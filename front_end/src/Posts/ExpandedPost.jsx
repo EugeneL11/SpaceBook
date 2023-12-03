@@ -138,7 +138,13 @@ function ExpandedPost(props) {
                 <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
                     <img src={post.images[imageNum]} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
                 </div> */}
-
+                <div> Hisdasd</div>
+                {post.images.map((image, index) => (
+                    <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
+                        <img src={serverpath + image} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
+                        sdkjahdhasdkh
+                    </div>
+                ))}
                 <div className="flex flex-col w-full bg-purple-200 rounded-xl p-2 my-5">
                     <div className="flex justify-between">
                         <div>156 Likes</div>
