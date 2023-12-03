@@ -59,22 +59,32 @@ function ExpandedPost(props) {
     };
     const makeComment = () => {
         // ask backend
-        const commentPath = `/makecomment/${encodeURIComponent(post.post_id)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
-        axios.post(`${serverpath}${commentPath}`).then((res) => {
-            const commentData = res.data
-            console.log(commentData)
-            console.log(post.comments)
-            const userCommentArr = userComment || [];
-            const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
-            setUserComment(newArr)
-            setUserCommentValue("")
-        })
+        // const commentPath = `/makecomment/${encodeURIComponent(post.post_id)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
+        // axios.post(`${serverpath}${commentPath}`).then((res) => {
+        //     const commentData = res.data
+        //     console.log(commentData)
+        //     console.log(post.comments)
+        //     const userCommentArr = userComment || [];
+        //     const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
+        //     setUserComment(newArr)
+        //     setUserCommentValue("")
+        // })
 
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
-            setPost(data.post)
-            setUserComment(data.post.comments);
-            console.log(data.post.comments)
+            const commentPath = `/makecomment/${encodeURIComponent(data.post.post_id)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
+            axios.post(`${serverpath}${commentPath}`).then((res) => {
+                const commentData = res.data
+                console.log(data.post.comments)
+                const userCommentArr = userComment || [];
+                const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
+                setPost(data.post)
+                setUserComment(newArr)
+                console.log(userComment)
+                setUserCommentValue("")
+            })
+            // setUserComment(data.post.comments);
+            // console.log(data.post.comments)
         })
 
 //        const newArr = [...userComment, {username: currentUser.userID, content: userCommentValue}]

@@ -42,11 +42,11 @@ function ResizingCanvas(props) {
     return null;
 }
 
-function PlanetCanvas () {
+function PlanetCanvas ({ planet }) {
 
     return (
         <Canvas className="cursor-pointer pt-5 lg:pt-0">
-            <Planet planet="pluto"/>
+            <Planet planet={planet}/>
             <ResizingCanvas className=" translate-x-full"/>
         </Canvas>
     );
@@ -168,7 +168,7 @@ function MyProfile(props) {
             </div>
 
             <div className="translate-x-1/3 w-2/3 pl-7 md:pl-36 lg:pl-0 lg:translate-x-0 lg:w-auto">
-                <PlanetCanvas/>
+                <PlanetCanvas planet={user.planet}/>
             </div>
 
 
