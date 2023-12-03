@@ -47,7 +47,7 @@ UserDMPreviews JSON format:
 
 -   Use path (GET): /getallnewdm/{user_id}
 -   Retrieve a list of all users the given user (by ID) can start a new DM with
--   This list contains JSONs that include a UserPreview struct (see below)
+-   This list contains JSONs that include a UserPreview struct (see below) 
 
 ```json
 {
@@ -55,7 +55,7 @@ UserDMPreviews JSON format:
     "newDMRes": null or list of UserPreview JSONs (see below)
 }
 
-// UserPreview
+// UserPreview 
 {
    {
         "full_name",

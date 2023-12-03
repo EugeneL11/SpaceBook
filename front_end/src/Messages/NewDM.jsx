@@ -45,6 +45,15 @@ function NewDM(props) {
     useEffect(() => {
         // ask back end for top 10
 
+        const path = `/getallnewdm/${currentUser.userID}`
+        axios.get(`${serverpath}${path}`).then(res => {
+            const data = res.data
+            console.log(data)
+            if (data.status === "no error") {
+                console.log(data.newDMRes)
+                setPeople(data.newDMRes)
+            }
+        })
 
     },[])
     const handleKeyPress = (event) => {
@@ -108,7 +117,7 @@ function NewDM(props) {
                         back = {toggleSearchUser}
                         showOtherProfile = {toggleOtherProfile}
                         key={index}
-
+                        toggleDMMessage = {toggleDMMessage}
                         username={person.user_name} 
                         user_pic_url={serverpath + person.profile_picture_path}
                     ></Person> 
