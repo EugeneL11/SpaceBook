@@ -104,6 +104,28 @@ function ExpandedPost(props) {
         }
     };
 
+    const [imageNum,setImageNum] = useState(0)
+
+    const toggleNextImage = () =>{
+        let num = imageNum;
+        if(num < post.images.length-1){
+            num++;
+        }
+        console.log(num)
+
+        setImageNum(num);
+    }
+
+    const togglePrevImage = () =>{
+        let num = imageNum;
+        if(num > 0){
+            num--;
+        }
+        console.log(num)
+
+        setImageNum(num);
+    }
+
     return (
     <>
     {post === null ? <div></div> : (
@@ -137,12 +159,24 @@ function ExpandedPost(props) {
                 <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
                     <img src={post.images[imageNum]} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
                 </div> */}
-                {post.images ? post.images.map((image, index) => (
+                {/* {post.images ? post.images.map((image, index) => (
                     <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
                         <img src={serverpath + image} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
-                        
                     </div>
-                )) : null}
+                )) : null} */}
+
+                {post.images[imageNum] ?
+
+                    <img src={serverpath + post.images[imageNum]} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
+                    
+                
+                : null}
+
+                <div className="flex justify-center gap-10">
+                    <button onClick={togglePrevImage} className="hover:text-gray-300"> Back </button>
+                    <button onClick={toggleNextImage} className="hover:text-gray-300"> Next </button>
+                </div>
+
                 <div className="flex flex-col w-full bg-purple-200 rounded-xl p-2 my-5">
                     <div className="flex justify-between">
                         <div>{numLikes} likes</div>
@@ -160,12 +194,12 @@ function ExpandedPost(props) {
                     <div className="flex w-full bg-purple-300 rounded-lg p-2 my-2">
                         <input  
                             className="w-full bg-transparent border-b-2 border-gray-600 focus:outline-none focus:border-gray-300 focus:ring-0 text-black placeholder-gray-500"
-                            placeholder="Add comment..."
+                            placeholder="Add comment..." 
                             type="text"
                             value = {userCommentValue}
                             onKeyPress={userCommentValue ? handleKeyPress : null}
                             onChange = {(e) => {setUserCommentValue(e.target.value)}}
-                            >
+                        >
                         </input>
                         <button className="p-2 bg-blue-300 hover:bg-blue-400 text-white rounded-md ml-2" onClick={userCommentValue ? makeComment : null}><img src="arrow-up.png" className="w-4"></img></button>
                     </div>
