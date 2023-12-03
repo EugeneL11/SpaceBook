@@ -42,6 +42,18 @@ function Post(props) {
             <p className="mt-2 pl-5"> {props.caption}</p>
             {/* no resize on image */}
             {/* <img src={props.images[imageNum]} className="m-4 h-80  object-contain " alt="" /> */}
+            {(props.images && props.images.length > 0) ? (
+                <div className="flex flex-wrap gap-4 mx-auto">
+                {props.images.map((image, index) => (
+                    <img
+                    key={index}
+                    src={serverpath+image}
+                    alt={`Image ${index + 1}`}
+                    className="max-w-full h-40 rounded-lg"
+                    />
+                ))}
+                </div>
+            ) : null}
             <button onClick={toggleExpandPost} className="bg-purple-300 hover:bg-purple-400 px-7 py-3 m-6 w-fit self-center rounded-lg">Expand Post</button>
         </div>
     )
@@ -143,7 +155,7 @@ function Homepage(props) {
 
 function NoPosts() {
     return(
-        <div className="flex flex-col mt-5 pt-5"> 
+        <div className="flex flex-col mt-5 w-fit max-w-[85%] bg-white rounded-lg text-black text-center text-xl mx-auto p-10"> 
             <p className="text-3xl text-center">No Posts Yet.</p>
             <p className="text-3xl text-center">To see posts, follow another user and have them make a post!</p>
         </div>
