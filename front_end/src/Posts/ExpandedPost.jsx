@@ -76,6 +76,13 @@ function ExpandedPost(props) {
     
     //for admin
     const removePost = () =>{
+
+        const path = `/deletepost/${postID}`
+        axios.delete(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            console.log(data)
+        })
+
         // ask back end
         toggleHomepage();
     }

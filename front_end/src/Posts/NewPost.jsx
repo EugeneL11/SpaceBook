@@ -28,7 +28,7 @@ function NewPost(props) {
     const [images, setImages] = useState([null,null,null,null,null])
     const [selectedImage, setSelectedImage] = useState(null)
     const fileInputRef = useRef(null)
-    const [caption, setCaption] = useState('')
+    const [caption, setCaption] = useState(' ')
     const [postID, setPostID] = useState(0)
    
     const handleCaption = (event) => {
