@@ -29,10 +29,9 @@ func CreateNewDM(user1 int, user2 int, cassandra *gocql.Session) bool {
 		return false
 	}
 	subSetSlice := []gocql.UUID{subsetID}
-	dmID := gocql.TimeUUID()
 
-	if err := cassandra.Query("INSERT INTO DMTABLE (dmID, user1, user2, messageChunks) VALUES (?, ?, ?, ?)",
-		dmID, user1, user2, subSetSlice).Exec(); err != nil {
+	if err := cassandra.Query("INSERT INTO DMTABLE (user1, user2, messageChunks) VALUES (?, ?, ?)",
+		user1, user2, subSetSlice).Exec(); err != nil {
 		fmt.Println("Error inserting comment:", err)
 		return false
 	}
@@ -532,7 +531,7 @@ func GetMessagesHandler(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":       "no error",
-		"moreMessages": !allDMS,
+		"moreMessages": allDMS,
 		"messages":     result,
 	})
 }

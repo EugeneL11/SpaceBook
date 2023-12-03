@@ -19,14 +19,11 @@ function Person(props) {
             const data = res.data
             console.log(data)
         })
-        // toggleDMMessage(props.userID)
+        toggleDMMessage(props.userID)
     }
-
     return (
-        <div onClick={() => {
-            handleNewDM
-        }
-        } 
+        <div onClick={ handleNewDM }
+        
         className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
 
             <img 
