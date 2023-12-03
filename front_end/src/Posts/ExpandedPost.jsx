@@ -36,8 +36,7 @@ function ExpandedPost(props) {
 
     const [userComment, setUserComment] = useState(null);
     const [userCommentValue, setUserCommentValue] = useState("");
-
-    
+    const [numLikes, setNumLikes] = useState(0);
 
     useEffect(() => {
         const path = `/postdetails/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
@@ -46,6 +45,10 @@ function ExpandedPost(props) {
             console.log(data)
             setPost(data.post)
             setUserComment(data.post.comments);
+            setNumLikes(data.post.num_likes)
+            if (data.post.liked) {
+                setIsLiked(true)
+            }
         })
         // ask back end for post
     }, []);
@@ -79,10 +82,18 @@ function ExpandedPost(props) {
 
     const [isLiked, setIsLiked] = useState(false);
     
-    const handleClick = () => {
+    const handleLike = () => {
         if (!isLiked) {
         setIsLiked(true);
         // Perform any additional actions when liked
+            const path  = `/likepost/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
+            axios.put(`${serverpath}${path}`).then(res =>{
+                console.log(res.data)
+                if (res.data.status == "no error") {
+                    setNumLikes(numLikes + 1)
+                    setIsLiked(true)
+                }
+            })
         }
     };
 
@@ -126,10 +137,10 @@ function ExpandedPost(props) {
                 ))}
                 <div className="flex flex-col w-full bg-purple-200 rounded-xl p-2 my-5">
                     <div className="flex justify-between">
-                        <div>156 Likes</div>
+                        <div>{numLikes} likes</div>
                         <div
                             className="cursor-pointer transition duration-300 ease-in-out"
-                            onClick={handleClick}
+                            onClick={handleLike}
                             >
                             <img
                                 src={isLiked ? 'redHeart.png' : 'blackHeart.png'}
