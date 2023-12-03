@@ -63,9 +63,6 @@ func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (b
 	fileExt := filepath.Ext(header.Filename)
 
 	filename := filepath.Join("images", dir, generateUniqueFilename(fileExt))
-
-	// Create the file on the server
-
 	out, err := os.Create(filename)
 	if err != nil {
 		return false, ""
@@ -147,7 +144,7 @@ func ProfilePicHandler(ctx *gin.Context) {
 		ctx.String(500, "Internal Server Error")
 		return
 	}
-	if !UpdateProfilePath(userID, file_name, postgres) {
+	if !UpdateProfilePath(userID, "/" + file_name, postgres) {
 		ctx.String(500, "Internal Server Error")
 	}
 
@@ -196,7 +193,7 @@ func UploadImagePost(ctx *gin.Context) {
 		ctx.String(400, "Bad Request")
 		return
 	}
-	success = UpdatePostPath(uuid, filename, cassandra)
+	success = UpdatePostPath(uuid, "/" + filename, cassandra)
 	if !success {
 		ctx.String(400, "Bad Request")
 		return

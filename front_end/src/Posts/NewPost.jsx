@@ -4,7 +4,7 @@ import currentUser from "../Static";
 import ImageDemo from "../ImageDemo";
 
 
-import {imageNum, togglePrevImage, toggleNextImage, images} from "../ImageDemo"
+// import {imageNum, togglePrevImage, toggleNextImage, images} from "../ImageDemo"
 
 
 import { serverpath } from "../Path";
@@ -24,6 +24,18 @@ function NewPost(props) {
 
    // function makePost() {
 
+    const [imageNum,setImageNum] = useState(0)
+    const [images, setImages] = useState([null,null,null,null,null])
+    const [selectedImage, setSelectedImage] = useState(null)
+    const fileInputRef = useRef(null)
+    const [caption, setCaption] = useState('')
+    const [postID, setPostID] = useState(0)
+   
+    const handleCaption = (event) => {
+      setCaption(event.target.value);
+      console.log(caption)
+    };
+
 
     async function makePost() {
         const path = `/makepost/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(caption)}`
@@ -35,7 +47,7 @@ function NewPost(props) {
         } else {
             console.log(data.status)
         }
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < images.length; i++) {
             if (images[i] !== null) {
                 const formData = new FormData();
                 formData.append(`image`, images[i])
@@ -68,18 +80,11 @@ function NewPost(props) {
                 <div className="mt-4">Add images </div>
           
 
-
-
-
-
                 <h1>Click Below to upload image</h1>
 
-               
-
-
-<ImageDemo/> 
-
-
+                    <ImageDemo
+                        setImages = {setImages}
+                    /> 
 
                 <button className="bg-red-300 hover:bg-red-400 px-2 py-1 mt-4 w-fit self-center rounded-md text-sm">Remove Selected Image</button>
 
