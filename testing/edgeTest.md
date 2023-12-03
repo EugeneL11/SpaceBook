@@ -49,6 +49,8 @@ Go to Sign Up page and create 3 accounts with the following example credentials.
 -   Change the email AND username
     -   E: Should be able to create an account with same password/full name
 
+#### Updating Profile Information:
+
 ## 2. Finding Users and Orbit Requests:
 
 -   On Desktop, Enter key and clicking search button should be same
