@@ -60,20 +60,21 @@ function App() {
     }
     function expandPost(postID) {
         hideNavBar();
+        console.log(postID)
         setScreen(
             <ExpandedPost
-                postID={postID}
+                post_id = {postID}
                 toggleHomepage={showHomeScreen}
                 toggleOtherProfile={showOtherProfile}
                 toggleExpandPost={expandPost}
             />
         );
     }
-    function showDMList(wormhole=false) {
+    function showDMList() {
         showNavBar();
         setScreen(null);
         setTimeout(() => {
-            setScreen(<DMController toggleHomepage={showHomeScreen} wormhole={wormhole}/>);
+            setScreen(<DMController toggleHomepage={showHomeScreen} wormhole={false}/>);
         }, 0);
     }
     function showMyProfile() {
@@ -94,11 +95,7 @@ function App() {
             />
         );
     }
-    function showFriendsList() {
-        // victor fix
-        hideNavBar();
-        setScreen(<FriendsList toggleOtherProfile={showOtherProfile} toggleHomepage={showHomeScreen} />);
-    }
+
     function showNotifications() {
         showNavBar();
         setScreen(

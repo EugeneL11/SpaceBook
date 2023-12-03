@@ -47,7 +47,7 @@ func setupPosts(server *gin.Engine) {
 func setupDMs(server *gin.Engine) {
 	// only returns most recent 20-40 messages at size 1, returns 40-60 messages at size 2 etc
 	// will return whether or all the messages have been returned
-	server.GET("/getmessages/:user1/:user2/subset_size", handlers.GetMessagesHandler)
+	server.GET("/getmessages/:user1/:user2/:subset_size", handlers.GetMessagesHandler)
 	server.POST("/newdm/:user1/:user2", handlers.CreateNewDMHandler)
 	server.POST("/senddm/:senderID/:receiverID/:message", handlers.SendDMHandler)
 	server.GET("/userdms/:userID", handlers.GetDMHandler)

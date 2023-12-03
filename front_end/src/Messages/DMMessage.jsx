@@ -22,19 +22,24 @@ function DMMessage(props) {
     ]
     const [messages, setMessages] = useState(null)
     const [messageValue, setmessageValue] = useState("")
+    
     const subsetSize = 10
-    useEffect(()=>{
+    const updateDM = ()=>{
         const path = `/getmessages/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(subsetSize)}`
         console.log(path)
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
             console.log(data)
-            //setMessages() what do i set this as? it only returns a status and a bool for moreMessages
+            setMessages(data.messages) 
         })
-
-        // ask back end for dms
-        //setMessages(exampleDMs)
-    },[])
+    }
+    useEffect(() => {
+        const intervalId = setInterval(updateDM, 10000);
+       
+        return () => {
+          clearInterval(intervalId);
+        };
+       }, []);
     
     const handleKeyPress = (event) => {
         // Check if the Enter key was pressed (key code 13)
@@ -50,8 +55,6 @@ function DMMessage(props) {
             console.log(sendData)
             //what does this axios post even do? we only get sent back a status
             if (sendData.status === "no error") {
-                const newArr = [...messages, {sender: currentUser.userID, text: messageValue}]
-                setMessages(newArr)
                 setmessageValue("")
             } else {
                 console.log(sendData.status)
@@ -72,13 +75,17 @@ function DMMessage(props) {
                 </div>
                 <div className="flex flex-col gap-1">
                     {messages.map((message, index) => (
-                        message.sender === currentUser.userID ? 
-                        <div key={index} className="bg-purple-200 bg-opacity-50 w-fit ml-auto p-2 rounded-lg text-black text-right"> {message.text}</div> :
-                        <div key={index} className="bg-purple-400 bg-opacity-50 w-fit mr-auto p-2 rounded-lg text-black text-left"> {message.text}</div>
+                        message.id === currentUser.userID ? 
+                        <div key={index} className="bg-purple-200 bg-opacity-50 w-fit ml-auto p-2 rounded-lg text-black text-right"> {message.message}</div> :
+                        <div key={index} className="bg-purple-400 bg-opacity-50 w-fit mr-auto p-2 rounded-lg text-black text-left"> {message.message}</div>
                     ))}
                 </div>
                 
-                <div className="flex items-center mt-10">
+                
+                
+            </div>
+        ) : null}
+        <div className="flex items-center mt-10">
                     <input  
                         className="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0 text-black"
                         placeholder="Enter a Wormhole Message"
@@ -88,11 +95,7 @@ function DMMessage(props) {
                         onChange = {(e) => {setmessageValue(e.target.value)}}>
                     </input>
                     <button onClick={sendMessage} className="ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Send</button>
-                </div>
-                
-            </div>
-        ) : null}
-
+        </div>
     </div>
     );
 }

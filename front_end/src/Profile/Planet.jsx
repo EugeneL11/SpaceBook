@@ -43,7 +43,7 @@ export default function Planet(props) {
         <ambientLight intensity={ lightMap.get(props.planet) } />
 
         {model && <primitive ref={earthRef} object={model.scene} scale={
-          props.planet == "saturn" ? 0.0025 : 0.006
+          props.planet == "Saturn" ? 0.0025 : 0.006
         }/>}
 
         {loading && (

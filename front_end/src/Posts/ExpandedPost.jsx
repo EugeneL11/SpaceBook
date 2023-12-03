@@ -4,13 +4,12 @@ import pPic from '../images/pp.png';
 import axios from 'axios'
 import { serverpath } from "../Path.js";
 function ExpandedPost(props) {
-    const postID = props.postID
+    const postID = props.post_id
+    console.log(postID)
     const exampleFriends = ["Kevin", "Omar" , "Raine", "Eugene"]
     const toggleHomepage = props.toggleHomepage
     const toggleOtherProfile = props.toggleOtherProfile
     const togglePost = () => props.toggleExpandPost(postID)
-
-    const [user, setUser] = useState(null)
     const [post, setPost] = useState(null);
     const examplePost = {
         postId: 5,
@@ -37,15 +36,19 @@ function ExpandedPost(props) {
 
     const [userComment, setUserComment] = useState(null);
     const [userCommentValue, setUserCommentValue] = useState("");
-
-    const path = `/postdetails/${encodeURIComponent(props.postID)}/${encodeURIComponent(currentUser.userID)}`
+    const [numLikes, setNumLikes] = useState(0);
 
     useEffect(() => {
+        const path = `/postdetails/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
             console.log(data)
             setPost(data.post)
             setUserComment(data.post.comments);
+            setNumLikes(data.post.num_likes)
+            if (data.post.liked) {
+                setIsLiked(true)
+            }
         })
         // ask back end for post
     }, []);
@@ -58,38 +61,17 @@ function ExpandedPost(props) {
         }
     };
     const makeComment = () => {
-        // ask backend
-        // const commentPath = `/makecomment/${encodeURIComponent(post.post_id)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
-        // axios.post(`${serverpath}${commentPath}`).then((res) => {
-        //     const commentData = res.data
-        //     console.log(commentData)
-        //     console.log(post.comments)
-        //     const userCommentArr = userComment || [];
-        //     const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
-        //     setUserComment(newArr)
-        //     setUserCommentValue("")
-        // })
-
-        axios.get(`${serverpath}${path}`).then((res) => {
+        const commentPath = `/makecomment/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
+        axios.post(`${serverpath}${commentPath}`).then((res) => {
             const data = res.data
-            const commentPath = `/makecomment/${encodeURIComponent(data.post.post_id)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
-            axios.post(`${serverpath}${commentPath}`).then((res) => {
-                const commentData = res.data
-                console.log(data.post.comments)
-                const userCommentArr = userComment || [];
-                const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
-                setPost(data.post)
-                setUserComment(newArr)
-                console.log(userComment)
-                setUserCommentValue("")
-            })
-            // setUserComment(data.post.comments);
-            // console.log(data.post.comments)
+            console.log(data)
+            const userCommentArr = userComment || [];
+            const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
+            //setPost(data.post)
+            //setUserComment(newArr)
+            console.log(userComment)
+            setUserCommentValue("")
         })
-
-//        const newArr = [...userComment, {username: currentUser.userID, content: userCommentValue}]
-//        setUserComment(newArr);
-//        setUserCommentValue("");
     };
     
     //for admin
@@ -100,10 +82,18 @@ function ExpandedPost(props) {
 
     const [isLiked, setIsLiked] = useState(false);
     
-    const handleClick = () => {
+    const handleLike = () => {
         if (!isLiked) {
         setIsLiked(true);
         // Perform any additional actions when liked
+            const path  = `/likepost/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
+            axios.put(`${serverpath}${path}`).then(res =>{
+                console.log(res.data)
+                if (res.data.status == "no error") {
+                    setNumLikes(numLikes + 1)
+                    setIsLiked(true)
+                }
+            })
         }
     };
 
@@ -138,13 +128,19 @@ function ExpandedPost(props) {
                 <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
                     <img src={post.images[imageNum]} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
                 </div> */}
-
+                <div> Hisdasd</div>
+                {post.images.map((image, index) => (
+                    <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
+                        <img src={serverpath + image} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
+                        sdkjahdhasdkh
+                    </div>
+                ))}
                 <div className="flex flex-col w-full bg-purple-200 rounded-xl p-2 my-5">
                     <div className="flex justify-between">
-                        <div>156 Likes</div>
+                        <div>{numLikes} likes</div>
                         <div
                             className="cursor-pointer transition duration-300 ease-in-out"
-                            onClick={handleClick}
+                            onClick={handleLike}
                             >
                             <img
                                 src={isLiked ? 'redHeart.png' : 'blackHeart.png'}
