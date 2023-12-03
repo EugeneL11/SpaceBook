@@ -54,7 +54,7 @@ function DMList(props) {
                     <div  onClick = {() => {toggleDMMessage(msgObject.user_id)}} key = {index} className="bg-purple-300 hover:bg-purple-400 hover:cursor-pointer flex py-2 md:py-3 px-6 md:px-12 border-2 m-2 border-black rounded-xl">
                         <img src={pPic} className="pr-12 w-28 object-contain h-auto" alt="a placeholder profile picture"></img>
                         <div className="overflow-x-auto whitespace-nowrap">
-                            <div className="font-bold text-xl pb-2">{msgObject.username}</div>
+                            <div className="font-bold text-xl pb-2">{msgObject.user_name}</div>
                             <div className="text-lg ml-10">
                                 {msgObject.recentdm}
                             </div>
