@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import backPic from '../images/back.png';
-import axios from 'axios'
+import axios, { formToJSON } from 'axios'
 import currentUser from "../Static";
 import { serverpath } from "../Path";
 function Settings(props) {
@@ -9,7 +9,8 @@ function Settings(props) {
     const [username, setUsername] = useState('')
     const [bio, setBio] = useState('')
     const [planet, setPlanet] = useState('')
-
+    const [image, setImage] = useState(null)
+    
     const handleUsername = (event) => {
         setUsername(event.target.value)
     }
@@ -21,15 +22,25 @@ function Settings(props) {
     const handlePlanet = (event) => {
         setPlanet(event.target.value)
     }
-
-    function updateSettings() {
+    const setFile = (e) =>{
+        setImage(e.target.files[0])
+    }
+    async function updateSettings() {
         const path = `/updateuserprofile/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(username)}/${encodeURIComponent(planet)}/${encodeURIComponent(bio)}`
-        axios.put(`${serverpath}${path}`).then((res) => {
-            const data = res.data
-            if (data.status !== "no error") {
-                console.log(data.status)
-            }
-        })
+        const res = await axios.put(`${serverpath}${path}`)
+        const data = res.data
+        if (data.status !== "no error") {
+            console.log(data.status)
+            return;
+        }console.log(data.status)
+        if(image !== null){
+            console.log(data.status)
+            const setimagepath = `/uploadprofileimage/${encodeURIComponent(currentUser.userID)}`
+            const formData = new FormData();
+            formData.append("image", image);
+            const imageres = await axios.post(`${serverpath}${setimagepath}`, formData)
+            console.log(imageres)
+        }
 
         toggleMyProfile()
     }
@@ -48,7 +59,7 @@ function Settings(props) {
             </input>
         
             <div className="mt-4">Change Profile Picture: </div>
-            <input type="file" className="form-input text-sm"></input>
+            <input type="file" className="form-input text-sm" onChange={setFile}></input>
 
             <div className="mt-4">Edit Bio:</div>
             <textarea 

@@ -19,7 +19,8 @@ import (
 )
 
 func DeleteImage(filepath string) error {
-	err := os.Remove(filepath)
+
+	err := os.Remove(filepath[1:])
 	return err
 }
 func getFileExtension(file multipart.File) string {
@@ -81,34 +82,40 @@ func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (b
 func UpdateProfilePath(userID int, newPath string, postgres *sql.DB) bool {
 	stmt, err := postgres.Prepare("Select Profile_picture_path from Users WHERE user_id = $1")
 	if err != nil {
+		fmt.Println("1")
 		return false
 	}
 	defer stmt.Close()
 
 	row, err := stmt.Query(userID)
 	if err != nil {
+		fmt.Println("2")
 		return false
 	}
 
 	if row.Next() {
 		var path string
 		row.Scan(&path)
-		if path == "/images/utilties/pp.png" {
+		if path == "/images/utilities/pp.png" {
 
 		} else if DeleteImage(path) != nil {
+			fmt.Println("3")
 			return false
 		}
 	} else {
+		fmt.Println("4")
 		return false
 	}
 	stmt, err = postgres.Prepare("Update Users set Profile_picture_path = $1 WHERE user_id = $2")
 	if err != nil {
+		fmt.Println("5")
 		return false
 	}
 	defer stmt.Close()
 
 	_, err = stmt.Exec(newPath, userID)
 	if err != nil {
+		fmt.Println("6")
 		return false
 	}
 	return true
@@ -144,8 +151,8 @@ func ProfilePicHandler(ctx *gin.Context) {
 		ctx.String(500, "Internal Server Error")
 		return
 	}
-	if !UpdateProfilePath(userID, "/" + file_name, postgres) {
-		ctx.String(500, "Internal Server Error")
+	if !UpdateProfilePath(userID, "/"+file_name, postgres) {
+		ctx.String(500, "Internal Server Error Whasupp")
 	}
 
 	ctx.String(200, fmt.Sprintf("File %s uploaded successfully!", header.Filename))
@@ -193,7 +200,7 @@ func UploadImagePost(ctx *gin.Context) {
 		ctx.String(400, "Bad Request")
 		return
 	}
-	success = UpdatePostPath(uuid, "/" + filename, cassandra)
+	success = UpdatePostPath(uuid, "/"+filename, cassandra)
 	if !success {
 		ctx.String(400, "Bad Request")
 		return
