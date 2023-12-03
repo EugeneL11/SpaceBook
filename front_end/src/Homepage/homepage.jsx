@@ -36,7 +36,7 @@ function Post(props) {
                     <img src={props.authorPP} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
                     <p className="ml-2 mt-2">{props.authorName}</p>
                 </div>
-                <p className="mr-2 mt-2 pr-2 pt-2">{props.date}</p>
+                <p className="mr-2 mt-2 pr-2 pt-2">{props.date.substring(0, props.date.length - 10)}</p>
             </div>
 
             <p className="mt-2 pl-5"> {props.caption}</p>

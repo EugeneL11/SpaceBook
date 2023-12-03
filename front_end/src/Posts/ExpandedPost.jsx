@@ -127,7 +127,7 @@ function ExpandedPost(props) {
                         <img src={serverpath + post.author_profile_path} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
                         <p className="ml-4">{post.author_name}</p>
                     </div>
-                    <p className="">{post.date}</p>
+                    <p className="">{post.date.substring(0, post.date.length - 10)}</p>
                 </div>
 
                 <p className="mt-10">{post.caption}</p>
