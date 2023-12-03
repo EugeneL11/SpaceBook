@@ -72,15 +72,15 @@ function DMMessage(props) {
                 <div className="bg-purple-700 w-full rounded-md py-5 mb-10 flex justify-center items-center">
                     <div onClick={toggleOtherProfile} className="text-white text-3xl absolute hover:cursor-pointer">{friendID}</div>
                 </div>
-            {messages ? (
-                <div className="flex flex-col gap-1">
-                    {messages.map((message, index) => (
-                        message.id === currentUser.userID ? 
-                        <div key={index} className="bg-purple-200 bg-opacity-50 w-fit ml-auto p-2 rounded-lg text-black text-right"> {message.message}</div> :
-                        <div key={index} className="bg-purple-400 bg-opacity-50 w-fit mr-auto p-2 rounded-lg text-black text-left"> {message.message}</div>
-                    ))}
-                </div>
-            ) : null}
+                {messages ? (
+                    <div className="flex flex-col gap-1">
+                        {messages.map((message, index) => (
+                            message.id === currentUser.userID ? 
+                            <div key={index} className="bg-purple-200 bg-opacity-50 w-fit max-w-[60%] ml-auto p-2 rounded-lg text-black text-right"> {message.message}</div> :
+                            <div key={index} className="bg-purple-400 bg-opacity-50 w-fit max-w-[60%] mr-auto p-2 rounded-lg text-black text-left"> {message.message}</div>
+                        ))}
+                    </div>
+                ) : null}
                 <div className="flex items-center mt-10">
                     <input  
                         className="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0 text-black"

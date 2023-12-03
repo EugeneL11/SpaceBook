@@ -6,13 +6,13 @@ import { serverpath } from "../Path";
 function Settings(props) {
     const toggleLogin = props.toggleLogin
     const toggleMyProfile = props.toggleMyProfile
-    const [username, setUsername] = useState('')
+    const [fullName, setFullName] = useState('')
     const [bio, setBio] = useState('')
     const [planet, setPlanet] = useState('')
     const [image, setImage] = useState(null)
     
-    const handleUsername = (event) => {
-        setUsername(event.target.value)
+    const handleFullName = (event) => {
+        setFullName(event.target.value)
     }
 
     const handleBio = (event) => {
@@ -26,7 +26,13 @@ function Settings(props) {
         setImage(e.target.files[0])
     }
     async function updateSettings() {
-        const path = `/updateuserprofile/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(username)}/${encodeURIComponent(planet)}/${encodeURIComponent(bio)}`
+        if (bio === "") {
+            setBio(" ")
+        }
+        if (planet === "") {
+            setPlanet()
+        }
+        const path = `/updateuserprofile/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(fullName)}/${encodeURIComponent(planet)}/${encodeURIComponent(bio)}`
         const res = await axios.put(`${serverpath}${path}`)
         const data = res.data
         if (data.status !== "no error") {
@@ -51,11 +57,11 @@ function Settings(props) {
         
         <div className="flex flex-col bg-white text-black text-start text-lg mt-[-20px] mb-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-full sm:w-3/4 lg:w-1/2 min-w-fit">
             <h1 className="text-center text-3xl pt-2">Settings</h1>
-            <label className="mt-4">Change Username: </label>
+            <label className="mt-4">Change Full Name: </label>
             <input 
                 className="w-full border-b-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" 
-                placeholder="Enter New Username" type="text"
-                value={username} onChange={handleUsername}>
+                placeholder="Enter New Full Name" type="text"
+                value={fullName} onChange={handleFullName}>
             </input>
         
             <div className="mt-4">Change Profile Picture: </div>
@@ -72,6 +78,7 @@ function Settings(props) {
             <select 
                 className="form-select border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0"
                 value={planet} onChange={handlePlanet}>
+                <option value=""> </option>
                 <option value="Mercury">Mercury</option>
                 <option value="Venus">Venus</option>
                 <option value="Earth">Earth</option>
