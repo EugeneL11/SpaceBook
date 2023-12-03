@@ -67,8 +67,8 @@ function ExpandedPost(props) {
             console.log(data)
             const userCommentArr = userComment || [];
             const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
-            //setPost(data.post)
-            //setUserComment(newArr)
+            setPost(data.post)
+            setUserComment(newArr)
             console.log(userComment)
             setUserCommentValue("")
         })
@@ -124,7 +124,7 @@ function ExpandedPost(props) {
 
                 <div className="flex flex-row justify-between items-center mt-8">
                     <div className="flex flex-row justify-center items-center align-middle">
-                        <img src={serverpath + post.author_profile_path} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
+                        {/* <img src={serverpath + currentUser.pfp} alt="Profile Picture" className="w-10 aspect-square rounded-full"/> */}
                         <p className="ml-4">{post.author_name}</p>
                     </div>
                     <p className="">{post.date.substring(0, post.date.length - 10)}</p>
