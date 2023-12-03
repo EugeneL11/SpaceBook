@@ -24,7 +24,8 @@ function Login(props) {
                 setError("username or password incorrect");
             } else {
                 currentUser.userID = data.id;
-         
+                currentUser.userName = data.username;
+                currentUser.pfp = data.Profile_picture_path;
                 toggleHomepage();
             }
         }

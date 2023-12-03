@@ -61,14 +61,14 @@ function ExpandedPost(props) {
         }
     };
     const makeComment = () => {
+        console.log("the comment is " + userCommentValue)
         const commentPath = `/makecomment/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
         axios.post(`${serverpath}${commentPath}`).then((res) => {
             const data = res.data
             console.log(data)
             const userCommentArr = userComment || [];
             const newArr = [...userCommentArr, {username: currentUser.userID, content: userCommentValue}]
-            //setPost(data.post)
-            //setUserComment(newArr)
+            setUserComment(newArr)
             console.log(userComment)
             setUserCommentValue("")
         })
@@ -124,9 +124,11 @@ function ExpandedPost(props) {
 
                 <div className="flex flex-row justify-between items-center mt-8">
                     <div className="flex flex-row justify-center items-center align-middle">
-                        <img src={serverpath + post.author_profile_path} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
-                        <p className="ml-4">{post.author_name}</p>
+                        {/* <img src={serverpath + currentUser.pfp} alt="Profile Picture" className="w-10 aspect-square rounded-full"/> */}
+                        {/* {console.log(post.comments[post.comments.length-1].commenter_name)} */}
                     </div>
+                    <p className="ml-4">{post.comments[post.comments.length-1].commenter_name}</p>
+
                     <p className="">{post.date.substring(0, post.date.length - 10)}</p>
                 </div>
 
@@ -161,11 +163,11 @@ function ExpandedPost(props) {
                             placeholder="Add comment..."
                             type="text"
                             value = {userCommentValue}
-                            onKeyPress={handleKeyPress}
+                            onKeyPress={userCommentValue ? handleKeyPress : null}
                             onChange = {(e) => {setUserCommentValue(e.target.value)}}
                             >
                         </input>
-                        <button className="p-2 bg-blue-300 hover:bg-blue-400 text-white rounded-md ml-2" onClick={makeComment}><img src="arrow-up.png" className="w-4"></img></button>
+                        <button className="p-2 bg-blue-300 hover:bg-blue-400 text-white rounded-md ml-2" onClick={userCommentValue ? makeComment : null}><img src="arrow-up.png" className="w-4"></img></button>
                     </div>
                     {userComment ? userComment.map((comment, index) => (
                         <div key = {index}>

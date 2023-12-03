@@ -86,10 +86,19 @@ Go to Sign Up page and create 3 accounts with the following example credentials.
 
 ## 3. DM A Friend
 
--   blah
+-   Eugene goes to Chat page and starts New Chat with Victor
+    -   E: A chat window opens up for Eugene. Victor may notice a chat has already been started with Eugene on his end, and should definitely have an open chat after Eugene sends a message
+-   Eugene types a message (empty message, "") and sends it to Victor (either hitting a send button or pressing Enter)
+    -   E: No message should be sent at all. No error message and no message sent in chat. User should type a non-empty message before sending.
+-   Eugene types the message ("Hey Victor!") and sends it
+    -   E: Eugene and Victor should both be able to see the message "Hey Victor!" in near real-time
+    -   E: As the sender Eugene should see the message in a different colour and on a different side (right-side) compared to Victor, who received the message (left-side of message screen)
 -
 
 ## 4. Making Posts
 
 -   Make a post with no images
+-   Make a post with over 20 images
+-   Use images with wrong file extension
+-   Use images that are large in size
 -
