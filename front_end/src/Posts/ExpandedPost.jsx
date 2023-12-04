@@ -149,7 +149,11 @@ function ExpandedPost(props) {
                         {/* <img src={serverpath + currentUser.pfp} alt="Profile Picture" className="w-10 aspect-square rounded-full"/> */}
                         {/* {console.log(post.comments[post.comments.length-1].commenter_name)} */}
                     </div>
-                    <p className="ml-4">{post.comments[post.comments.length-1].commenter_name}</p>
+                    <p className="ml-4">{
+                        post.comments ?
+                        post.comments[post.comments.length-1].commenter_name
+                        : null
+                    }</p>
 
                     <p className="">{post.date.substring(0, post.date.length - 10)}</p>
                 </div>
