@@ -144,18 +144,12 @@ function ExpandedPost(props) {
                     }        
                 </div> */}
 
-                <div className="flex flex-row justify-between items-center mt-8">
-                    <div className="flex flex-row justify-center items-center align-middle">
-                        {/* <img src={serverpath + currentUser.pfp} alt="Profile Picture" className="w-10 aspect-square rounded-full"/> */}
-                        {/* {console.log(post.comments[post.comments.length-1].commenter_name)} */}
+                <div className="flex flex-row pt-3 justify-between">
+                    <div onClick={() => toggleOtherProfile(post.author_id, toggleHomepage)} className="flex flex-row justify-center align-middle pt-2 hover:cursor-pointer hover:text-purple-100">
+                        <img src={serverpath + post.author_profile_path} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
+                        <p className="ml-2 mt-2">{post.author_name}</p>
                     </div>
-                    <p className="ml-4">{
-                        post.comments ?
-                        post.comments[post.comments.length-1].commenter_name
-                        : null
-                    }</p>
-
-                    <p className="">{post.date.substring(0, post.date.length - 10)}</p>
+                    <p className="mr-2 mt-2 pr-2 pt-2">{post.date.substring(0, post.date.length - 10)}</p>
                 </div>
 
                 <p className="mt-10">{post.caption}</p>
