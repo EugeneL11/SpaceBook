@@ -49,7 +49,7 @@ function PlanetCanvas (props) {
 }
 
 function Post(props) {
-    const imageCount = props.post.images.length;
+   //const imageCount = props.post.images.length;
     const toggleOtherProfile = props.toggleOtherProfile;
     const expandPost = props.expandPost;
     const [imageNum,setImageNum] = useState(0)
@@ -62,29 +62,45 @@ function Post(props) {
         setImageNum(nextImage);
     }
     return(
-        <div className="flex flex-col w-11/12 lg:w-7/12 xl:w-5/12 mx-auto mb-10 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
-            <div className="relative w-100 h-100">
-            {imageNum > 0 ? 
-                // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl top-52 z-40 cursor-pointer hover:text-purple-400" onClick={togglePrevImage}> {"←"} </div> : null
-                <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-10 translate-y-10 rotate-180" onClick={togglePrevImage} /> : null
-            }
-            {imageNum < imageCount - 1 ? 
-                // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl cursor-pointer left-85-percent top-52 z-40 hover:text-purple-400" onClick={toggleNextImage}> {"→"} </div> : null
-                <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-10 translate-y-10"  onClick={toggleNextImage}/> : null
+        <div className="flex flex-col w-11/12 lg:w-7/12 xl:w-5/12 mx-auto mb-10 md:py-6 sm:px-16 lg:px-20 p-6 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
+            {/* <div className="relative w-100 h-100">
+                {imageNum > 0 ? 
+                    // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl top-52 z-40 cursor-pointer hover:text-purple-400" onClick={togglePrevImage}> {"←"} </div> : null
+                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-10 translate-y-10 rotate-180" onClick={togglePrevImage} /> : null
+                }
+                {imageNum < imageCount - 1 ? 
+                    // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl cursor-pointer left-85-percent top-52 z-40 hover:text-purple-400" onClick={toggleNextImage}> {"→"} </div> : null
+                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-10 translate-y-10"  onClick={toggleNextImage}/> : null
 
-            }
+                }
+            </div> */}
+            <div className="flex flex-row pt-3 justify-between">
+                <div className="flex flex-row justify-center align-middle pt-2">
+                    <img src={serverpath + props.post.author_profile_path} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
+                    <p className="ml-2 mt-2">{props.post.author_name}</p>
                 </div>
-            <div className="flex flex-row p-3 justify-between">
-                <div className="flex flex-row justify-center align-middle pl-2 pt-2 ">
-                    <img src={props.post.pfp} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
-                    <p className="ml-2 mt-2">{props.post.username}</p>
-                </div>
-                <p className="mr-2 mt-2 pr-2 pt-2">{props.post.date}</p>
+                <p className="mr-2 mt-2 pr-2 pt-2">{props.post.date.substring(0, props.post.date.length - 10)}</p>
             </div>
 
-            <p className="mt-2 pl-5"> {props.post.caption}</p>
+            <p className="mt-10"> {props.post.caption}</p>
             {/* no resize on image */}
-            <img src={props.post.images[imageNum]} className="m-4 h-80  object-contain " alt="" />
+            {/* {props.images ? 
+                <img src={props.images[imageNum]} className="m-4 h-80  object-contain " alt="" />
+            : null} */}
+
+            {props.post.images 
+                ? props.post.images[imageNum] 
+                    ? <img src={serverpath + props.post.images[imageNum]} className="my-4 mx-auto h-48 object-contain" alt="the post picture"/>
+                    : null
+                : null
+            }
+
+            { props.post.images ?
+                <div className="flex justify-center gap-10">
+                    {imageNum > 0 ? <button onClick={togglePrevImage} className="hover:text-gray-300"> Back </button> : null}
+                    {imageNum < props.post.images.length - 1 ? <button onClick={toggleNextImage} className="hover:text-gray-300"> Next </button> : null}
+                </div>
+            : null }
         </div>
     )
 }
@@ -126,10 +142,10 @@ function OtherProfile(props) {
             console.log(data)
             setUser(data.user)
             setFriendStatus(data.friendstatus)
+            setPosts(data.posts)
         })
 
          // ask back end for post
-         setPosts(examplePosts);
     }, [])
 
     const removeUser = () =>{

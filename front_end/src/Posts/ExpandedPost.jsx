@@ -135,7 +135,7 @@ function ExpandedPost(props) {
                 <button className="mb-5 w-fit ml-6 mt-5 mr-auto text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
                 {currentUser.admin && (<button className="mr-6 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removePost}>Delete Post</button>)} 
             </div>
-            <div className="flex flex-col bg-white text-black text-start text-lg mb-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 md:w-1/2 min-w-fit">
+            <div className="flex flex-col bg-white text-black text-start text-lg mb-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 lg:w-1/2 min-w-fit">
                 {/* <div className="relative w-100 h-100">
                     {imageNum > 0 ?
                         <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-10 translate-y-24 rotate-180" onClick={togglePrevImage} /> : null
@@ -167,7 +167,7 @@ function ExpandedPost(props) {
                 {
                 post.images ?
                     post.images[imageNum] ?
-                        <img src={serverpath + post.images[imageNum]} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
+                        <img src={serverpath + post.images[imageNum]} className="my-4 mx-auto h-48 object-contain" alt="the post picture"/>
                     : null
                 : null
                 }
