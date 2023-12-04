@@ -143,7 +143,7 @@ function Notifications(props) {
                         user_pic_url={serverpath + request.profile_picture_path}
                         denyRequest = {() => denyRequest(request.user_id)}
                         acceptRequest = {() => acceptRequest(request.user_id)}
-                        toggleOtherProfile = {() => {toggleOtherProfile(request.user_name, toggleNotifications)}}
+                        toggleOtherProfile = {() => {toggleOtherProfile(request.user_id, toggleNotifications)}}
                     ></Request>
                 </div>
             )

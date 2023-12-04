@@ -199,7 +199,7 @@ function OtherProfile(props) {
         "no requests": <div className = "mb-6 hover:text-green-300" onClick={sendOrbit}>Request orbit buddy</div>,
         "viewer sent request": <div>Orbit request pending</div>,
         "viewed person sent request": <div className="flex flex-col">
-            <div className = "mb-6 hover:text-green-300" onClick={acceptFriendRequest}>Accept orbit request</div>
+            <div className = "mb-1 hover:text-green-300" onClick={acceptFriendRequest}>Accept orbit request</div>
             <div className = "mb-6 hover:text-red-300" onClick={rejectOrbitRequest}>Reject orbit request</div>
         </div>
     }
@@ -232,9 +232,10 @@ function OtherProfile(props) {
 
                 <p className="mb-4">{user.bio}</p>
 
-          
-                 <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
-                { table[friendStatus] }
+                <div className="flex">
+                    <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
+                    { table[friendStatus] }
+                </div>
 
                 {/* <button onClick={dm} className="flex flex-row cursor-pointer hover:text-purple-300">
                     <img src="./whitehole.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
@@ -249,9 +250,12 @@ function OtherProfile(props) {
 
             </div>
             {
-                posts? posts.map((post,index) => 
+                posts ? posts.map((post,index) => 
                 (<Post key = {index} post = {post}/>)
-                ) : null
+                ) :
+                <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
+                    This User Has Yet To Post...
+                </div> 
             }
 
         </div>: null}

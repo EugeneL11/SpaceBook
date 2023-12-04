@@ -19,7 +19,7 @@ function Person(props) {
             const data = res.data
             console.log(data)
         })
-        toggleDMMessage(props.userID)
+        toggleDMMessage(props.userID, props.username)
     }
     return (
         <div onClick={ handleNewDM }

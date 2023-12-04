@@ -25,13 +25,14 @@ function Settings(props) {
         setImage(e.target.files[0])
     }
     async function updateSettings() {
-        // if (bio === "") {
-        //     setBio(" ")
-        // }
-        // if (planet === "") {
-        //     setPlanet()
-        // }
-        const path = `/updateuserprofile/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(fullName)}/${encodeURIComponent(planet)}/${encodeURIComponent(bio)}`
+        let newBio = bio
+        if (newBio === "") {
+            newBio = " "
+        }
+        if (fullName === "") {
+            setFullName(" ")
+        }
+        const path = `/updateuserprofile/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(fullName)}/${encodeURIComponent(planet)}/${encodeURIComponent(newBio)}`
         const res = await axios.put(`${serverpath}${path}`)
         const data = res.data
         if (data.status !== "no error") {

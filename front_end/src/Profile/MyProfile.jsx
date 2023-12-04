@@ -177,7 +177,10 @@ function MyProfile(props) {
             {
                 posts? posts.map((post,index) => 
                 (<Post key = {index} post = {post}/>)
-                ) : null
+                ) :
+                <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
+                    No Posts To Show Off...
+                </div> 
             }
 
         </div>: null}

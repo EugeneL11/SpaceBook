@@ -5,6 +5,7 @@ import {serverpath} from "../Path.js";
 import axios from 'axios'
 function DMMessage(props) {
     const friendID = props.friendID
+    const friendUsername = props.friendUsername
     const toggleDMMessage = () => {props.toggleDMMessage(friendID)}
     const toggleOtherProfile = () => props.toggleOtherProfile(friendID,toggleDMMessage)
     const toggleDMList = props.toggleDMList
@@ -70,7 +71,7 @@ function DMMessage(props) {
        
             <div className="bg-white min-h-[70%] w-full sm:w-3/4 lg:w-1/2 min-w-fit mt-[-20px] pt-6 pb-12 px-10 lg:px-16 rounded-xl">
                 <div className="bg-purple-700 w-full rounded-md py-5 mb-10 flex justify-center items-center">
-                    <div onClick={toggleOtherProfile} className="text-white text-3xl absolute hover:cursor-pointer">{friendID}</div>
+                    <div onClick={toggleOtherProfile} className="text-white text-3xl absolute hover:cursor-pointer">{friendUsername}</div>
                 </div>
                 {messages ? (
                     <div className="flex flex-col gap-1">
