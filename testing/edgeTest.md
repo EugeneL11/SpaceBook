@@ -59,7 +59,7 @@ Go to Sign Up page and create 3 accounts with the following example credentials.
 -   Eugene clicks on Search icon in navbar, types in "gene"
     -   E: No user should show up (should not find self?)
 -   Eugene clicks on Search icon in navbar, types in "duppy"
-    -   E: After each character is typed in, search filters users. When only "d" is entered the user Omar (Username: Duppy) should show up since there are only 3 users present. When "Duppy" or "duppy" is entered Omar should show up
+    -   E: After clicking search button or pressing enter, search filters users. When only "d" is entered the user Omar (Username: Duppy) should show up since there are only 3 users present. When "Duppy" or "duppy" is entered Omar should show up
     -   E: User preview should show for Omar, with profile picture (if set, otherwise default) and username showing, at minimum
 -   Eugene clicks on "Duppy" user preview
     -   E: Page changes to user profile for Duppy, from the perspective of Eugene. Username, profile picture, bio, friend/orbit status and home planet show at minimum. Posts may also be seen (hidden if public/private profile feature is added).
