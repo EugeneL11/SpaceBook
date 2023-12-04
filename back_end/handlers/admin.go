@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/EugeneL11/SpaceBook/pkg"
 	"github.com/gin-gonic/gin"
 	"github.com/gocql/gocql"
 )
@@ -13,7 +14,7 @@ import (
 // DeleteComments deletes comments associated with a postID
 func DeleteComments(postID gocql.UUID, cassandra *gocql.Session) bool {
 	var comments []gocql.UUID
-	if err := cassandra.Query("Select comments from post where postid = $1", postID).Scan(&comments); err != nil {
+	if err := cassandra.Query("Select comments from post where postid = ?", postID).Scan(&comments); err != nil {
 		fmt.Println("Error deleting comments:", err)
 		return false
 	}
@@ -85,9 +86,7 @@ func DeleteUserComments(userID int, cassandra *gocql.Session) bool {
 			break
 		}
 		postToComment[currPost] = append(postToComment[currPost], currComment)
-	}
-	for key, value := range postToComment {
-		if err := cassandra.Query("Update post set comments = comments - ? where postID = ?", value, key).Exec(); err != nil {
+		if err := cassandra.Query("DELETE FROM COMMENT WHERE commentID = ?", currComment).Exec(); err != nil {
 			fmt.Println("Error deleting user comments:", err)
 			return false
 		}
@@ -95,34 +94,81 @@ func DeleteUserComments(userID int, cassandra *gocql.Session) bool {
 	if err := rows.Close(); err != nil {
 		return false
 	}
-	if err := cassandra.Query("DELETE FROM COMMENT WHERE commenter = ?", userID).Exec(); err != nil {
-		fmt.Println("Error deleting user comments:", err)
-		return false
+	for post, comments := range postToComment {
+		var allcomments []gocql.UUID
+		if err := cassandra.Query("SELECT comments FROM POST WHERE postID = ?", post).Iter().Scan(&allcomments); !err {
+			fmt.Println("Error getting comment set:", err)
+			return false
+		}
+		newcomments := pkg.RemoveSubset(allcomments, comments)
+		if err2 := cassandra.Query("Update post set comments = ? where postID = ?", newcomments, post).Exec(); err2 != nil {
+			fmt.Println("Error updating user comments:", err2)
+			return false
+		}
+	}
+
+	return true
+}
+
+func DeleteUserLikes(userID int, session *gocql.Session) bool {
+	// Retrieve all post IDs where the likes set contains the specified userID
+	var postIDs []gocql.UUID
+	if iter := session.Query("SELECT postId FROM POST WHERE likes CONTAINS ? ALLOW FILTERING", userID).Iter(); iter != nil {
+		for {
+			var postID gocql.UUID
+			if iter.Scan(&postID) {
+				postIDs = append(postIDs, postID)
+			} else {
+				break
+			}
+		}
+		if err := iter.Close(); err != nil {
+			fmt.Println("Error retrieving user posts:", err)
+			return false
+		}
+	}
+
+	// Iterate over post IDs and update likes for each post
+	for _, postID := range postIDs {
+		// Retrieve the current set from Cassandra
+		var currentLikes []int
+		if err := session.Query("SELECT likes FROM POST WHERE postId = ?", postID).Scan(&currentLikes); err != nil {
+			fmt.Println("Error retrieving current likes:", err)
+			return false
+		}
+
+		// Modify the set (e.g., remove the specified userID)
+		updatedLikes := pkg.RemoveFromSlice(currentLikes, userID)
+
+		// Update the set in Cassandra
+		if err := session.Query("UPDATE POST SET likes = ? WHERE postId = ?", updatedLikes, postID).Exec(); err != nil {
+			fmt.Println("Error updating likes:", err)
+			return false
+		}
 	}
 	return true
 }
 
-// not tested
-func DeleteUserLikes(userID int, cassandra *gocql.Session) bool {
-	userIDSlice := []int{userID}
-	if err := cassandra.Query("UPDATE POST SET likes = likes - ? WHERE authorID = ? ALLOW FILTERING", userIDSlice, userID).Exec(); err != nil {
-		fmt.Println("Error deleting user likes:", err)
-		return false
-	}
-	return true
-}
-
-// not tested
 func DeleteUserPosts(userID int, cassandra *gocql.Session) bool {
 	// Retrieve postIDs made by the user
 	var postIDs []gocql.UUID
-	if err := cassandra.Query("SELECT postID FROM POST WHERE authorID = ? ALLOW FILTERING", userID).Iter().Scan(&postIDs); !err {
+	iter := cassandra.Query("SELECT postID FROM POST WHERE authorID = ? ALLOW FILTERING", userID).Iter()
+	for {
+		var postID gocql.UUID
+		if iter.Scan(&postID) {
+			postIDs = append(postIDs, postID)
+		} else {
+			break
+		}
+	}
+	if err := iter.Close(); err != nil {
 		fmt.Println("Error retrieving user posts:", err)
 		return false
 	}
 
 	// Delete associated comments, images, and posts
 	for _, postID := range postIDs {
+		fmt.Println("sjdhgas")
 		if !DeletePost(postID, cassandra) {
 			return false
 		}
@@ -131,16 +177,26 @@ func DeleteUserPosts(userID int, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not tested
 func DeleteUserDM(userID int, cassandra *gocql.Session) bool {
 	var user1Keys []int
 	var user2Keys []int
 	var chunkKeys [][]gocql.UUID
 
-	iter := cassandra.Query(`SELECT user1, user2, messageChunks FROM DMTABLE WHERE user2 = ? or user1 = ? 
-	ALLOW FILTERING`, userID, userID).Iter()
+	iter := cassandra.Query(`SELECT user1, user2, messageChunks FROM DMTABLE WHERE user1 = ? ALLOW FILTERING`, userID).Iter()
 	var user1, user2 int
 	var chunkKey []gocql.UUID
+	for iter.Scan(&user1, &user2, &chunkKey) {
+		user1Keys = append(user1Keys, user1)
+		user2Keys = append(user2Keys, user2)
+		chunkKeys = append(chunkKeys, chunkKey)
+	}
+
+	if err := iter.Close(); err != nil {
+		fmt.Println("Error retrieving user posts:", err)
+		return false
+	}
+	iter = cassandra.Query(`SELECT user1, user2, messageChunks FROM DMTABLE WHERE user2 = ? 
+	ALLOW FILTERING`, userID).Iter()
 	for iter.Scan(&user1, &user2, &chunkKey) {
 		user1Keys = append(user1Keys, user1)
 		user2Keys = append(user2Keys, user2)
@@ -154,12 +210,12 @@ func DeleteUserDM(userID int, cassandra *gocql.Session) bool {
 	for i := 0; i < len(user1Keys); i++ {
 		for x := 0; x < len(chunkKeys[i]); x++ {
 			if err := cassandra.Query("Delete DMsubset WHERE subsetID = ?", chunkKey[i][x]).Exec(); err != nil {
-				fmt.Println("Error deleting user likes:", err)
+				fmt.Println("Error deleting subsets:", err)
 				return false
 			}
 		}
 		if err := cassandra.Query("Delete DMTABLE WHERE user1 = ? and user2 = ?", user1Keys[i], user2Keys[i]).Exec(); err != nil {
-			fmt.Println("Error deleting user likes:", err)
+			fmt.Println("Error deleting user dms:", err)
 			return false
 		}
 	}

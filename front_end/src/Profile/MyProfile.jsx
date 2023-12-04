@@ -114,24 +114,9 @@ function MyProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
     const toggleHomepage = props.toggleHomepage
-
-    const duppy = {
-        username: "Duppy", 
-        homePlanet: "Earth",
-        pfp: "./ayylmao.webp",
-        bio: "My unmatched perspicacity coupled with sheer indefitigability makes me a feared opponent in any planet of this solar system.\n https://okhan.me/"
-    }
     const [user, setUser] = useState(null)
     const [posts, setPosts] = useState(null)
-    const examplePost = {
-        username: "Duppy",
-        pfp : "./ayylmao.webp",
-        caption: "Finally leaving this planet lmao 😂",
-        date: "Nov 7th",
-        images: ["./swag.jpg", "./ayylmao.webp"],
-        videos: [],
-    }
-    const examplePosts =[ examplePost,examplePost]
+
     useEffect(() => {
         // ask bak end for user
         const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(currentUser.userID)}`
@@ -143,7 +128,6 @@ function MyProfile(props) {
                 setPosts(data.posts)
             }
         })
-        // ask back end for post
     }, [])
 
     return (

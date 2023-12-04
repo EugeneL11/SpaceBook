@@ -54,7 +54,7 @@ func RegisterUser(fullName string, password string, email string, username strin
 	if err != nil {
 		return "unable to connect to db"
 	}
-	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "/images/utilities/pp.png", false, "test bio")
+	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "/images/utilities/pp.png", false, " ")
 	if err != nil {
 		fmt.Println("Could not execute insert into users")
 		return "unable to connect to db"
@@ -307,8 +307,9 @@ func GetUserInfoHandler(ctx *gin.Context) {
 	min_time := time.Date(2004, time.January, 1, 0, 0, 0, 0, time.UTC)
 	posts, err := GetNewPostsFromUser(viewed, user.Profile_picture_path, user.User_name, min_time, cassandra)
 	if err != nil {
+		fmt.Println(err)
 		ctx.JSON(http.StatusOK, gin.H{
-			"status":       "bad request",
+			"status":       err,
 			"user":         nil,
 			"friendstatus": nil,
 		})
@@ -327,30 +328,14 @@ func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
 	if viewer == viewed {
 		return "own profile"
 	}
-	if viewer > viewed {
-		viewer, viewed = viewed, viewer
-	}
-	stmt, err := postgres.Prepare("SELECT * FROM Orbit_buddies WHERE user1_id = $1 and user2_id = $2")
+
+	stmt, err := postgres.Prepare("SELECT * FROM orbit_requests WHERE requested_buddy_id = $1 and requester_id = $2")
 	if err != nil {
 		return "unable to connect to db"
 	}
 	defer stmt.Close()
 
-	rows, err2 := stmt.Query(viewer, viewed)
-	if err2 != nil {
-		return "unable to connect to db"
-	}
-
-	if rows.Next() {
-		return "already friends"
-	}
-	stmt, err = postgres.Prepare("SELECT * FROM orbit_requests WHERE requested_buddy_id = $1 and requester_id = $2")
-	if err != nil {
-		return "unable to connect to db"
-	}
-	defer stmt.Close()
-
-	rows, err2 = stmt.Query(viewed, viewer)
+	rows, err2 := stmt.Query(viewed, viewer)
 	if err2 != nil {
 		return "unable to connect to db"
 	}
@@ -358,6 +343,7 @@ func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
 	if rows.Next() {
 		return "viewer sent request"
 	}
+
 	stmt, err = postgres.Prepare("SELECT * FROM orbit_requests WHERE requested_buddy_id = $1 and requester_id = $2")
 	if err != nil {
 		return "unable to connect to db"
@@ -371,6 +357,23 @@ func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
 
 	if rows.Next() {
 		return "viewed person sent request"
+	}
+	if viewer > viewed {
+		viewer, viewed = viewed, viewer
+	}
+	stmt, err = postgres.Prepare("SELECT * FROM Orbit_buddies WHERE user1_id = $1 and user2_id = $2")
+	if err != nil {
+		return "unable to connect to db"
+	}
+	defer stmt.Close()
+
+	rows, err2 = stmt.Query(viewer, viewed)
+	if err2 != nil {
+		return "unable to connect to db"
+	}
+
+	if rows.Next() {
+		return "already friends"
 	}
 	return "no requests"
 }

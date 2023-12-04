@@ -41,7 +41,7 @@ func MakePostHandler(ctx *gin.Context) {
 // Used by homepage handler (below)
 func GetNewPostsFromUser(userID int, userProfilePath string, userName string, date time.Time, cassandra *gocql.Session) ([]PostPreview, error) {
 	// Define the SELECT statement
-	selectStmt := cassandra.Query("SELECT postID, imagePaths,caption, date_posted FROM post WHERE authorID = ? AND date_posted > ? ALLOW FILTERING")
+	selectStmt := cassandra.Query("SELECT postID, imagePaths, caption, date_posted FROM post WHERE authorID = ? AND date_posted > ? ALLOW FILTERING")
 
 	// Bind the parameters and execute the query
 	iter := selectStmt.Bind(userID, date).Iter()

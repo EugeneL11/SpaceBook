@@ -108,34 +108,20 @@ function Post(props) {
 function OtherProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
-    const dm = props.goDMList
     // const dm = DMController(toggleHomepage = props.toggleHomepage )
     // const dm = setScreen(<DMController toggleHomepage={props.toggleHomepage} />);
     const back = props.goBackScreen
-
-    const duppy = {
-        username: "Rainethhh", 
-        homePlanet: "Pluto👶",
-        pfp: "./swag.jpg",
-        bio: "What's up guys I'm Raine, I like hiking and coding and being chill+smart also I made a cool game ask me about it"
-    }
+    const personID = props.userID
+    console.log(personID)
     const [user, setUser] = useState(null)
     const [posts, setPosts] = useState(null)
-    const examplePost = {
-        username: "Rainethhh",
-        pfp : "./swag.jpg",
-        caption: "Just hiked up the second tallest mountain on Jupiter!",
-        date: "Nov 9th",
-        images: ["./swag.jpg", "./ayylmao.webp"],
-        videos: [],
-    }
-    const examplePosts =[ examplePost,examplePost]
 
     const [friendStatus, setFriendStatus] = useState("")
 
     useEffect(() => {
         // ask bak end for user
-        const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
+        const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(personID)}`
+        console.log(path)
         axios.get(`${serverpath}${path}`).then(res => {
             const data = res.data
             console.log(currentUser.userID)
@@ -145,12 +131,18 @@ function OtherProfile(props) {
             setPosts(data.posts)
         })
 
-         // ask back end for post
     }, [])
 
     const removeUser = () =>{
-        // ask back end
-        back()
+        const path = `/deleteuser/${encodeURIComponent(personID)}`
+        axios.delete(`${serverpath}${path}`).then(res => {
+            if (res.data.status == "no error"){
+                back()
+            }
+            else{
+                console.log(res.data.status)
+            }
+        })
     }
 
     function sendOrbit() {
@@ -158,7 +150,7 @@ function OtherProfile(props) {
         axios.post(`${serverpath}${path}`).then(res => {
             const data = res.data
             console.log(data)
-
+            console.log("sendobrit")
             if (data.status === "no error") {
                 setFriendStatus("viewer sent request")
             }
@@ -167,11 +159,10 @@ function OtherProfile(props) {
 
     function unorbit() {
         const path = `/removefriend/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
-//        const path = `/sendfriendreq/3/1`
         axios.delete(`${serverpath}${path}`).then(res => {
             const data = res.data
             console.log(data)
-
+            console.log("unorbit")
             if (data.status === "no error") {
                 setFriendStatus("no requests")
             }
@@ -180,11 +171,10 @@ function OtherProfile(props) {
 
     function rejectOrbitRequest() {
         const path = `/rejectfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
-//        const path = `/sendfriendreq/3/1`
         axios.delete(`${serverpath}${path}`).then(res => {
             const data = res.data
             console.log(data)
-
+            console.log("rejobrit")
             if (data.status === "no error") {
                 setFriendStatus("no requests")
             }
@@ -193,11 +183,10 @@ function OtherProfile(props) {
 
     function acceptFriendRequest() {
         const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
-//        const path = `/sendfriendreq/3/1`
         axios.post(`${serverpath}${path}`).then(res => {
             const data = res.data
             console.log(data)
-
+            console.log("accobrit")
             if (data.status === "no error") {
                 setFriendStatus("already friends")
             }
@@ -206,12 +195,12 @@ function OtherProfile(props) {
 
     const table = {
         "" : null,
-        "already friends": <div onClick={unorbit}>Unorbit this buddy</div>,
-        "no requests": <div onClick={sendOrbit}>Request orbit buddy</div>,
+        "already friends": <div className = "mb-6 hover:text-red-300" onClick={unorbit}>Unorbit this buddy</div>,
+        "no requests": <div className = "mb-6 hover:text-green-300" onClick={sendOrbit}>Request orbit buddy</div>,
         "viewer sent request": <div>Orbit request pending</div>,
         "viewed person sent request": <div className="flex flex-col">
-            <div onClick={acceptFriendRequest}>Accept orbit request</div>
-            <div onClick={rejectOrbitRequest}>Reject orbit request</div>
+            <div className = "mb-6 hover:text-green-300" onClick={acceptFriendRequest}>Accept orbit request</div>
+            <div className = "mb-6 hover:text-red-300" onClick={rejectOrbitRequest}>Reject orbit request</div>
         </div>
     }
 
@@ -243,10 +232,9 @@ function OtherProfile(props) {
 
                 <p className="mb-4">{user.bio}</p>
 
-                <button onClick={sendOrbit} className="flex flex-row cursor-pointer mb-3 hover:text-purple-300">
-                    <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
-                    { table[friendStatus] }
-                </button>
+          
+                 <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
+                { table[friendStatus] }
 
                 {/* <button onClick={dm} className="flex flex-row cursor-pointer hover:text-purple-300">
                     <img src="./whitehole.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>

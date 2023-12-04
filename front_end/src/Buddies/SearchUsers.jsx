@@ -12,7 +12,7 @@ function Person(props) {
         <div onClick={toggleOtherProfile} className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
 
             <img 
-                src={props.user_pic_url}
+                src={user_pic_url}
                 alt={props.username} 
                 className="w-12 h-12 rounded-full aspect-square p-2"
             ></img>
@@ -36,11 +36,6 @@ function SearchUsers(props) {
     const [searchTerm, setSearchTerm] = useState("")
     const [people, setPeople] = useState(null)
 
-    useEffect(() => {
-        // ask back end for top 10
-
-
-    },[])
     const handleKeyPress = (event) => {
         // Check if the Enter key was pressed (key code 13)
         if (event.key === 'Enter') {
