@@ -172,10 +172,12 @@ function ExpandedPost(props) {
                 : null
                 }
 
-                <div className="flex justify-center gap-10">
-                    <button onClick={togglePrevImage} className="hover:text-gray-300"> Back </button>
-                    <button onClick={toggleNextImage} className="hover:text-gray-300"> Next </button>
-                </div>
+            { post.images ?
+            <div className="flex justify-center gap-10">
+                {imageNum > 0 ? <button onClick={togglePrevImage} className="hover:text-gray-300"> Back </button> : null}
+                {imageNum < post.images.length - 1 ? <button onClick={toggleNextImage} className="hover:text-gray-300"> Next </button> : null}
+            </div>
+            : null }
 
                 <div className="flex flex-col w-full bg-purple-200 rounded-xl p-2 my-5">
                     <div className="flex justify-between">
