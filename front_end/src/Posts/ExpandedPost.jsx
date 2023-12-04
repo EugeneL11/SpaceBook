@@ -71,7 +71,7 @@ function ExpandedPost(props) {
             const newArr = [...userCommentArr, {commenter_name: currentUser.userName, content: userCommentValue}]
             setUserComment(newArr)
             console.log(userComment)
-            // setUserCommentValue("")
+            setUserCommentValue("")
         })
     };
     
