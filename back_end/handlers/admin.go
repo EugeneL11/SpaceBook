@@ -13,10 +13,9 @@ import (
 
 // DeleteComments deletes comments associated with a postID
 func DeleteComments(postID gocql.UUID, cassandra *gocql.Session) bool {
-	var comments []gocql.UUID
-	if err := cassandra.Query("Select comments from post where postid = ?", postID).Scan(&comments); err != nil {
-		fmt.Println("Error deleting comments:", err)
-		return false
+	comments := []gocql.UUID{}
+	if err := cassandra.Query("Select comments from post where postid = ?", postID).Iter().Scan(&comments); !err {
+
 	}
 	for i := range comments {
 		if err2 := cassandra.Query("DELETE FROM COMMENT WHERE commentID = ?", comments[i]).Exec(); err2 != nil {
@@ -28,16 +27,17 @@ func DeleteComments(postID gocql.UUID, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not tested
+// Deletes a Post given an ID
 func DeletePost(postID gocql.UUID, cassandra *gocql.Session) bool {
-	var imagePaths []string
+	imagePaths := []string{}
+	imagePath := ""
 	if err := cassandra.Query("SELECT imagePaths FROM POST WHERE postID = ?", postID).Iter().Scan(&imagePaths); !err {
-		fmt.Println("Error retrieving imagePaths:", err)
+		fmt.Println("Error retrieving imagePaths:")
 		return false
 	}
 
 	// Call DeleteImage for each imagePath
-	for _, imagePath := range imagePaths {
+	for _, imagePath = range imagePaths {
 		if DeleteImage(imagePath) != nil {
 			fmt.Println("Couldn't delete image", imagePath)
 			return false
@@ -168,7 +168,6 @@ func DeleteUserPosts(userID int, cassandra *gocql.Session) bool {
 
 	// Delete associated comments, images, and posts
 	for _, postID := range postIDs {
-		fmt.Println("sjdhgas")
 		if !DeletePost(postID, cassandra) {
 			return false
 		}
@@ -178,43 +177,47 @@ func DeleteUserPosts(userID int, cassandra *gocql.Session) bool {
 }
 
 func DeleteUserDM(userID int, cassandra *gocql.Session) bool {
-	var user1Keys []int
-	var user2Keys []int
-	var chunkKeys [][]gocql.UUID
+	user1Keys := []int{}
+	user2Keys := []int{}
+	chunkKeys := [][]gocql.UUID{}
 
 	iter := cassandra.Query(`SELECT user1, user2, messageChunks FROM DMTABLE WHERE user1 = ? ALLOW FILTERING`, userID).Iter()
 	var user1, user2 int
-	var chunkKey []gocql.UUID
+	chunkKey := []gocql.UUID{}
 	for iter.Scan(&user1, &user2, &chunkKey) {
 		user1Keys = append(user1Keys, user1)
 		user2Keys = append(user2Keys, user2)
 		chunkKeys = append(chunkKeys, chunkKey)
+
 	}
 
 	if err := iter.Close(); err != nil {
-		fmt.Println("Error retrieving user posts:", err)
+		fmt.Println("Error retrieving user dms:", err)
 		return false
 	}
-	iter = cassandra.Query(`SELECT user1, user2, messageChunks FROM DMTABLE WHERE user2 = ? 
+	iter = cassandra.Query(`SELECT user1, user2, messagechunks FROM DMTABLE WHERE user2 = ? 
 	ALLOW FILTERING`, userID).Iter()
 	for iter.Scan(&user1, &user2, &chunkKey) {
 		user1Keys = append(user1Keys, user1)
 		user2Keys = append(user2Keys, user2)
+		fmt.Println(user1, user2, chunkKey)
 		chunkKeys = append(chunkKeys, chunkKey)
 	}
-
+	fmt.Println(chunkKeys)
 	if err := iter.Close(); err != nil {
 		fmt.Println("Error retrieving user posts:", err)
 		return false
 	}
+
 	for i := 0; i < len(user1Keys); i++ {
 		for x := 0; x < len(chunkKeys[i]); x++ {
-			if err := cassandra.Query("Delete DMsubset WHERE subsetID = ?", chunkKey[i][x]).Exec(); err != nil {
+			if err := cassandra.Query("Delete From DMsubset WHERE subsetID = ?", chunkKeys[i][x]).Exec(); err != nil {
 				fmt.Println("Error deleting subsets:", err)
 				return false
 			}
+			fmt.Println("hi")
 		}
-		if err := cassandra.Query("Delete DMTABLE WHERE user1 = ? and user2 = ?", user1Keys[i], user2Keys[i]).Exec(); err != nil {
+		if err := cassandra.Query("Delete From DMTABLE WHERE user1 = ? and user2 = ?", user1Keys[i], user2Keys[i]).Exec(); err != nil {
 			fmt.Println("Error deleting user dms:", err)
 			return false
 		}
@@ -233,21 +236,23 @@ func DeleteUserRequests(userID int, postgres *sql.DB) bool {
 	if err != nil {
 		return false
 	}
-	return false
+	return true
 }
 
 // not tested
 func DeleteUserFriends(userID int, postgres *sql.DB) bool {
-	stmt, err := postgres.Prepare("DELETE FROM Orbit_buddies WHERE user_id1 = $1 OR user_id2 = $1")
+	stmt, err := postgres.Prepare("DELETE FROM Orbit_buddies WHERE user1_id = $1 OR user2_id = $1")
 	if err != nil {
+		fmt.Println("Prep failed")
 		return false
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(userID)
 	if err != nil {
+		fmt.Println("Query failed")
 		return false
 	}
-	return false
+	return true
 }
 
 // not tested
@@ -266,7 +271,7 @@ func DeleteUser(user_id int, postgres *sql.DB) bool {
 	if row.Next() {
 		var path string
 		row.Scan(&path)
-		if path == "/images/utilties/pp.png" {
+		if path == "/images/utilities/pp.png" {
 
 		} else if DeleteImage(path) != nil {
 			return false
@@ -302,6 +307,7 @@ func DeleteUserHandler(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, CTXStatus{Status: "error parsing input"})
 		return
 	}
+
 	result := DeleteUserPosts(userID, cassandra)
 	if !result {
 		ctx.JSON(http.StatusOK, CTXStatus{Status: "failed to delete posts"})
