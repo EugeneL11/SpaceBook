@@ -522,15 +522,15 @@ func GetMessagesHandler(ctx *gin.Context) {
 	if !success {
 		// send error
 		ctx.JSON(http.StatusOK, gin.H{
-			"status":       "failed to retrieve messages",
-			"moreMessages": false,
-			"messages":     nil,
+			"status":      "failed to retrieve messages",
+			"maxMessages": false,
+			"messages":    nil,
 		})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"status":       "no error",
-		"moreMessages": allDMS,
-		"messages":     result,
+		"status":      "no error",
+		"maxMessages": allDMS,
+		"messages":    result,
 	})
 }
