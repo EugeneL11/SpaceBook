@@ -75,7 +75,7 @@ function Post(props) {
                 <button onClick={toggleNextImage} className="hover:text-gray-300"> Next </button>
             </div>
 
-            <button onClick={toggleExpandPost} className="bg-purple-300 hover:bg-purple-400 px-7 py-3 m-6 w-fit self-center rounded-lg">Expand Post To View Comments</button>
+            <button onClick={toggleExpandPost} className="bg-purple-300 hover:bg-purple-400 px-7 py-3 m-6 w-fit self-center rounded-lg">Expand Post</button>
         </div>
     )
 }
