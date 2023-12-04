@@ -27,7 +27,8 @@ function Login(props) {
                 currentUser.userName = data.user.user_name;
                 currentUser.planet = data.user.planet
                 currentUser.pfp = data.user.profile_picture_path;
-                currentUser.bio = data.user.bio
+                currentUser.bio = data.user.bio;
+                currentUser.full_name = data.user.full_name;
                 toggleHomepage();
             }
         }

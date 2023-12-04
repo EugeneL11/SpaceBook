@@ -6,9 +6,9 @@ import { serverpath } from "../Path";
 function Settings(props) {
     const toggleLogin = props.toggleLogin
     const toggleMyProfile = props.toggleMyProfile
-    const [fullName, setFullName] = useState('')
-    const [bio, setBio] = useState('')
-    const [planet, setPlanet] = useState('')
+    const [fullName, setFullName] = useState(currentUser.full_name)
+    const [bio, setBio] = useState(currentUser.bio)
+    const [planet, setPlanet] = useState(currentUser.planet)
     const [image, setImage] = useState(null)
     
     const handleFullName = (event) => {
@@ -26,12 +26,12 @@ function Settings(props) {
         setImage(e.target.files[0])
     }
     async function updateSettings() {
-        if (bio === "") {
-            setBio(" ")
-        }
-        if (planet === "") {
-            setPlanet()
-        }
+        // if (bio === "") {
+        //     setBio(" ")
+        // }
+        // if (planet === "") {
+        //     setPlanet()
+        // }
         const path = `/updateuserprofile/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(fullName)}/${encodeURIComponent(planet)}/${encodeURIComponent(bio)}`
         const res = await axios.put(`${serverpath}${path}`)
         const data = res.data
@@ -47,7 +47,9 @@ function Settings(props) {
             const imageres = await axios.post(`${serverpath}${setimagepath}`, formData)
             console.log(imageres)
         }
-
+        currentUser.planet = planet
+        currentUser.full_name = fullName
+        currentUser.bio = bio
         toggleMyProfile()
     }
 
@@ -78,7 +80,6 @@ function Settings(props) {
             <select 
                 className="form-select border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0"
                 value={planet} onChange={handlePlanet}>
-                <option value=""> </option>
                 <option value="Mercury">Mercury</option>
                 <option value="Venus">Venus</option>
                 <option value="Earth">Earth</option>
