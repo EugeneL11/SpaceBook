@@ -1,4 +1,4 @@
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Login from "./Login/login";
 import Register from "./Login/register";
 import Homepage from "./Homepage/homepage";
@@ -13,11 +13,14 @@ import Navbar from "./Navbar/navbar";
 import Background from "./Background/background";
 import FriendsList from "./Buddies/FriendsList";
 import ImageDemo from "./ImageDemo";
+import { serverpath } from "./Path";
+import axios from 'axios'
+import currentUser from "./Static";
 import { TorusKnotGeometry } from "three";
 
 function App() {
     const [navBar, setNavBar] = useState(false);
-    const [screen, setScreen] = useState(<Login toggleHomepage={showHomeScreen} toggleRegister={showRegisterScreen} />);
+    const [screen, setScreen] = useState(null);
     const clickHandlers = {
         toggleProfile: showMyProfile,
         toggleNewPost: showNewPost,
@@ -106,6 +109,27 @@ function App() {
             />
         );
     }
+    useEffect(()=>{
+        const path = `/getcookie`
+        axios.get(`${serverpath}${path}`).then(res =>{
+            if (res.data.status === "no user"){
+                showLoginScreen()
+            }
+            else if(res.data.status === "user found"){
+                currentUser.userID = res.data.user.id;
+                currentUser.userName = res.data.user.user_name;
+                currentUser.planet = res.data.user.planet
+                currentUser.pfp = res.data.user.profile_picture_path;
+                currentUser.bio = res.data.user.bio;
+                currentUser.full_name = res.data.user.full_name;
+                currentUser.admin = res.data.admin
+                showHomeScreen()
+            }
+            else{
+                showLoginScreen()
+            }
+        })
+    },[])
     return (
         <div>
             <Background className="!-z-20" />

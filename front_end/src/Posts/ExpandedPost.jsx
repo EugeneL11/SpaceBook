@@ -6,21 +6,12 @@ import { serverpath } from "../Path.js";
 function ExpandedPost(props) {
     const postID = props.post_id
     console.log(postID)
-    const exampleFriends = ["Kevin", "Omar" , "Raine", "Eugene"]
+   
     const toggleHomepage = props.toggleHomepage
     const toggleOtherProfile = props.toggleOtherProfile
     const togglePost = () => props.toggleExpandPost(postID)
     const [post, setPost] = useState(null);
-    const examplePost = {
-        postId: 5,
-        authorId: 6,
-        username: "Duppy",
-        pfp : "./ayylmao.webp",
-        caption: "Finally leaving this planet lmao 😂",
-        date: "Nov. 7th",
-        images: ["./swag.jpg", "./ayylmao.webp"],
-        comments: [{username: "duppy", content: "I don't give up that easily", id: 5}, {username: "kevon", content: "Go to the Sun, it's got a warmer climate", id: 6}]
-    };
+ 
 
     // const imageCount = props.images.length;
 
@@ -208,7 +199,7 @@ function ExpandedPost(props) {
                     {userComment ? userComment.map((comment, index) => (
                         <div key = {index}>
                             <div className="w-full flex justify-between bg-purple-400 rounded-lg p-2 my-2">
-                                <div className="text-white mr-6 text-left">{comment.commenter_name}</div>
+                                <div onClick ={toggleOtherProfile(userComment.commenter_id, togglePost)} className="text-white mr-6 text-left">{comment.commenter_name}</div>
                                 <div className="h-14 overflow-y-scroll text-right">{comment.content}</div>
                             </div>
                         </div>)

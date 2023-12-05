@@ -19,9 +19,9 @@ function DMController(props) {
         //console.log(toggleHomepage)
         setDMstate(<DMList toggleHomepage={toggleHomepage} toggleDMMessage={toggleDMMessage} toggleNewDM = {toggleNewDM}/>)
     }
-    function toggleDMMessage(friendID){
+    function toggleDMMessage(friendID, friendUsername){
         //console.log("Whastup")
-        setDMstate(<DMMessage friendID={friendID} toggleDMList={toggleDMList} toggleOtherProfile={toggleOtherProfile} toggleDMMessage={toggleDMMessage}/>)
+        setDMstate(<DMMessage friendID={friendID} friendUsername={friendUsername} toggleDMList={toggleDMList} toggleOtherProfile={toggleOtherProfile} toggleDMMessage={toggleDMMessage}/>)
     }
     function toggleOtherProfile(userID,backEvent){
         setDMstate(<OtherProfile userID = {userID} goBackScreen = {backEvent}/>)

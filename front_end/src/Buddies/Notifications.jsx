@@ -125,11 +125,12 @@ function Notifications(props) {
 
     return (<div className="flex flex-col">
         <div className="flex flex-start w-full">
-            <button className="mb-2 w-fit ml-6 text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
+            <button className="mb-2 w-fit ml-6 text-4xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
         </div>
         {/* {exampleRequests.map((friend) =>(
             <button onClick={() => {toggleOtherProfile(friend, toggleNotifications)}}> See Other Profile: {friend}</button>
         ))} */}
+        <h3 className="mx-auto mb-4 text-3xl text-white">Orbit Requests</h3>
         {noReqs ? 
             <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
                 No Orbit Requests... LOSER (jk)
@@ -143,7 +144,7 @@ function Notifications(props) {
                         user_pic_url={serverpath + request.profile_picture_path}
                         denyRequest = {() => denyRequest(request.user_id)}
                         acceptRequest = {() => acceptRequest(request.user_id)}
-                        toggleOtherProfile = {() => {toggleOtherProfile(request.user_name, toggleNotifications)}}
+                        toggleOtherProfile = {() => {toggleOtherProfile(request.user_id, toggleNotifications)}}
                     ></Request>
                 </div>
             )

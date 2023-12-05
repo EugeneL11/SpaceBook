@@ -25,13 +25,14 @@ function Settings(props) {
         setImage(e.target.files[0])
     }
     async function updateSettings() {
-        // if (bio === "") {
-        //     setBio(" ")
-        // }
-        // if (planet === "") {
-        //     setPlanet()
-        // }
-        const path = `/updateuserprofile/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(fullName)}/${encodeURIComponent(planet)}/${encodeURIComponent(bio)}`
+        let newBio = bio
+        if (newBio === "") {
+            newBio = " "
+        }
+        if (fullName === "") {
+            setFullName(" ")
+        }
+        const path = `/updateuserprofile/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(fullName)}/${encodeURIComponent(planet)}/${encodeURIComponent(newBio)}`
         const res = await axios.put(`${serverpath}${path}`)
         const data = res.data
         if (data.status !== "no error") {
@@ -54,12 +55,19 @@ function Settings(props) {
         const path = `/deleteuser/${encodeURIComponent(currentUser.userID)}`
         axios.delete(`${serverpath}${path}`).then(res => {
             if (res.data.status == "no error"){
+                const path = `/removecookie`
+                axios.delete(`${serverpath}${path}`)
                 toggleLogin()
             }
             else{
                 console.log(res.data.status)
             }
         })
+    }
+    const logout = () =>{
+        const path = `/removecookie`
+        axios.delete(`${serverpath}${path}`)
+        toggleLogin()
     }
     return (
     <div className="flex flex-col items-center">
@@ -80,8 +88,8 @@ function Settings(props) {
             <div className="mt-4">Edit Bio:</div>
             <textarea 
                 className="form-textarea border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" 
-                rows="3" placeholder=" Edit your bio..."
-                value={bio} onChange={handleBio}>
+                rows="3" placeholder=" Maximum 200 characters"
+                value={bio} onChange={handleBio} maxLength={200}>
             </textarea>
 
             <div className="mt-4">Change Home Planet: </div>
@@ -101,7 +109,7 @@ function Settings(props) {
             
             <button className="bg-purple-300 hover:bg-purple-400 px-4 py-2 mt-5 w-fit self-center rounded-lg" onClick={updateSettings}>Apply Changes</button>
 
-            <button className="w-fit self-center mt-6 hover:text-blue-300" onClick={toggleLogin}>Log Out</button>
+            <button className="w-fit self-center mt-6 hover:text-blue-300" onClick={logout}>Log Out</button>
             <button className="w-fit self-center hover:text-red-600" onClick={deleteAcc}>Delete Account</button>
         </div>
     </div>

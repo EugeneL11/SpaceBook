@@ -81,7 +81,7 @@ UserDMPreviews JSON format:
 ```json
 {
     "status": "no error" or "failed to retrieve messages" or "unable to parse input",
-    "moreMessages": "false" if there are no more messages, "true" otherwise (bool),
+    "maxMessages": "true" if there are no more messages, "false" otherwise (bool),
     "messages": null if there was an error, or JSON containing Message structs (refer to below for format)
 }
 

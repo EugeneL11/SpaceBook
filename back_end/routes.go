@@ -11,7 +11,7 @@ func setupRoutes(server *gin.Engine) {
 	setupFriends(server)
 	setupPosts(server)
 	setupDMs(server)
-
+	setupCookies(server)
 }
 
 func setupAccount(server *gin.Engine) {
@@ -53,4 +53,9 @@ func setupDMs(server *gin.Engine) {
 	server.GET("/userdms/:userID", handlers.GetDMHandler)
 	// gets all friends who you do not have a dm with
 	server.GET("/getallnewdm/:userID", handlers.NewDMListHandler)
+}
+func setupCookies(server *gin.Engine) {
+	server.POST("/setcookie/:userID", handlers.SetCookieHandler)
+	server.GET("/getcookie", handlers.GetCookieHandler)
+	server.DELETE("/removecookie", handlers.RemoveCookieHandler)
 }

@@ -49,8 +49,6 @@ function PlanetCanvas (props) {
 }
 
 function Post(props) {
-   //const imageCount = props.post.images.length;
-    const toggleOtherProfile = props.toggleOtherProfile;
     const expandPost = props.expandPost;
     const [imageNum,setImageNum] = useState(0)
     const toggleNextImage = () =>{
@@ -106,12 +104,11 @@ function Post(props) {
 }
 
 function OtherProfile(props) {
-    const toggleFriendsList = props.toggleFriendsList
-    const toggleSettings = props.toggleSettings
     // const dm = DMController(toggleHomepage = props.toggleHomepage )
     // const dm = setScreen(<DMController toggleHomepage={props.toggleHomepage} />);
     const back = props.goBackScreen
     const personID = props.userID
+    const togglePost = props.togglePost
     console.log(personID)
     const [user, setUser] = useState(null)
     const [posts, setPosts] = useState(null)
@@ -199,7 +196,7 @@ function OtherProfile(props) {
         "no requests": <div className = "mb-6 hover:text-green-300" onClick={sendOrbit}>Request orbit buddy</div>,
         "viewer sent request": <div>Orbit request pending</div>,
         "viewed person sent request": <div className="flex flex-col">
-            <div className = "mb-6 hover:text-green-300" onClick={acceptFriendRequest}>Accept orbit request</div>
+            <div className = "mb-1 hover:text-green-300" onClick={acceptFriendRequest}>Accept orbit request</div>
             <div className = "mb-6 hover:text-red-300" onClick={rejectOrbitRequest}>Reject orbit request</div>
         </div>
     }
@@ -232,9 +229,10 @@ function OtherProfile(props) {
 
                 <p className="mb-4">{user.bio}</p>
 
-          
-                 <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
-                { table[friendStatus] }
+                <div className="flex">
+                    <img src="./addwhite.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
+                    { table[friendStatus] }
+                </div>
 
                 {/* <button onClick={dm} className="flex flex-row cursor-pointer hover:text-purple-300">
                     <img src="./whitehole.png" className="h-5 aspect-square translate-y-0.5 mr-2"/>
@@ -249,9 +247,12 @@ function OtherProfile(props) {
 
             </div>
             {
-                posts? posts.map((post,index) => 
-                (<Post key = {index} post = {post}/>)
-                ) : null
+                posts ? posts.map((post,index) => 
+                (<Post key = {index} post = {post} expandPost ={togglePost(post.postID)}/>)
+                ) :
+                <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
+                    This User Has Yet To Post...
+                </div> 
             }
 
         </div>: null}

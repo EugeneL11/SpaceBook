@@ -68,6 +68,7 @@ function SearchUsers(props) {
             <div className="flex flex-start w-full">
                 <button className="mb-2 w-fit ml-6 text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
             </div>
+            <h3 className="mx-auto text-4xl text-white">Search Users</h3>
             <div className="flex w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit">
                 <input 
                     type="text" 
