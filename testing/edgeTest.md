@@ -119,4 +119,10 @@ Go to Sign Up page and create 3 accounts with the following example credentials.
 -   Make a post with over 20 images
 -   Use images with wrong file extension
 -   Use images that are large in size
--
+
+### Example to follow using the following format:
+
+-   "{User1} clicks on the new post button (on the home page?)"
+    -   E: {User1} is brought to a page where they can type their caption, insert pictures..."
+-   User1 tries to make a post with ... {something to do with the inputs; using .png/.jpg (correct) or .wav (error), or trying to make post with no image, etc.}
+    -   E: Expected result, or what our project currently does (if its a reasonable approach)

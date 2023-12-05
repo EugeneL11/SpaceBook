@@ -24,3 +24,9 @@ Inside of the base level directory (/SpaceBook), enter the following commands in
 If `SELECT * FROM users;` displays `t` under the isadmin column for the row with the user, then the account should now be an admin.
 
 ## Test Admin Functionality
+
+Test following features (initial v1.0 release):
+Explain where an admin could take action against a user (ex. on a user's post, or their profile), and what this would look like for the admin's end and the user's end (person being banned, or having post removed))
+
+-   Delete individual post
+-   Delete/ban account
