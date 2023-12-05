@@ -56,17 +56,19 @@ function DMMessage(props) {
         }
     };
     const sendMessage = () =>{
-        const sendPath = `/senddm/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(messageValue)}`
-        axios.post(`${serverpath}${sendPath}`).then((res) => {
-            const sendData = res.data
-            console.log(sendData)
-            //what does this axios post even do? we only get sent back a status
-            if (sendData.status === "no error") {
-                setmessageValue("")
-            } else {
-                console.log(sendData.status)
-            }
-        })
+        if (messageValue !== "") {
+            const sendPath = `/senddm/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(messageValue)}`
+            axios.post(`${serverpath}${sendPath}`).then((res) => {
+                const sendData = res.data
+                console.log(sendData)
+                //what does this axios post even do? we only get sent back a status
+                if (sendData.status === "no error") {
+                    setmessageValue("")
+                } else {
+                    console.log(sendData.status)
+                }
+            })
+        }
 
         // tell back end
     }

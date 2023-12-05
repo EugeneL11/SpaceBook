@@ -81,8 +81,8 @@ function Settings(props) {
             <div className="mt-4">Edit Bio:</div>
             <textarea 
                 className="form-textarea border-2 border-gray-700 focus:outline-none focus:border-gray-300 focus:ring-0" 
-                rows="3" placeholder=" Edit your bio..."
-                value={bio} onChange={handleBio}>
+                rows="3" placeholder=" Maximum 200 characters"
+                value={bio} onChange={handleBio} maxLength={200}>
             </textarea>
 
             <div className="mt-4">Change Home Planet: </div>
