@@ -99,6 +99,8 @@ function Post(props) {
                     {imageNum < props.post.images.length - 1 ? <button onClick={toggleNextImage} className="hover:text-gray-300"> Next </button> : null}
                 </div>
             : null }
+
+            <button onClick={expandPost} className="bg-purple-300 hover:bg-purple-400 px-7 py-3 m-6 w-fit self-center rounded-lg">Expand Post</button>
         </div>
     )
 }
@@ -248,7 +250,7 @@ function OtherProfile(props) {
             </div>
             {
                 posts ? posts.map((post,index) => 
-                (<Post key = {index} post = {post} expandPost ={togglePost(post.postID)}/>)
+                (<Post key = {index} post = {post} expandPost ={() => togglePost(post.post_id)}/>)
                 ) :
                 <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
                     This User Has Yet To Post...

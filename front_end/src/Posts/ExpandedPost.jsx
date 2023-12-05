@@ -59,7 +59,7 @@ function ExpandedPost(props) {
             console.log(data)
             const userCommentArr = userComment || [];
             console.log(userCommentArr)
-            const newArr = [...userCommentArr, {commenter_name: currentUser.userName, content: userCommentValue}]
+            const newArr = [{commenter_name: currentUser.userName, content: userCommentValue}, ...userCommentArr]
             setUserComment(newArr)
             console.log(userComment)
             setUserCommentValue("")
@@ -199,7 +199,7 @@ function ExpandedPost(props) {
                     {userComment ? userComment.map((comment, index) => (
                         <div key = {index}>
                             <div className="w-full flex justify-between bg-purple-400 rounded-lg p-2 my-2">
-                                <div onClick ={toggleOtherProfile(userComment.commenter_id, togglePost)} className="text-white mr-6 text-left">{comment.commenter_name}</div>
+                                <div onClick ={() => toggleOtherProfile(userComment.commenter_id, togglePost)} className="text-white mr-6 text-left">{comment.commenter_name}</div>
                                 <div className="h-14 overflow-y-scroll text-right">{comment.content}</div>
                             </div>
                         </div>)

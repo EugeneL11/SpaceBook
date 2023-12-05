@@ -37,7 +37,7 @@ function App() {
     };
     function showOtherProfile(personID, backEvent) {
         showNavBar();
-        setScreen(<OtherProfile toggleHomepage={showHomeScreen} userID={personID} goBackScreen={backEvent} goDMList={showDMList} />);
+        setScreen(<OtherProfile togglePost={expandPost} toggleHomepage={showHomeScreen} userID={personID} goBackScreen={backEvent} goDMList={showDMList} />);
     }
     function showLoginScreen() {
         hideNavBar();
@@ -85,7 +85,7 @@ function App() {
         setScreen(null);
         // set timeout of 1 ms
         setTimeout(() => {
-            setScreen(<ProfileController toggleLogin={showLoginScreen} toggleHomepage={showHomeScreen} />);
+            setScreen(<ProfileController togglePost={expandPost} toggleLogin={showLoginScreen} toggleHomepage={showHomeScreen} />);
         }, 0);
     }
     function showSearchUser() {
