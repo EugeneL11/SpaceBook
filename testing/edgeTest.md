@@ -51,6 +51,22 @@ Go to Sign Up page and create 3 accounts with the following example credentials.
 
 #### Updating Profile Information:
 
+-   Attempt to update profile with all fields, and a combination of missing fields (incl. empty)
+-   Example fields to input while on account Omar:
+    -   New Full Name: Khan Omar
+    -   New Planet: Venus
+    -   New Bio: "Grabbing a Bakechef rn!"
+-   Update profile with all three of these fields (when full name, planet, bio are different)
+    -   E: All of these fields should update immediately, and the planet should rerender
+-   Update profile with 1-2 fields empty
+    -   E: Only the filled out fields should cause an update, but the fields not filled out will keep the previous value
+    -   E: ex. if bio was "Hello world" and full name was "Omar Khan", then after leaving bio blank and new fullname = "Khan Omar" and updating profile, bio should remain "Hello world" but fullname updates
+-   Try inputting relatively long, but reasonable character counts (up to 200 characters) for the bio, and up to 50 characters for the full name
+
+##### Update Profile Picture
+
+-
+
 ## 2. Finding Users and Orbit Requests:
 
 -   On Desktop, Enter key and clicking search button should be same
