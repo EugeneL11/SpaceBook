@@ -10,6 +10,10 @@ function Login(props) {
     const [password, setPassword] = useState("");
 
     const [errorMessage, setError] = useState("");
+    const setCookie = () =>{
+        const path = `/setcookie/${encodeURIComponent( currentUser.userID)}`
+        axios.post(`${serverpath}${path}`)
+    }
     const loginAction = async () => {
         //ask backend
         if (username == "" || password == "") {
@@ -29,6 +33,8 @@ function Login(props) {
                 currentUser.pfp = data.user.profile_picture_path;
                 currentUser.bio = data.user.bio;
                 currentUser.full_name = data.user.full_name;
+                currentUser.admin = data.user.admin
+                setCookie()
                 toggleHomepage();
             }
         }

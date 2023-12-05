@@ -3,6 +3,7 @@ import backPic from '../images/back.png';
 import currentUser from "../Static.js";
 import {serverpath} from "../Path.js";
 import axios from 'axios'
+let subsetSize = 1;
 function DMMessage(props) {
     const friendID = props.friendID
     const friendUsername = props.friendUsername
@@ -24,14 +25,13 @@ function DMMessage(props) {
     const [messages, setMessages] = useState(null)
     const [messageValue, setmessageValue] = useState("")
     
-    const [subsetSize, setSubsetSize] = useState(1)
     const [maxSubSet, setMaxSubSet] = useState(false)
     const loadMore = () => {
-        const newSize = subsetSize + 1;
-        setSubsetSize(newSize)
+        subsetSize++;
     }
     const updateDM = ()=>{
-        const path = `/getmessages/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(subsetSize)}`
+        const s = subsetSize
+        const path = `/getmessages/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(s)}`
         console.log(path)
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
@@ -41,9 +41,11 @@ function DMMessage(props) {
         })
     }
     useEffect(() => {
+        subsetSize = 1;
         const intervalId = setInterval(updateDM, 1000);
        
         return () => {
+            subsetSize = 1;
           clearInterval(intervalId);
         };
        }, []);
@@ -105,7 +107,7 @@ function DMMessage(props) {
         <div className="my-10 text-white"> 
             {maxSubSet === false ? 
                 <button onClick={loadMore} className="p-3 bg-purple-400 hover:bg-purple-200 rounded-lg">Load More</button> : 
-                <button className="">this does nothing</button>
+                null
             }
         </div>
     </div>

@@ -55,12 +55,19 @@ function Settings(props) {
         const path = `/deleteuser/${encodeURIComponent(currentUser.userID)}`
         axios.delete(`${serverpath}${path}`).then(res => {
             if (res.data.status == "no error"){
+                const path = `/removecookie`
+                axios.delete(`${serverpath}${path}`)
                 toggleLogin()
             }
             else{
                 console.log(res.data.status)
             }
         })
+    }
+    const logout = () =>{
+        const path = `/removecookie`
+        axios.delete(`${serverpath}${path}`)
+        toggleLogin()
     }
     return (
     <div className="flex flex-col items-center">
@@ -102,7 +109,7 @@ function Settings(props) {
             
             <button className="bg-purple-300 hover:bg-purple-400 px-4 py-2 mt-5 w-fit self-center rounded-lg" onClick={updateSettings}>Apply Changes</button>
 
-            <button className="w-fit self-center mt-6 hover:text-blue-300" onClick={toggleLogin}>Log Out</button>
+            <button className="w-fit self-center mt-6 hover:text-blue-300" onClick={logout}>Log Out</button>
             <button className="w-fit self-center hover:text-red-600" onClick={deleteAcc}>Delete Account</button>
         </div>
     </div>

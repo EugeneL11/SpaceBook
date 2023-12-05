@@ -12,6 +12,10 @@ function Register(props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setError] = useState(null);
+    const setCookie = () =>{
+        const path = `/setcookie/${encodeURIComponent( currentUser.userID)}`
+        axios.post(`${serverpath}${path}`)
+    }
     const registerAction = () => {
         //ask backend
 
@@ -31,12 +35,15 @@ function Register(props) {
                 } else if (data.status === "user name not available") {
                     setError(data.status);
                 } else {
-                console.log(data)
-                currentUser.userID = data.user.id;
-                currentUser.userName = data.user.user_name;
-                currentUser.planet = data.user.planet
-                currentUser.pfp = data.user.profile_picture_path;
-                currentUser.bio = data.user.bio
+                    console.log(data)
+                    currentUser.userID = data.user.id;
+                    currentUser.userName = data.user.user_name;
+                    currentUser.planet = data.user.planet
+                    currentUser.pfp = data.user.profile_picture_path;
+                    currentUser.bio = data.user.bio;
+                    currentUser.full_name = data.user.full_name;
+                    currentUser.admin = false
+                    setCookie();
                     toggleHomepage();
                 }
             });
