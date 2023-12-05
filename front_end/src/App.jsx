@@ -16,6 +16,7 @@ import ImageDemo from "./ImageDemo";
 import { serverpath } from "./Path";
 import axios from 'axios'
 import currentUser from "./Static";
+import Cookie from 'js-cookies'
 import { TorusKnotGeometry } from "three";
 
 function App() {
@@ -110,7 +111,17 @@ function App() {
         );
     }
     useEffect(()=>{
-        const path = `/getcookie`
+        let cookieVal = Cookie.getItem("cookie")
+        if (cookieVal === null){
+            const path = '/createcookie'
+            axios.get(`${serverpath}${path}`).then(res =>{
+                if (res.data !== "unable to make cookie"){
+                    Cookie.setItem("cookie", res.data)
+                }
+            })
+        }
+
+        const path = `/getcookie/${encodeURIComponent(cookieVal)}`
         axios.get(`${serverpath}${path}`).then(res =>{
             if (res.data.status === "no user"){
                 showLoginScreen()
@@ -122,7 +133,7 @@ function App() {
                 currentUser.pfp = res.data.user.profile_picture_path;
                 currentUser.bio = res.data.user.bio;
                 currentUser.full_name = res.data.user.full_name;
-                currentUser.admin = res.data.admin
+                currentUser.admin = res.data.user.admin
                 showHomeScreen()
             }
             else{

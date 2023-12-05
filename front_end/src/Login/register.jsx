@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import currentUser from "../Static.js";
 import axios from "axios";
 import {serverpath} from "../Path.js";
-
+import Cookie from 'js-cookies'
 function Register(props) {
     const toggleLogin = props.toggleLogin;
     const toggleHomepage = props.toggleHomepage;
@@ -13,7 +13,8 @@ function Register(props) {
     const [password, setPassword] = useState("");
     const [errorMessage, setError] = useState(null);
     const setCookie = () =>{
-        const path = `/setcookie/${encodeURIComponent( currentUser.userID)}`
+        const cookie = Cookie.getItem("cookie")
+        const path = `/setcookie/${cookie ? encodeURIComponent(cookie) : "empty"}/${encodeURIComponent( currentUser.userID)}`
         axios.post(`${serverpath}${path}`)
     }
     const registerAction = () => {

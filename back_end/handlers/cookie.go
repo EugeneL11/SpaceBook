@@ -10,9 +10,9 @@ import (
 	"github.com/gocql/gocql"
 )
 
-func GetCookie(IP string, cassandra *gocql.Session, postgres *sql.DB, user *User) bool {
+func GetCookie(ID gocql.UUID, cassandra *gocql.Session, postgres *sql.DB, user *User) bool {
 	var userID int
-	if err := cassandra.Query("Select userID from Cookie where machineID = ?", IP).Scan(&userID); err != nil {
+	if err := cassandra.Query("Select userID from Cookie where machineID = ?", ID).Scan(&userID); err != nil {
 		return false
 	}
 	if GetUserInfo(userID, postgres, user) != "no error" {
@@ -20,12 +20,27 @@ func GetCookie(IP string, cassandra *gocql.Session, postgres *sql.DB, user *User
 	}
 	return true
 }
+
 func GetCookieHandler(ctx *gin.Context) {
-	IP := ctx.ClientIP()
+	cookieID := ctx.Param("CookieID")
+
+	ID, err := gocql.ParseUUID(cookieID)
+	if err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "no user",
+			"user":   nil,
+		})
+		fmt.Print("Invalid cookie value. Setting to default.")
+		return
+	}
+
+	fmt.Print("Cookie exists. ID:", ID.String())
+
+	// Continue with the rest of your logic (e.g., querying the database)
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	var user User
-	exist := GetCookie(IP, cassandra, postgres, &user)
+	exist := GetCookie(ID, cassandra, postgres, &user)
 	if !exist {
 		ctx.JSON(http.StatusOK, gin.H{
 			"status": "no user",
@@ -33,21 +48,31 @@ func GetCookieHandler(ctx *gin.Context) {
 		})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": "user found",
 		"user":   user,
 	})
-	return
 }
-func SetupCookie(IP string, userID int, cassandra *gocql.Session) bool {
-	if err := cassandra.Query("Insert Into Cookie (machineID, userID) Values (? , ?)", IP, userID).Exec(); err != nil {
+
+func SetupCookie(ID gocql.UUID, userID int, cassandra *gocql.Session) bool {
+	if err := cassandra.Query("Insert Into Cookie (machineID, userID) Values (? , ?)", ID, userID).Exec(); err != nil {
 		fmt.Println(err)
 		return false
 	}
 	return true
 }
 func SetCookieHandler(ctx *gin.Context) {
-	IP := ctx.ClientIP()
+	cookieID := ctx.Param("CookieID")
+	ID, err := gocql.ParseUUID(cookieID)
+	if err != nil {
+		ctx.SetCookie("CookieID", "123", 3600, "/", "localhost", false, false)
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "no user",
+			"user":   nil,
+		})
+		return
+	}
 
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	user, err := strconv.Atoi(ctx.Param("userID"))
@@ -55,7 +80,7 @@ func SetCookieHandler(ctx *gin.Context) {
 		ctx.String(200, "bad request")
 		return
 	}
-	res := SetupCookie(IP, user, cassandra)
+	res := SetupCookie(ID, user, cassandra)
 	if !res {
 		ctx.String(200, "failed")
 		return
@@ -63,21 +88,36 @@ func SetCookieHandler(ctx *gin.Context) {
 	ctx.String(200, "success")
 
 }
-func RemoveCookie(IP string, cassandra *gocql.Session) bool {
-	if err := cassandra.Query("Delete From Cookie Where MachineID = ?", IP).Exec(); err != nil {
+func RemoveCookie(ID gocql.UUID, cassandra *gocql.Session) bool {
+	if err := cassandra.Query("Delete From Cookie Where MachineID = ?", ID).Exec(); err != nil {
 		return false
 	}
 	return true
 }
 func RemoveCookieHandler(ctx *gin.Context) {
-	IP := ctx.ClientIP()
+	cookieID := ctx.Param("CookieID")
+	ID, err := gocql.ParseUUID(cookieID)
+	if err != nil {
+		ctx.SetCookie("CookieID", "123", 3600, "/", "localhost", false, false)
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "no user",
+			"user":   nil,
+		})
+		return
+	}
 
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
-	res := RemoveCookie(IP, cassandra)
+	res := RemoveCookie(ID, cassandra)
 	if !res {
 		ctx.String(200, "failed")
 		return
 	}
 	ctx.String(200, "success")
 
+}
+func CreateCookieHandler(ctx *gin.Context) {
+	// Generate a unique ID for the cookie
+	cookieID := gocql.TimeUUID()
+
+	ctx.String(200, cookieID.String())
 }
