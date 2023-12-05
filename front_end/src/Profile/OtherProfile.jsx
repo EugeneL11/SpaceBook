@@ -49,8 +49,6 @@ function PlanetCanvas (props) {
 }
 
 function Post(props) {
-   //const imageCount = props.post.images.length;
-    const toggleOtherProfile = props.toggleOtherProfile;
     const expandPost = props.expandPost;
     const [imageNum,setImageNum] = useState(0)
     const toggleNextImage = () =>{
@@ -106,12 +104,11 @@ function Post(props) {
 }
 
 function OtherProfile(props) {
-    const toggleFriendsList = props.toggleFriendsList
-    const toggleSettings = props.toggleSettings
     // const dm = DMController(toggleHomepage = props.toggleHomepage )
     // const dm = setScreen(<DMController toggleHomepage={props.toggleHomepage} />);
     const back = props.goBackScreen
     const personID = props.userID
+    const togglePost = props.togglePost
     console.log(personID)
     const [user, setUser] = useState(null)
     const [posts, setPosts] = useState(null)
@@ -251,7 +248,7 @@ function OtherProfile(props) {
             </div>
             {
                 posts ? posts.map((post,index) => 
-                (<Post key = {index} post = {post}/>)
+                (<Post key = {index} post = {post} expandPost ={togglePost(post.postID)}/>)
                 ) :
                 <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
                     This User Has Yet To Post...

@@ -54,8 +54,6 @@ function PlanetCanvas ({ planet }) {
 
 function Post(props) {
     //const imageCount = props.images.length;
-    const toggleOtherProfile = props.toggleOtherProfile;
-    const toggleMyProfile = props.toggleMyProfile
     const expandPost = props.expandPost;
     const [imageNum,setImageNum] = useState(0)
     const toggleNextImage = () =>{
@@ -114,6 +112,7 @@ function MyProfile(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleSettings = props.toggleSettings
     const toggleHomepage = props.toggleHomepage
+    const togglePost = props.togglePost
     const [user, setUser] = useState(null)
     const [posts, setPosts] = useState(null)
 
@@ -176,7 +175,7 @@ function MyProfile(props) {
             </div>
             {
                 posts? posts.map((post,index) => 
-                (<Post key = {index} post = {post}/>)
+                (<Post key = {index} post = {post} expandPost = {() => togglePost(post.postID)}/>)
                 ) :
                 <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
                     No Posts To Show Off...

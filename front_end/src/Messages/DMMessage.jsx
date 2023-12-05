@@ -7,24 +7,11 @@ let subsetSize = 1;
 function DMMessage(props) {
     const friendID = props.friendID
     const friendUsername = props.friendUsername
-    const toggleDMMessage = () => {props.toggleDMMessage(friendID)}
+    const toggleDMMessage = () => {props.toggleDMMessage(friendID, friendUsername)}
     const toggleOtherProfile = () => props.toggleOtherProfile(friendID,toggleDMMessage)
     const toggleDMList = props.toggleDMList
-    const exampleDMs = [
-        {sender:currentUser.userID,
-        text:"Hey Kevonos"},
-        {sender:friendID,
-        text:"Go go go"},
-        {sender:currentUser.userID,
-        text:"Huh..??"},
-        {sender:friendID,
-        text:"GOOOOOOOO"},
-        {sender:currentUser.userID, 
-        text:"Im confused...."}
-    ]
     const [messages, setMessages] = useState(null)
     const [messageValue, setmessageValue] = useState("")
-    
     const [maxSubSet, setMaxSubSet] = useState(false)
     const loadMore = () => {
         subsetSize++;
