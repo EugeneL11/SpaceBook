@@ -28,5 +28,21 @@ If `SELECT * FROM users;` displays `t` under the isadmin column for the row with
 Test following features (initial v1.0 release):
 Explain where an admin could take action against a user (ex. on a user's post, or their profile), and what this would look like for the admin's end and the user's end (person being banned, or having post removed))
 
+Go to Sign Up page and create 2 accounts with the following example credentials to be used for testing admin functionalities.
+1. Eugene
+    - Full Name = Eugene Lee
+    - Email Address = eugenel1@gmail.com
+    - Username = Gene
+    - Password = eugene1
+2. Victor
+    - Full Name = Victor Han
+    - Email Address = victorh2@hotmail.com
+    - Username = Vic
+    - Password = victor2
+
 -   Delete individual post
+-   Steve (admin) clicks on Gene's profile from search, then clicks 'Remove User'
+    -   E: Steve's screen goes back to the search page, and Gene's profile is deleted. Steve can no longer search up Gene's account on Spacebook. No immediate change on Gene's end, but he will not be able to perform any more new actions. As soon as the browser is refreshed, he is logged out and can no longer log in using the account 'Gene'.
 -   Delete/ban account
+-   Steven (admin) expands Vic's post from homepage, then clicks 'Remove Post'
+    -   E: Steve's screen goes back to the homepage, and Vic's post is deleted. Steve can no longer view that post on Vic's account or the homepage. No immediate change on Vic's end, but if he navigates to his profile, the post will be gone.
