@@ -3,6 +3,7 @@ import currentUser from "../Static.js";
 import {serverpath} from "../Path.js";
 import axios from 'axios'
 let subsetSize = 1;
+
 function DMMessage(props) {
     const friendID = props.friendID
     const friendUsername = props.friendUsername
@@ -12,27 +13,32 @@ function DMMessage(props) {
     const [messages, setMessages] = useState(null)
     const [messageValue, setmessageValue] = useState("")
     const [maxSubSet, setMaxSubSet] = useState(false)
+
+    // to show more DM messages that are hidden
     const loadMore = () => {
         subsetSize++;
     }
+
+    // show all the hidden messages
     const updateDM = ()=>{
-        const s = subsetSize
-        const path = `/getmessages/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(s)}`
+        const size = subsetSize
+        const path = `/getmessages/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(size)}`
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
             setMessages(data.messages) 
             setMaxSubSet(data.maxMessages)
         })
     }
+
+    // refresh for new messages every second
     useEffect(() => {
         subsetSize = 1;
         const intervalId = setInterval(updateDM, 1000);
-       
         return () => {
             subsetSize = 1;
-          clearInterval(intervalId);
+            clearInterval(intervalId);
         };
-       }, []);
+    }, []);
     
     const handleKeyPress = (event) => {
         // Check if the Enter key was pressed (key code 13)
@@ -41,8 +47,9 @@ function DMMessage(props) {
             sendMessage();
         }
     };
+
     const sendMessage = () =>{
-        // tell back end
+        // tell back end the message to be sent
         if (messageValue !== "") {
             const sendPath = `/senddm/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(messageValue)}`
             axios.post(`${serverpath}${sendPath}`).then((res) => {
@@ -55,6 +62,8 @@ function DMMessage(props) {
             })
         }
     }
+
+    // html code for displaying the message between two users
     return (
     <div className="flex flex-col items-center min-h-screen">
         <button className="mb-5 w-fit ml-6 mr-auto text-3xl hover:text-purple-300" onClick={toggleDMList}> {'←'} </button>

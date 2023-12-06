@@ -3,6 +3,7 @@ import currentUser from "../Static.js";
 import axios from 'axios'
 import {serverpath} from "../Path.js";
 import Cookie from 'js-cookies'
+
 function Login(props) {
     const toggleHomepage = props.toggleHomepage;
     const toggleRegister = props.toggleRegister;
@@ -10,17 +11,18 @@ function Login(props) {
     const [password, setPassword] = useState("");
     const [errorMessage, setError] = useState("");
 
+    // setting the cookie
     const setCookie = () =>{
         const cookie = Cookie.getItem("cookie")
         const path = `/setcookie/${cookie ? encodeURIComponent(cookie) : "empty"}/${encodeURIComponent( currentUser.userID)}`
         axios.post(`${serverpath}${path}`)
     }
+
     const loginAction = async () => {
-        //ask backend
+        // match the login credentials to the database
         if (username == "" || password == "") {
             setError("Please Enter Something");
         } else {
-            
             const res = await axios.get(
                 `${serverpath}/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
             );
@@ -28,6 +30,7 @@ function Login(props) {
             if (data.status === "unable to find User") {
                 setError("username or password incorrect");
             } else {
+                // setting up all of your personal data
                 currentUser.userID = data.user.id;
                 currentUser.userName = data.user.user_name;
                 currentUser.planet = data.user.planet
@@ -38,10 +41,10 @@ function Login(props) {
                 setCookie()
                 toggleHomepage();
             }
-
         }
     };
 
+    // html code for the login page
     return (
         <div className="flex flex-col items-center">
             <h1 className="text-6xl py-11">SpaceBook</h1>

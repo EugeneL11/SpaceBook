@@ -7,6 +7,8 @@ import OtherProfile from "../Profile/OtherProfile";
 function DMController(props) {
     const toggleHomepage = props.toggleHomepage
     const [DMstate, setDMstate] = useState(null);
+
+    // whether to open DM list or messages
     useEffect(() => {
         if (props.wormhole === true) {
             toggleDMMessage(props.friendID)
@@ -24,12 +26,10 @@ function DMController(props) {
     function toggleOtherProfile(userID,backEvent){
         setDMstate(<OtherProfile userID = {userID} goBackScreen = {backEvent}/>)
     }
-    // make it toggle other profile properly
     function toggleNewDM(friendID){
         setDMstate(<NewDM friendID={friendID} toggleDMMessage={toggleDMMessage} toggleDMList = {toggleDMList} toggleOtherProfile = {toggleOtherProfile}/>)
     }
     return (<div>{DMstate}{/* */}</div>);
-
 }
 
 export default DMController;

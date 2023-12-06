@@ -4,7 +4,6 @@ import axios from 'axios'
 import { serverpath } from "../Path.js";
 
 function Post(props) {
-//    const imageCount = props.images.length;
     const toggleOtherProfile = props.toggleOtherProfile;
     const toggleExpandPost = props.toggleExpandPost;
     const toggleHomePage = props.toggleHomePage;
@@ -12,6 +11,7 @@ function Post(props) {
     
     const [imageNum,setImageNum] = useState(0)
 
+    // to move on to the next image
     const toggleNextImage = () =>{
         let num = imageNum;
         if(num < props.images.length-1){
@@ -20,6 +20,7 @@ function Post(props) {
         setImageNum(num);
     }
 
+    // to move back to the previous image
     const togglePrevImage = () =>{
         let num = imageNum;
         if(num > 0){
@@ -27,6 +28,8 @@ function Post(props) {
         }
         setImageNum(num);
     }
+
+    // html code for a single post
     return(
         <div className="flex flex-col bg-white text-black text-start text-lg mx-auto mb-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 min-w-fit">
             
@@ -39,21 +42,6 @@ function Post(props) {
             </div>
 
             <p className="mt-10"> {props.caption}</p>
-            {/* no resize on image */}
-            {/* <img src={props.images[imageNum]} className="m-4 h-80  object-contain " alt="" /> */}
-            {/* {(props.images && props.images.length > 0) ? (
-                <div className="flex flex-wrap gap-4 mx-auto">
-                {props.images.map((image, index) => (
-                    <img
-                    key={index}
-                    src={serverpath+image}
-                    alt={`Image ${index + 1}`}
-                    className="max-w-full h-40 rounded-lg"
-                    />
-                ))}
-                </div>
-            ) : null} */}
-
             {
                 props.images ?
                 
@@ -77,7 +65,6 @@ function Post(props) {
 }
 
 function Homepage(props) {
-    
     const toggleExpandPost = props.toggleExpandPost;
     const toggleOtherProfile = props.toggleOtherProfile;
     const toggleHomePage = props.toggleHomePage;
@@ -96,6 +83,7 @@ function Homepage(props) {
         })
     }, [])
 
+    // html code for displaying all the posts
     return (
     <div className="flex flex-col mt-5 pt-5"> 
         {
@@ -114,6 +102,7 @@ function Homepage(props) {
     );
 }
 
+// handling if there are no posts from friends at all
 function NoPosts() {
     return(
         <div className="flex flex-col mt-5 w-fit max-w-[85%] bg-white rounded-lg text-black text-center text-xl mx-auto p-10"> 

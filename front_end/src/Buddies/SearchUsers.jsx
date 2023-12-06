@@ -2,12 +2,14 @@ import { React, useState , useEffect } from "react";
 import currentUser from "../Static.js";
 import {serverpath} from "../Path.js";
 import axios from 'axios'
+
 function Person(props) {
     const user_pic_url = props.user_pic_url
-
     const toggleOtherProfile = () => {
         props.showOtherProfile(props.userID, props.back)
     }
+
+    // html code for a single user search result
     return (
         <div onClick={toggleOtherProfile} className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
 
@@ -17,17 +19,11 @@ function Person(props) {
                 className="w-12 h-12 rounded-full aspect-square p-2"
             ></img>
             <p className="text-lg">{props.username}</p>
-            {/* <button onClick={() => {toggleOtherProfile(props.username, toggleSearchUser)}}> See Other Profile: {person}</button> */}
         </div>
     );
 }
 
 function SearchUsers(props) {
-    const samplePeople = [
-        {username: "Vic", user_pic_url: "./jupiter.jpg"},
-        {username: "Kevin", user_pic_url: "./jupiter.jpg"}
-    ]
-
     const toggleHomepage = props.toggleHomepage
     const toggleOtherProfile = props.toggleOtherProfile
     const toggleSearchUser = props.toggleSearchUser
@@ -44,8 +40,9 @@ function SearchUsers(props) {
         }
     };
 
+    // ask backend for users based on search
     function searchQuery() {
-        if (searchTerm === "") {
+        if (searchTerm === "") { //make sure we don't query backend on an empty search
             return //maybe error message(?)
         }
         setNoMatch("")
@@ -61,6 +58,7 @@ function SearchUsers(props) {
         })
     }
 
+    // html code for all the search results
     return (
         <div className="flex flex-col justify-start items-center space-y-4">
             <div className="flex flex-start w-full">
@@ -100,12 +98,10 @@ function SearchUsers(props) {
                         username={person.user_name} 
                         user_pic_url={serverpath + person.profile_picture_path}
                     ></Person> 
-
                 )
             ) : null}
         </div>
     );
-
 }
 
 export default SearchUsers;

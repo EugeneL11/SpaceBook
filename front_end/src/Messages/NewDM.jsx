@@ -5,13 +5,8 @@ import axios from 'axios'
 function Person(props) {
     const recieverID = props.userID
     const toggleDMMessage = props.toggleDMMessage
-    //clicking the profile should toggle to the dm message page with that user, while also posting the following
-    // const path = `/newdm/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.username)}`
-    // axios.get(`${serverpath}${path}`).then((res) => {
-    //     const data = res.data
-    //     console.log(data)
-    // })
 
+    // send a new DM to a user
     const handleNewDM = () => {
         const path = `/newdm/${currentUser.userID}/${recieverID}`
         axios.post(`${serverpath}${path}`).then((res) => {
@@ -23,18 +18,15 @@ function Person(props) {
         toggleDMMessage(props.userID, props.username)
     }
 
+    // html code for a single user search
     return (
-        <div onClick={ handleNewDM }
-        
-        className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
-
+        <div onClick={ handleNewDM } className="flex items-center w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit bg-blue-500 space-x-4 rounded-md hover:cursor-pointer hover:bg-blue-300">
             <img 
                 src={props.user_pic_url}
                 alt={props.username} 
                 className="w-12 h-12 rounded-full aspect-square p-2"
             ></img>
             <p className="text-lg">{props.username}</p>
-            {/* <button onClick={() => {toggleOtherProfile(props.username, toggleSearchUser)}}> See Other Profile: {person}</button> */}
         </div>
     );
 }

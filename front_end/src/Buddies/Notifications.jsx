@@ -4,13 +4,11 @@ import {serverpath} from "../Path.js";
 
 import axios from 'axios'
 function Request(props) {
-    // const removeFriendEvent = () => {
-    //     props.removeFriend(props.username)
-    // }
     const othersProfileEvent = props.toggleOtherProfile
     const denyRequestEvent = props.denyRequest
     const acceptRequestEvent = props.acceptRequest
 
+    // html code for a single friend request
     return (
         <div className="flex flex-row bg-blue-500 hover:bg-blue-400 h-20 w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit justify-between rounded-md px-5">
             <div onClick = {othersProfileEvent} className="flex items-center hover:cursor-pointer hover:opacity-70 hover:text-gray-700">
@@ -54,43 +52,23 @@ function Notifications(props) {
     
 
     useEffect(() =>{
-        const exampleRequests = [{
-            username: "Gene",
-            user_pic_url: "./jupiter.jpg"
-        },
-        {
-            username: "Raine",
-            user_pic_url: "./jupiter.jpg"
-        },
-        {
-            username: "Omar",
-            user_pic_url: "./jupiter.jpg"
-        },
-        {
-            username: "Kevin",
-            user_pic_url: "./jupiter.jpg"
-        },
-
-    ] // placeholder for back-end data
-
-    //WE ARE GETTING THE FRIEND REQUESTS HERE, TO USE FOR DENYING/ACCEPTING (MUST FIX)
-    const path = `/friendrequests/${encodeURIComponent(currentUser.userID)}`
-    axios.get(`${serverpath}${path}`).then((res) => {
-        const data = res.data
-        if (data.status === "no requests") {
-            setNoReqs(true)
-        } else if (data.status === "pending request") {
-            setNoReqs(false)
-            setRequests(data.requests)
-        } else {
-            console.log("database error")
-        }
-    })
-
-        // ask back-end for orbit requests
+        // ask backend for the list of friend requests
+        const path = `/friendrequests/${encodeURIComponent(currentUser.userID)}`
+        axios.get(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            if (data.status === "no requests") {
+                setNoReqs(true)
+            } else if (data.status === "pending request") {
+                setNoReqs(false)
+                setRequests(data.requests)
+            } else {
+                console.log("database error")
+            }
+        })
     },[])
 
     const denyRequest = (userToDeny) => {
+        //tell backend to reject this friend request
         const path = `/rejectfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userToDeny)}`
         axios.delete(`${serverpath}${path}`).then((res) => {
             const data = res.data
@@ -106,6 +84,7 @@ function Notifications(props) {
     }
 
     const acceptRequest = (userToAccept) => {
+        //tell backend to accept this friend request
         const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userToAccept)}`
         axios.post(`${serverpath}${path}`).then((res) => {
             const data = res.data
@@ -120,17 +99,16 @@ function Notifications(props) {
         })
     }
 
-    return (<div className="flex flex-col">
+    //html code for all the friend requests
+    return (
+    <div className="flex flex-col">
         <div className="flex flex-start w-full">
             <button className="mb-2 w-fit ml-6 text-4xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
         </div>
-        {/* {exampleRequests.map((friend) =>(
-            <button onClick={() => {toggleOtherProfile(friend, toggleNotifications)}}> See Other Profile: {friend}</button>
-        ))} */}
         <h3 className="mx-auto mb-4 text-3xl text-white">Orbit Requests</h3>
         {noReqs ? 
             <div className="w-fit bg-white rounded-lg text-black text-center text-xl mx-auto p-10">
-                No Orbit Requests... LOSER (jk)
+                No Orbit Requests Yet...
             </div> 
         : null}
         {requests ? requests.map(
@@ -147,7 +125,6 @@ function Notifications(props) {
             )
         ) : null}
     </div>);
-
 }
 
 export default Notifications;

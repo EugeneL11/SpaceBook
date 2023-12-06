@@ -3,25 +3,28 @@ import currentUser from "../Static.js";
 import {serverpath} from "../Path.js";
 import Background from '../Background/background'
 import axios from 'axios'
+
 function DMList(props) {
     const toggleHomepage = props.toggleHomepage
     const toggleDMMessage = props.toggleDMMessage
     const toggleNewDM = props.toggleNewDM
     
     const [msgs, setMsgs] = useState(null)
-        useEffect(()=>{
-            // ask back end for dms
-            const path = `/userdms/${encodeURIComponent(currentUser.userID)}`
-            axios.get(`${serverpath}${path}`).then((res) => {
-                const data = res.data
-                if (data.status === "no error") {
-                    setMsgs(data.all_dms)
-                } else {
-                    console.log(data.status)
-                }
-            })
-        },[])
+    
+    useEffect(()=>{
+        // ask back end for the list of DMs
+        const path = `/userdms/${encodeURIComponent(currentUser.userID)}`
+        axios.get(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            if (data.status === "no error") {
+                setMsgs(data.all_dms)
+            } else {
+                console.log(data.status)
+            }
+        })
+    },[])
 
+    // html code for displaying the list of DMs
     return (
     <div className="flex flex-col items-center min-h-screen">
         <div className="w-full flex items-center">

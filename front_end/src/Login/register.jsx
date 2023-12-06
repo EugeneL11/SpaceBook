@@ -3,6 +3,7 @@ import currentUser from "../Static.js";
 import axios from "axios";
 import {serverpath} from "../Path.js";
 import Cookie from 'js-cookies'
+
 function Register(props) {
     const toggleLogin = props.toggleLogin;
     const toggleHomepage = props.toggleHomepage;
@@ -12,14 +13,17 @@ function Register(props) {
     const [password, setPassword] = useState("");
     const [errorMessage, setError] = useState(null);
 
+    //set up the cookies
     const setCookie = () =>{
         const cookie = Cookie.getItem("cookie")
         const path = `/setcookie/${cookie ? encodeURIComponent(cookie) : "empty"}/${encodeURIComponent( currentUser.userID)}`
         axios.post(`${serverpath}${path}`)
     }
+
     const registerAction = () => {
-        //ask backend
+        // store the login credentials to the database
         if (username == "" || password == "" || fullName == "" || email == "") {
+            // none of the fields can be left empty
             setError("Please Enter Something");
         } else {
             const path = `/register/${encodeURIComponent(email)}/${encodeURIComponent(password)}/${encodeURIComponent(
@@ -34,6 +38,7 @@ function Register(props) {
                 } else if (data.status === "user name not available") {
                     setError(data.status);
                 } else {
+                    // storing all the personal information
                     currentUser.userID = data.user.id;
                     currentUser.userName = data.user.user_name;
                     currentUser.planet = data.user.planet
@@ -46,13 +51,9 @@ function Register(props) {
                 }
             });
         }
-        /*
-        const path = "/testInsert/val"
-        fetch(`${localhost}${path}`).then(res => {res.json().then(data =>{
-            console.log(data)
-        })})*/
     };
 
+    // html code for the register page
     return (
         <div className="flex flex-col items-center">
             <h1 className="text-6xl py-11">SpaceBook</h1>

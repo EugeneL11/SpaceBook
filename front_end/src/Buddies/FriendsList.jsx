@@ -5,6 +5,8 @@ import { serverpath } from "../Path";
 function Friend(props) {
     const removeFriendEvent = props.removeFriend
     const othersProfileEvent = props.toggleOtherProfile
+
+    //html code for a single friend
     return (
         <div className="flex flex-row bg-blue-500 hover:bg-blue-400 h-20 w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit px-5 justify-between rounded-md">
             <div onClick = {othersProfileEvent} className="flex items-center hover:cursor-pointer hover:opacity-70 hover:text-gray-700">
@@ -32,6 +34,7 @@ function FriendsList(props) {
     const toggleMyProfile = props.toggleMyProfile
     const toggleFriendsList = props.toggleFriendsList
     const toggleOtherProfile = props.toggleOtherProfile
+
     useEffect(() =>{
         // ask back-end for friends list
         const path = `/friends/${encodeURIComponent(currentUser.userID)}`
@@ -47,6 +50,7 @@ function FriendsList(props) {
     },[])
 
     const removeFriend = (friendToRemove) => {
+        // tell the back-end to remove a user as a friend
         const path = `/removefriend/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendToRemove)}`
         axios.delete(`${serverpath}${path}`).then((res) => {
             const data = res.data
@@ -61,6 +65,7 @@ function FriendsList(props) {
         })
     }
     
+    // html code for viewing all of your friends in a list
     return (
         <div>
             <div className="flex flex-start w-full">
