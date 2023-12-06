@@ -112,7 +112,7 @@ function App() {
     }
     useEffect(()=>{
         let cookieVal = Cookie.getItem("cookie")
-        if (cookieVal === null){
+        if (cookieVal === null || cookieVal.length !== 36){
             const path = '/createcookie'
             axios.get(`${serverpath}${path}`).then(res =>{
                 if (res.data !== "unable to make cookie"){
