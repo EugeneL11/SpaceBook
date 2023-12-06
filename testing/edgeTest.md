@@ -67,6 +67,10 @@ Go to Sign Up page and create 3 accounts with the following example credentials.
 
 -   Go to settings, and click 'Choose File' under 'Change Profile Picture'. Then, choose a valid image file (jpg or png). You can either choose to make changes to the other fields (full name, bio, and planet), or you can just choose to change your profile picture. Either way, click 'Apply Changes'.
     -   E: It takes you back to your profile page. On your profile, and to all other users (on the DM page, their homepage, search users, etc), your profile picture is updated to the new chosen picture.
+-   Go to settings, and change bio, full name, or home planet. Then without chaning profile picture, click 'Apply Changes'.
+    -   E: It takes you back to your profile page. On your profile and to all other users, your profile picture is the same as it was before previously. No new change to the picture. 
+-   Go to settings, and click 'Choose File' under 'Change Profile Picture'. Then, choose a none image file (ex. pdf). Click 'Apply Changes'. 
+    -   E: It take you back to your profile page. On your profile and to all other users, your profile picture no longer displays properly and instead it shows the text "My Profile Picture". 
 
 ## 2. Finding Users and Orbit Requests:
 
