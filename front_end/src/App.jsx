@@ -111,8 +111,18 @@ function App() {
         );
     }
     useEffect(()=>{
-        const path = `/getcookie`
-        axios.post(`${serverpath}${path}`).then(res =>{
+        let cookieVal = Cookie.getItem("cookie")
+        if (cookieVal === null){
+            const path = '/createcookie'
+            axios.get(`${serverpath}${path}`).then(res =>{
+                if (res.data !== "unable to make cookie"){
+                    Cookie.setItem("cookie", res.data)
+                }
+            })
+        }
+
+        const path = `/getcookie/${encodeURIComponent(cookieVal)}`
+        axios.get(`${serverpath}${path}`).then(res =>{
             if (res.data.status === "no user"){
                 showLoginScreen()
             }
