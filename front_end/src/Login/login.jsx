@@ -20,7 +20,7 @@ function Login(props) {
         if (username == "" || password == "") {
             setError("Please Enter Something");
         } else {
-            const res = await axios.get(
+            const res = await axios.post(
                 `${serverpath}/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
             );
             const data = res.data;

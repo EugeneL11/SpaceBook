@@ -76,7 +76,7 @@ function Notifications(props) {
 
     //WE ARE GETTING THE FRIEND REQUESTS HERE, TO USE FOR DENYING/ACCEPTING (MUST FIX)
     const path = `/friendrequests/${encodeURIComponent(currentUser.userID)}`
-    axios.get(`${serverpath}${path}`).then((res) => {
+    axios.post(`${serverpath}${path}`).then((res) => {
         const data = res.data
         console.log(data)
         if (data.status === "no requests") {

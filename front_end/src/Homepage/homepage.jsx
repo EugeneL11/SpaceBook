@@ -101,7 +101,7 @@ function Homepage(props) {
 
     useEffect(() => {
         const path = `/homepageposts/${encodeURIComponent(currentUser.userID)}`
-        axios.get(`${serverpath}${path}`).then((res) => {
+        axios.post(`${serverpath}${path}`).then((res) => {
             const data = res.data
             console.log(data)
             if (data.status === "no error") {

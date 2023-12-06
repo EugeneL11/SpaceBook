@@ -37,7 +37,7 @@ function FriendsList(props) {
     useEffect(() =>{
     // placeholder for back-end data
         const path = `/friends/${encodeURIComponent(currentUser.userID)}`
-        axios.get(`${serverpath}${path}`).then((res) => {
+        axios.post(`${serverpath}${path}`).then((res) => {
             const data = res.data
             console.log(data)
             if (data.error === "no error") {

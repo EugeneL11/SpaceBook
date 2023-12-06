@@ -49,7 +49,7 @@ function SearchUsers(props) {
             return //maybe error message(?)
         }
         setNoMatch("")
-        axios.get(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
+        axios.post(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
             const data = res.data
             console.log(data)
             if (data.error === "no error") {
