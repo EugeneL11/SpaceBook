@@ -57,7 +57,7 @@ function NewDM(props) {
         // ask back end for top 10
 
         const path = `/getallnewdm/${currentUser.userID}`
-        axios.get(`${serverpath}${path}`).then(res => {
+        axios.post(`${serverpath}${path}`).then(res => {
             const data = res.data
             console.log(data)
             if (data.status === "no error") {
@@ -80,7 +80,7 @@ function NewDM(props) {
             return //maybe error message(?)
         }
         setNoMatch("")
-        axios.get(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
+        axios.post(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
             const data = res.data
             console.log(data)
             if (data.error === "no error") {

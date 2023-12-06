@@ -20,7 +20,7 @@ function DMMessage(props) {
         const s = subsetSize
         const path = `/getmessages/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(s)}`
         console.log(path)
-        axios.get(`${serverpath}${path}`).then((res) => {
+        axios.post(`${serverpath}${path}`).then((res) => {
             const data = res.data
             console.log(data)
             setMessages(data.messages) 

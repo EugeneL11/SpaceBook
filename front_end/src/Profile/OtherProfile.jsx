@@ -121,7 +121,7 @@ function OtherProfile(props) {
         // ask bak end for user
         const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(personID)}`
         console.log(path)
-        axios.get(`${serverpath}${path}`).then(res => {
+        axios.post(`${serverpath}${path}`).then(res => {
             const data = res.data
             console.log(currentUser.userID)
             console.log(data)

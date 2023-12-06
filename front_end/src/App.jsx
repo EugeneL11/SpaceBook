@@ -111,7 +111,7 @@ function App() {
     }
     useEffect(()=>{
         const path = `/getcookie`
-        axios.get(`${serverpath}${path}`).then(res =>{
+        axios.post(`${serverpath}${path}`).then(res =>{
             if (res.data.status === "no user"){
                 showLoginScreen()
             }

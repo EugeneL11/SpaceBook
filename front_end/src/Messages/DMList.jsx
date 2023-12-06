@@ -27,7 +27,7 @@ function DMList(props) {
     const [msgs, setMsgs] = useState(null)
         useEffect(()=>{
             const path = `/userdms/${encodeURIComponent(currentUser.userID)}`
-            axios.get(`${serverpath}${path}`).then((res) => {
+            axios.post(`${serverpath}${path}`).then((res) => {
                 const data = res.data
                 console.log(data)
                 if (data.status === "no error") {
