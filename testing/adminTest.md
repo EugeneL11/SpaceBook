@@ -40,9 +40,8 @@ Go to Sign Up page and create 2 accounts with the following example credentials 
     - Username = Vic
     - Password = victor2
 
--   Delete individual post
 -   Steve (admin) clicks on Gene's profile from search, then clicks 'Remove User'
     -   E: Steve's screen goes back to the search page, and Gene's profile is deleted. Steve can no longer search up Gene's account on Spacebook. No immediate change on Gene's end, but he will not be able to perform any more new actions. As soon as the browser is refreshed, he is logged out and can no longer log in using the account 'Gene'.
--   Delete/ban account
--   Steven (admin) expands Vic's post from homepage, then clicks 'Remove Post'
+
+-   Steve (admin) expands Vic's post from homepage, then clicks 'Remove Post'
     -   E: Steve's screen goes back to the homepage, and Vic's post is deleted. Steve can no longer view that post on Vic's account or the homepage. No immediate change on Vic's end, but if he navigates to his profile, the post will be gone.
