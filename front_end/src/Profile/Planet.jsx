@@ -10,6 +10,7 @@ export default function Planet(props) {
     const [model, setModel] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // load the planet models
     useEffect(() => {
         const loader = new GLTFLoader();
         loader.load(modelpath, (gltf) => {
@@ -37,6 +38,7 @@ export default function Planet(props) {
         }
     })
 
+    // display the planet
     return (
       <>
         <OrbitControls enablePan={false} enableZoom={false} rotateSpeed={0.2}/>

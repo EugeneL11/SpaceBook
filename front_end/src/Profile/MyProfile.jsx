@@ -6,6 +6,7 @@ import axios from 'axios'
 import * as THREE from 'three';
 import { serverpath } from "../Path.js";
 
+// to resize the planets appropriately
 function ResizingCanvas(props) {
     const { gl, size, camera } = useThree();
     var glsize
@@ -22,15 +23,7 @@ function ResizingCanvas(props) {
             gl.setSize(glsize, glsize);
             camera.aspect = 1;
             camera.updateProjectionMatrix();
-
-            // Update camera position
-            // camera.position.x = 5;
-            // camera.position.y = 5;
-            // camera.position.z = 5;
-
-            // camera.lookAt(new THREE.Vector3(0, 0, 0));
         };
-
         window.addEventListener('resize', handleResize);
 
         // Clean up on unmount
@@ -40,8 +33,8 @@ function ResizingCanvas(props) {
     return null;
 }
 
+// each planet
 function PlanetCanvas ({ planet }) {
-
     return (
         <Canvas className="cursor-pointer pt-5 lg:pt-0">
 
@@ -53,17 +46,22 @@ function PlanetCanvas ({ planet }) {
 }
 
 function Post(props) {
-    //const imageCount = props.images.length;
     const expandPost = props.expandPost;
     const [imageNum,setImageNum] = useState(0)
+    
+    // move on to the next image
     const toggleNextImage = () =>{
         const nextImage = imageNum + 1;
         setImageNum(nextImage);
     }
+    
+    // move back to the previous image
     const togglePrevImage = () =>{
         const nextImage = imageNum - 1;
         setImageNum(nextImage);
     }
+
+    // html code for a single post
     return(
         <div className="flex flex-col w-11/12 lg:w-7/12 xl:w-5/12 mx-auto mb-10 md:py-6 sm:px-16 lg:px-20 p-6 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
             <div className="flex flex-row pt-3 justify-between">
@@ -103,8 +101,8 @@ function MyProfile(props) {
     const [user, setUser] = useState(null)
     const [posts, setPosts] = useState(null)
 
+    // ask back end for user information
     useEffect(() => {
-        // ask bak end for user
         const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(currentUser.userID)}`
         axios.get(`${serverpath}${path}`).then(res => {
             const data = res.data
@@ -115,6 +113,7 @@ function MyProfile(props) {
         })
     }, [])
 
+    // html code for the user's whole profile page
     return (
         <div className="flex flex-col">
         

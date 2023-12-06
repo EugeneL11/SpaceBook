@@ -3,6 +3,7 @@ import axios from 'axios'
 import currentUser from "../Static";
 import { serverpath } from "../Path";
 import Cookie from 'js-cookies'
+
 function Settings(props) {
     const toggleLogin = props.toggleLogin
     const toggleMyProfile = props.toggleMyProfile
@@ -14,18 +15,19 @@ function Settings(props) {
     const handleFullName = (event) => {
         setFullName(event.target.value)
     }
-
     const handleBio = (event) => {
         setBio(event.target.value)
     }
-
     const handlePlanet = (event) => {
         setPlanet(event.target.value)
     }
     const setFile = (e) =>{
         setImage(e.target.files[0])
     }
+
+    // update all the settings, send to the backend to update the database
     async function updateSettings() {
+        //handling empty inputs
         let newBio = bio
         if (newBio === "") {
             newBio = " "
@@ -40,6 +42,7 @@ function Settings(props) {
             console.log(data.status)
             return;
         }
+        // handling image uploads
         if(image !== null){
             const setimagepath = `/uploadprofileimage/${encodeURIComponent(currentUser.userID)}`
             const formData = new FormData();
@@ -52,6 +55,8 @@ function Settings(props) {
         currentUser.bio = bio
         toggleMyProfile()
     }
+
+    // delete your account, tell backend to delete from the database also
     const deleteAcc = () => {
         const path = `/deleteuser/${encodeURIComponent(currentUser.userID)}`
         axios.delete(`${serverpath}${path}`).then(res => {
@@ -66,12 +71,16 @@ function Settings(props) {
             }
         })
     }
+
+    // log out of the account
     const logout = () =>{
         const cookie = Cookie.getItem("cookie")
         const path = `/removecookie/${cookie ? encodeURIComponent(cookie) : "empty"}`
         axios.delete(`${serverpath}${path}`)
         toggleLogin()
     }
+
+    // html code for the wole settings pages and all its features
     return (
     <div className="flex flex-col items-center">
         <button className="mb-5 w-fit ml-6 mr-auto text-3xl hover:text-purple-300" onClick={toggleMyProfile}>{'←'}</button>

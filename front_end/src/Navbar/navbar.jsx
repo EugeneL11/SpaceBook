@@ -1,6 +1,7 @@
 import { React, useState } from "react";
 
 function NavbarIcon(props) {
+    // Styling how we want each icon to look
     return (
         <div 
             onClick={props.click}
@@ -20,6 +21,7 @@ function Navbar(props) {
     const toggleSearchUser = props.clickHandlers.toggleSearchUser;
     const toggleNotifications = props.clickHandlers.toggleNotifications;
 
+    // design and implement the navbar
     return (
     <div className="flex flex-row justify-around bg-gradient-to-r from-indigo-300 to-purple-300 fixed w-screen h-16 top-0 z-50">
 

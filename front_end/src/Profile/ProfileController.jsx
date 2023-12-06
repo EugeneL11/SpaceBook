@@ -3,6 +3,8 @@ import MyProfile from "./MyProfile";
 import Settings from "./Settings";
 import FriendsList from "../Buddies/FriendsList";
 import OtherProfile from "./OtherProfile";
+
+// the design patterns for all the profiles
 function ProfileController(props) {
     const toggleLogin = props.toggleLogin
     const toggleHomepage = props.toggleHomepage

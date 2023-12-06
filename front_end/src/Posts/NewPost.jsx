@@ -17,6 +17,7 @@ function NewPost(props) {
       setCaption(event.target.value);
     };
 
+    // store the post into the backend database
     async function makePost() {
         const path = `/makepost/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(caption)}`
         const res = await axios.post(`${serverpath}${path}`)
@@ -26,6 +27,7 @@ function NewPost(props) {
         } else {
             console.log(data.status)
         }
+        //handling all the images
         for (let i = 0; i < images.length; i++) {
             if (images[i] !== null) {
                 const formData = new FormData();
@@ -39,6 +41,7 @@ function NewPost(props) {
         //take to homepage
     }
     
+    // html code for the new post page with all its features
     return (
         <div className="flex flex-col items-center">
             <button className="mb-5 w-fit ml-6 mr-auto text-3xl hover:text-purple-300" onClick={toggleHomepage}> {'←'} </button>
@@ -57,17 +60,12 @@ function NewPost(props) {
             
                 <div className="mt-4">Add images </div>
           
-
                 <h1>Click Below to upload image</h1>
-
                     <ImageDemo
                         setImages = {setImages}
                     /> 
-
                 <button onClick={makePost} className="bg-purple-300 hover:bg-purple-400 px-5 py-2 mt-5 w-fit self-center rounded-lg">Post!</button>
-
             </div>
-
         </div>
     ); 
 }

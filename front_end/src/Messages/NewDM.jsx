@@ -43,7 +43,7 @@ function NewDM(props) {
     const [people, setPeople] = useState(null)
 
     useEffect(() => {
-        // ask back end for top 10
+        // ask back end for top 10 search results
         const path = `/getallnewdm/${currentUser.userID}`
         axios.get(`${serverpath}${path}`).then(res => {
             const data = res.data
@@ -55,6 +55,7 @@ function NewDM(props) {
         })
 
     },[])
+
     const handleKeyPress = (event) => {
         // Check if the Enter key was pressed (key code 13)
         if (event.key === 'Enter') {
@@ -63,6 +64,7 @@ function NewDM(props) {
         }
     };
 
+    // searching the database for results
     function searchQuery() {
         if (searchTerm === "") {
             return //maybe error message(?)
@@ -80,6 +82,7 @@ function NewDM(props) {
         })
     }
 
+    // html code for searching a user to send a DM to
     return (
         <div className="flex flex-col justify-start items-center space-y-4">
             <div className="flex flex-start w-full">
@@ -118,7 +121,6 @@ function NewDM(props) {
                         username={person.user_name} 
                         user_pic_url={serverpath + person.profile_picture_path}
                     ></Person> 
-
                 )
             ) : null}
         </div>

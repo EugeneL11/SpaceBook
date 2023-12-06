@@ -10,10 +10,10 @@ function ResizingCanvas(props) {
     const { gl, size, camera } = useThree();
     var glsize
 
+    //resizing the planets to make it responsive
     useEffect(() => {
         const handleResize = () => {
             // Update size
-
             if (window.innerWidth < 1024) {
                 glsize = 150
             } else {
@@ -32,7 +32,7 @@ function ResizingCanvas(props) {
     return null;
 }
 
-
+// each planet component
 function PlanetCanvas (props) {
     return (
         <Canvas className="cursor-pointer pt-5 lg:pt-0">
@@ -45,14 +45,20 @@ function PlanetCanvas (props) {
 function Post(props) {
     const expandPost = props.expandPost;
     const [imageNum,setImageNum] = useState(0)
+    
+    // move on to the next image
     const toggleNextImage = () =>{
         const nextImage = imageNum + 1;
         setImageNum(nextImage);
     }
+
+    // move back to the previous image
     const togglePrevImage = () =>{
         const nextImage = imageNum - 1;
         setImageNum(nextImage);
     }
+    
+    // html code for a single post
     return(
         <div className="flex flex-col w-11/12 lg:w-7/12 xl:w-5/12 mx-auto mb-10 md:py-6 sm:px-16 lg:px-20 p-6 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
             <div className="flex flex-row pt-3 justify-between">
@@ -85,17 +91,15 @@ function Post(props) {
 }
 
 function OtherProfile(props) {
-    // const dm = DMController(toggleHomepage = props.toggleHomepage )
-    // const dm = setScreen(<DMController toggleHomepage={props.toggleHomepage} />);
     const back = props.goBackScreen
     const personID = props.userID
     const togglePost = props.togglePost
     const [user, setUser] = useState(null)
     const [posts, setPosts] = useState(null)
     const [friendStatus, setFriendStatus] = useState("")
-
+        
+    // ask back end for user information
     useEffect(() => {
-        // ask bak end for user
         const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(personID)}`
         axios.get(`${serverpath}${path}`).then(res => {
             const data = res.data
@@ -103,9 +107,9 @@ function OtherProfile(props) {
             setFriendStatus(data.friendstatus)
             setPosts(data.posts)
         })
-
     }, [])
 
+    // tell backend to delete the user
     const removeUser = () =>{
         const path = `/deleteuser/${encodeURIComponent(personID)}`
         axios.delete(`${serverpath}${path}`).then(res => {
@@ -118,6 +122,7 @@ function OtherProfile(props) {
         })
     }
 
+    // tell backend to send a friend request
     function sendOrbit() {
         const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
         axios.post(`${serverpath}${path}`).then(res => {
@@ -130,6 +135,7 @@ function OtherProfile(props) {
         })
     }
 
+    // tell the backend to remove user as friend
     function unorbit() {
         const path = `/removefriend/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
         axios.delete(`${serverpath}${path}`).then(res => {
@@ -142,6 +148,7 @@ function OtherProfile(props) {
         })
     }
 
+    // tell backend to reject the user's friend request
     function rejectOrbitRequest() {
         const path = `/rejectfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
         axios.delete(`${serverpath}${path}`).then(res => {
@@ -154,6 +161,7 @@ function OtherProfile(props) {
         })
     }
 
+    // the backend to accept the user's friend request
     function acceptFriendRequest() {
         const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
         axios.post(`${serverpath}${path}`).then(res => {
@@ -166,6 +174,7 @@ function OtherProfile(props) {
         })
     }
 
+    // all the different scenarios of the friendship status
     const table = {
         "" : null,
         "already friends": <div className = "mb-6 hover:text-red-300" onClick={unorbit}>Unorbit this buddy</div>,
@@ -177,6 +186,7 @@ function OtherProfile(props) {
         </div>
     }
 
+    // html code displaying a user's profile
     return (
         <div className="flex flex-col">
         <div className="w-full flex items-center">

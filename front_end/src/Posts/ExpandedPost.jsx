@@ -2,19 +2,20 @@ import currentUser from "../Static.js";
 import { React, useState, useEffect } from "react";
 import axios from 'axios'
 import { serverpath } from "../Path.js";
+
 function ExpandedPost(props) {
     const postID = props.post_id
     const toggleHomepage = props.toggleHomepage
     const toggleOtherProfile = props.toggleOtherProfile
     const togglePost = () => props.toggleExpandPost(postID)
+   
     const [post, setPost] = useState(null);
-
     const [userComment, setUserComment] = useState(null);
     const [userCommentValue, setUserCommentValue] = useState("");
     const [numLikes, setNumLikes] = useState(0);
 
     useEffect(() => {
-        // ask back end for post
+        // ask back end for a post and its details
         const path = `/postdetails/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
@@ -34,6 +35,8 @@ function ExpandedPost(props) {
             makeComment();
         }
     };
+
+    // store the comment into the backend
     const makeComment = () => {
         const commentPath = `/makecomment/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
         axios.post(`${serverpath}${commentPath}`).then((res) => {
@@ -48,10 +51,9 @@ function ExpandedPost(props) {
             }
         })
     };
-    
-    //for admin
+
+    // ask back end to remove the post from the database
     const removePost = () =>{
-        // ask back end
         const path = `/deletepost/${postID}`
         axios.delete(`${serverpath}${path}`).then((res) => {
             const data = res.data
@@ -64,12 +66,14 @@ function ExpandedPost(props) {
 
     const [isLiked, setIsLiked] = useState(false);
     
+    // tell backend that the post is liked
     const handleLike = () => {
         if (!isLiked) {
         setIsLiked(true);
         // Perform any additional actions when liked
             const path  = `/likepost/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
             axios.put(`${serverpath}${path}`).then(res =>{
+                //update likes details
                 if (res.data.status === "no error") {
                     setNumLikes(numLikes + 1)
                     setIsLiked(true)
@@ -82,6 +86,7 @@ function ExpandedPost(props) {
 
     const [imageNum,setImageNum] = useState(0)
 
+    // move on to the next image
     const toggleNextImage = () =>{
         let num = imageNum;
         if(num < post.images.length-1){
@@ -90,6 +95,7 @@ function ExpandedPost(props) {
         setImageNum(num);
     }
 
+    // move back to the previous image
     const togglePrevImage = () =>{
         let num = imageNum;
         if(num > 0){
@@ -98,6 +104,7 @@ function ExpandedPost(props) {
         setImageNum(num);
     }
 
+    // html code for showing the expanded version of the post with all of its details
     return (
     <>
     {post === null ? <div></div> : (
