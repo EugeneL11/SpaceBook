@@ -11,7 +11,6 @@ function Request(props) {
     const denyRequestEvent = props.denyRequest
     const acceptRequestEvent = props.acceptRequest
 
-    console.log(othersProfileEvent)
     return (
         <div className="flex flex-row bg-blue-500 hover:bg-blue-400 h-20 w-11/12 sm:w-3/4 lg:w-1/2 min-w-fit justify-between rounded-md px-5">
             <div onClick = {othersProfileEvent} className="flex items-center hover:cursor-pointer hover:opacity-70 hover:text-gray-700">
@@ -78,7 +77,6 @@ function Notifications(props) {
     const path = `/friendrequests/${encodeURIComponent(currentUser.userID)}`
     axios.get(`${serverpath}${path}`).then((res) => {
         const data = res.data
-        console.log(data)
         if (data.status === "no requests") {
             setNoReqs(true)
         } else if (data.status === "pending request") {
@@ -116,7 +114,6 @@ function Notifications(props) {
                     (request) => request.user_id !== userToAccept
                 )
                 setRequests(newRequestList);
-                console.log("accepted")
             } else {
                 console.log(data.status)
             }

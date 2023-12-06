@@ -4,7 +4,6 @@ import {serverpath} from "../Path.js";
 import axios from 'axios'
 function Person(props) {
     const recieverID = props.userID
-    const user_pic_url = props.user_pic_url
     const toggleDMMessage = props.toggleDMMessage
     //clicking the profile should toggle to the dm message page with that user, while also posting the following
     // const path = `/newdm/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.username)}`
@@ -17,10 +16,13 @@ function Person(props) {
         const path = `/newdm/${currentUser.userID}/${recieverID}`
         axios.post(`${serverpath}${path}`).then((res) => {
             const data = res.data
-            console.log(data)
+            if (data.status !== "no error") {
+                console.log(data.status)
+            }
         })
         toggleDMMessage(props.userID, props.username)
     }
+
     return (
         <div onClick={ handleNewDM }
         
@@ -38,11 +40,6 @@ function Person(props) {
 }
 
 function NewDM(props) {
-    const samplePeople = [
-        {username: "Vic", user_pic_url: "./jupiter.jpg"},
-        {username: "Kevin", user_pic_url: "./jupiter.jpg"}
-    ]
-
     const toggleHomepage = props.toggleHomepage
     const toggleDMMessage = props.toggleDMMessage
     const toggleDMList = props.toggleDMList
@@ -55,14 +52,13 @@ function NewDM(props) {
 
     useEffect(() => {
         // ask back end for top 10
-
         const path = `/getallnewdm/${currentUser.userID}`
         axios.get(`${serverpath}${path}`).then(res => {
             const data = res.data
-            console.log(data)
             if (data.status === "no error") {
-                console.log(data.newDMRes)
                 setPeople(data.newDMRes)
+            } else {
+                console.log(data.status)
             }
         })
 
@@ -82,9 +78,7 @@ function NewDM(props) {
         setNoMatch("")
         axios.get(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
             const data = res.data
-            console.log(data)
             if (data.error === "no error") {
-                console.log(data.userPreviews[0].profile_picture_path)
                 setPeople(data.userPreviews)
                 setNoMatch("")
             } else if (data.error === "no users found") {

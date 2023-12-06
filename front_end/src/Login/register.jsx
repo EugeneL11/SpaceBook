@@ -6,12 +6,12 @@ import Cookie from 'js-cookies'
 function Register(props) {
     const toggleLogin = props.toggleLogin;
     const toggleHomepage = props.toggleHomepage;
-
     const [fullName, setName] = useState("");
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setError] = useState(null);
+
     const setCookie = () =>{
         const cookie = Cookie.getItem("cookie")
         const path = `/setcookie/${cookie ? encodeURIComponent(cookie) : "empty"}/${encodeURIComponent( currentUser.userID)}`
@@ -19,8 +19,6 @@ function Register(props) {
     }
     const registerAction = () => {
         //ask backend
-
-
         if (username == "" || password == "" || fullName == "" || email == "") {
             setError("Please Enter Something");
         } else {
@@ -36,7 +34,6 @@ function Register(props) {
                 } else if (data.status === "user name not available") {
                     setError(data.status);
                 } else {
-                    console.log(data)
                     currentUser.userID = data.user.id;
                     currentUser.userName = data.user.user_name;
                     currentUser.planet = data.user.planet
@@ -116,7 +113,6 @@ function Register(props) {
             <button className="text-xl mt-12" onClick={toggleLogin}>
                 Log In
             </button>
-            {/* <h1>{errorMessage}</h1> */}
         </div>
     );
 }

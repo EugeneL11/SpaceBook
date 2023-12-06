@@ -1,5 +1,4 @@
 import { React, useState, useEffect} from "react";
-import backPic from '../images/back.png';
 import currentUser from "../Static.js";
 import {serverpath} from "../Path.js";
 import axios from 'axios'
@@ -19,10 +18,8 @@ function DMMessage(props) {
     const updateDM = ()=>{
         const s = subsetSize
         const path = `/getmessages/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(s)}`
-        console.log(path)
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
-            console.log(data)
             setMessages(data.messages) 
             setMaxSubSet(data.maxMessages)
         })
@@ -45,12 +42,11 @@ function DMMessage(props) {
         }
     };
     const sendMessage = () =>{
+        // tell back end
         if (messageValue !== "") {
             const sendPath = `/senddm/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(messageValue)}`
             axios.post(`${serverpath}${sendPath}`).then((res) => {
                 const sendData = res.data
-                console.log(sendData)
-                //what does this axios post even do? we only get sent back a status
                 if (sendData.status === "no error") {
                     setmessageValue("")
                 } else {
@@ -58,8 +54,6 @@ function DMMessage(props) {
                 }
             })
         }
-
-        // tell back end
     }
     return (
     <div className="flex flex-col items-center min-h-screen">

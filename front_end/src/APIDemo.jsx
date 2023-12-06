@@ -14,7 +14,7 @@ function APIDemo(){
             // Do stuff with javascript object, probably set state
         }
         catch{
-            console.log("Error or something idk")
+            console.log("Error")
         }
     }
     const sequentialRequest = () => {

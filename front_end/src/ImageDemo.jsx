@@ -17,7 +17,6 @@ function ImageDemo(props) {
         const newImages = [...images, file]
         setImages(newImages)
         updateImage(newImages)
-        console.log(newImages)
     };
 
     const saveEvent = imageUpload
@@ -27,7 +26,6 @@ function ImageDemo(props) {
         if(num < images.length-1){
             num++;
         }
-        console.log(num)
 
         setImageNum(num);
         handleImageChange({target: {files: [images[num]]}})
@@ -38,7 +36,6 @@ function ImageDemo(props) {
         if(num > 0){
             num--;
         }
-        console.log(num)
 
         setImageNum(num);
         handleImageChange({target: {files: [images[num]]}})
@@ -53,9 +50,7 @@ function ImageDemo(props) {
     }
 
     const handleImageChange = (e) => {
-
         const selectedImage = e.target.files[0];
-        console.log(selectedImage)
 
         // Read and set the preview image
         const reader = new FileReader();

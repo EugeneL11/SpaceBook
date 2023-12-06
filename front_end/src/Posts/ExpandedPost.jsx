@@ -1,39 +1,23 @@
 import currentUser from "../Static.js";
 import { React, useState, useEffect } from "react";
-import pPic from '../images/pp.png';
 import axios from 'axios'
 import { serverpath } from "../Path.js";
 function ExpandedPost(props) {
     const postID = props.post_id
-    console.log(postID)
-   
     const toggleHomepage = props.toggleHomepage
     const toggleOtherProfile = props.toggleOtherProfile
     const togglePost = () => props.toggleExpandPost(postID)
     const [post, setPost] = useState(null);
- 
-
-    // const imageCount = props.images.length;
-
-    // const [imageNum,setImageNum] = useState(0)
-    // const toggleNextImage = () =>{
-    //     const nextImage = imageNum + 1;
-    //     setImageNum(nextImage);
-    // }
-    // const togglePrevImage = () =>{
-    //     const nextImage = imageNum - 1;
-    //     setImageNum(nextImage);
-    // }
 
     const [userComment, setUserComment] = useState(null);
     const [userCommentValue, setUserCommentValue] = useState("");
     const [numLikes, setNumLikes] = useState(0);
 
     useEffect(() => {
+        // ask back end for post
         const path = `/postdetails/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
-            console.log(data)
             setPost(data.post)
             setUserComment(data.post.comments);
             setNumLikes(data.post.num_likes)
@@ -41,7 +25,6 @@ function ExpandedPost(props) {
                 setIsLiked(true)
             }
         })
-        // ask back end for post
     }, []);
 
     const handleKeyPress = (event) => {
@@ -52,30 +35,30 @@ function ExpandedPost(props) {
         }
     };
     const makeComment = () => {
-        console.log("the comment is " + userCommentValue)
         const commentPath = `/makecomment/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
         axios.post(`${serverpath}${commentPath}`).then((res) => {
             const data = res.data
-            console.log(data)
-            const userCommentArr = userComment || [];
-            console.log(userCommentArr)
-            const newArr = [{commenter_name: currentUser.userName, content: userCommentValue}, ...userCommentArr]
-            setUserComment(newArr)
-            console.log(userComment)
-            setUserCommentValue("")
+            if (data.status === "no error") {
+                const userCommentArr = userComment || [];
+                const newArr = [{commenter_name: currentUser.userName, content: userCommentValue}, ...userCommentArr]
+                setUserComment(newArr)
+                setUserCommentValue("")
+            } else {
+                console.log(data.status)
+            }
         })
     };
     
     //for admin
     const removePost = () =>{
-
+        // ask back end
         const path = `/deletepost/${postID}`
         axios.delete(`${serverpath}${path}`).then((res) => {
             const data = res.data
-            console.log(data)
+            if (data.status !== "no error") {
+                console.log(data)
+            }
         })
-
-        // ask back end
         toggleHomepage();
     }
 
@@ -87,10 +70,11 @@ function ExpandedPost(props) {
         // Perform any additional actions when liked
             const path  = `/likepost/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
             axios.put(`${serverpath}${path}`).then(res =>{
-                console.log(res.data)
-                if (res.data.status == "no error") {
+                if (res.data.status === "no error") {
                     setNumLikes(numLikes + 1)
                     setIsLiked(true)
+                } else {
+                    console.log(data.status)
                 }
             })
         }
@@ -103,8 +87,6 @@ function ExpandedPost(props) {
         if(num < post.images.length-1){
             num++;
         }
-        console.log(num)
-
         setImageNum(num);
     }
 
@@ -113,8 +95,6 @@ function ExpandedPost(props) {
         if(num > 0){
             num--;
         }
-        console.log(num)
-
         setImageNum(num);
     }
 
@@ -127,15 +107,6 @@ function ExpandedPost(props) {
                 {currentUser.admin && (<button className="mr-6 p-2 h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removePost}>Delete Post</button>)} 
             </div>
             <div className="flex flex-col bg-white text-black text-start text-lg mb-10 md:py-6 sm:px-16 lg:px-24 p-6 rounded-xl w-3/4 lg:w-1/2 min-w-fit">
-                {/* <div className="relative w-100 h-100">
-                    {imageNum > 0 ?
-                        <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-10 translate-y-24 rotate-180" onClick={togglePrevImage} /> : null
-                    }
-                    {imageNum < imageCount - 1 ? 
-                        <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-10 translate-y-24"  onClick={toggleNextImage}/> : null
-                    }        
-                </div> */}
-
                 <div className="flex flex-row pt-3 justify-between">
                     <div onClick={() => toggleOtherProfile(post.author_id, toggleHomepage)} className="flex flex-row justify-center align-middle pt-2 hover:cursor-pointer hover:text-purple-100">
                         <img src={serverpath + post.author_profile_path} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
@@ -145,15 +116,6 @@ function ExpandedPost(props) {
                 </div>
 
                 <p className="mt-10">{post.caption}</p>
-{/* 
-                <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
-                    <img src={post.images[imageNum]} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
-                </div> */}
-                {/* {post.images ? post.images.map((image, index) => (
-                    <div className="w-full bg-purple-200 rounded-lg p-2 my-2">
-                        <img src={serverpath + image} className="my-4 mx-auto h-80 object-contain" alt="the post picture"/>
-                    </div>
-                )) : null} */}
 
                 {
                 post.images ?

@@ -21,7 +21,6 @@ function ProfileController(props) {
         setProfileState(<OtherProfile togglePost={togglePost} userID ={userID} goBackScreen ={backEvent}/>);
     }
     return (<div>{profileState}</div>);
-
 }
 
 export default ProfileController;

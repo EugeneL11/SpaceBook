@@ -51,15 +51,13 @@ function SearchUsers(props) {
         setNoMatch("")
         axios.get(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
             const data = res.data
-            console.log(data)
             if (data.error === "no error") {
-                console.log(data.userPreviews[0].profile_picture_path)
                 setPeople(data.userPreviews)
                 setNoMatch("")
             } else if (data.error === "no users found") {
                 setNoMatch("No Match Found")
                 setPeople(null)
-            } //catch errors later
+            }
         })
     }
 

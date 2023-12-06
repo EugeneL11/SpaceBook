@@ -1,6 +1,5 @@
 import { React, useState } from "react";
-import backPic from '../images/back.png';
-import axios, { formToJSON } from 'axios'
+import axios from 'axios'
 import currentUser from "../Static";
 import { serverpath } from "../Path";
 import Cookie from 'js-cookies'
@@ -11,6 +10,7 @@ function Settings(props) {
     const [bio, setBio] = useState(currentUser.bio)
     const [planet, setPlanet] = useState(currentUser.planet)
     const [image, setImage] = useState(null)
+    
     const handleFullName = (event) => {
         setFullName(event.target.value)
     }
@@ -117,7 +117,6 @@ function Settings(props) {
         </div>
     </div>
     );
-
 }
 
 export default Settings;

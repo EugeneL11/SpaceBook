@@ -64,7 +64,6 @@ function App() {
     }
     function expandPost(postID) {
         hideNavBar();
-        console.log(postID)
         setScreen(
             <ExpandedPost
                 post_id = {postID}
