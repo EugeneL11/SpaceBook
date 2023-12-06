@@ -1,31 +1,16 @@
 import { React, useState,useEffect } from "react";
 import currentUser from "../Static.js";
 import {serverpath} from "../Path.js";
-import pPic from '../images/pp.png';
 import Background from '../Background/background'
 import axios from 'axios'
 function DMList(props) {
     const toggleHomepage = props.toggleHomepage
     const toggleDMMessage = props.toggleDMMessage
     const toggleNewDM = props.toggleNewDM
-
-    const examplefriends = [
-        {username:"rainethhh", 
-        msg:"Yes I agree, it really does feel like that"},
-        {username:"kingJames", 
-        msg:"Appreciate it!!!"},
-        {username:"Gene", 
-        msg:"See ya"},
-        {username:"kevonosdiaz", 
-        msg:"Go Go Go Go Go"},
-        {username:"duppy", 
-        msg:"just grabbing a bakechef, be rigth there"},
-        {username:"vicGPT", 
-        msg:"The most optimal algorithm would be O(n log n)"} 
-        ]
     
     const [msgs, setMsgs] = useState(null)
         useEffect(()=>{
+            // ask back end for dms
             const path = `/userdms/${encodeURIComponent(currentUser.userID)}`
             axios.get(`${serverpath}${path}`).then((res) => {
                 const data = res.data
@@ -35,8 +20,6 @@ function DMList(props) {
                     console.log(data.status)
                 }
             })
-
-            // ask back end for dms
         },[])
 
     return (

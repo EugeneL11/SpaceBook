@@ -8,7 +8,6 @@ function Login(props) {
     const toggleRegister = props.toggleRegister;
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
     const [errorMessage, setError] = useState("");
 
     const setCookie = () =>{
@@ -26,7 +25,7 @@ function Login(props) {
                 `${serverpath}/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
             );
             const data = res.data;
-            if (data.status == "unable to find User") {
+            if (data.status === "unable to find User") {
                 setError("username or password incorrect");
             } else {
                 currentUser.userID = data.user.id;

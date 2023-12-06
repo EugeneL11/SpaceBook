@@ -1,5 +1,4 @@
 import { React, useState, useEffect} from "react";
-import backPic from '../images/back.png';
 import currentUser from "../Static.js";
 import {serverpath} from "../Path.js";
 import axios from 'axios'
@@ -43,6 +42,7 @@ function DMMessage(props) {
         }
     };
     const sendMessage = () =>{
+        // tell back end
         if (messageValue !== "") {
             const sendPath = `/senddm/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendID)}/${encodeURIComponent(messageValue)}`
             axios.post(`${serverpath}${sendPath}`).then((res) => {
@@ -54,8 +54,6 @@ function DMMessage(props) {
                 }
             })
         }
-
-        // tell back end
     }
     return (
     <div className="flex flex-col items-center min-h-screen">

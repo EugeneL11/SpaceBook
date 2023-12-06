@@ -13,7 +13,6 @@ function ResizingCanvas(props) {
     useEffect(() => {
         const handleResize = () => {
             // Update size
-
             if (window.innerWidth < 1024) {
                 glsize = 150
             } else {
@@ -30,7 +29,6 @@ function ResizingCanvas(props) {
             // camera.position.z = 5;
 
             // camera.lookAt(new THREE.Vector3(0, 0, 0));
-
         };
 
         window.addEventListener('resize', handleResize);
@@ -68,17 +66,6 @@ function Post(props) {
     }
     return(
         <div className="flex flex-col w-11/12 lg:w-7/12 xl:w-5/12 mx-auto mb-10 md:py-6 sm:px-16 lg:px-20 p-6 justify-center align-middle bg-slate-300 bg-opacity-90 text-black rounded-lg">
-            {/* <div className="relative w-100 h-100">
-                {imageNum > 0 ? 
-                    // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl top-52 z-40 cursor-pointer hover:text-purple-400" onClick={togglePrevImage}> {"←"} </div> : null
-                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer translate-x-10 translate-y-10 rotate-180" onClick={togglePrevImage} /> : null
-                }
-                {imageNum < imageCount - 1 ? 
-                    // <div className="absolute text-purple-500 pb-2 pr-2 pl-2 bg-slate-300 bg-opacity-60 rounded-full text-7xl cursor-pointer left-85-percent top-52 z-40 hover:text-purple-400" onClick={toggleNextImage}> {"→"} </div> : null
-                    <img src="./ar.png" className="absolute w-10 p-2 bg-slate-300 bg-opacity-80 rounded-full text-7xl top-52 z-40 cursor-pointer right-0 -translate-x-10 translate-y-10"  onClick={toggleNextImage}/> : null
-
-                }
-            </div> */}
             <div className="flex flex-row pt-3 justify-between">
                 <div className="flex flex-row justify-center align-middle pt-2">
                     <img src={serverpath + props.post.author_profile_path} alt="Profile Picture" className="w-10 aspect-square rounded-full"/>
@@ -88,10 +75,6 @@ function Post(props) {
             </div>
 
             <p className="mt-10"> {props.post.caption}</p>
-            {/* no resize on image */}
-            {/* {props.images ? 
-                <img src={props.images[imageNum]} className="m-4 h-80  object-contain " alt="" />
-            : null} */}
 
             {props.post.images 
                 ? props.post.images[imageNum] 
@@ -175,7 +158,6 @@ function MyProfile(props) {
                 <PlanetCanvas planet={user.planet}/>
             </div>
 
-
             </div>
             {
                 posts? posts.map((post,index) => 
@@ -188,8 +170,7 @@ function MyProfile(props) {
 
         </div>: null}
 
-    </div>
-        
+    </div>  
     );
 }
 

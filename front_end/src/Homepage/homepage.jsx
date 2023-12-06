@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import currentUser, {userID} from "../Static.js"
+import currentUser from "../Static.js"
 import axios from 'axios'
 import { serverpath } from "../Path.js";
 
@@ -81,21 +81,10 @@ function Homepage(props) {
     const toggleExpandPost = props.toggleExpandPost;
     const toggleOtherProfile = props.toggleOtherProfile;
     const toggleHomePage = props.toggleHomePage;
-
     const [posts, setPosts] = useState(null);
-    const examplePost = {
-        postId: 5,
-        authorId: 6,
-        username: "Duppy",
-        pfp : "./ayylmao.webp",
-        caption: "Finally leaving this planet lmao 😂",
-        date: "Nov 7th",
-        images: ["./swag.jpg", "./ayylmao.webp"],
-        videos: [],
-    };
-    const examplePosts = [examplePost, examplePost];
 
     useEffect(() => {
+        // ask back end for post
         const path = `/homepageposts/${encodeURIComponent(currentUser.userID)}`
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
@@ -105,9 +94,7 @@ function Homepage(props) {
                 console.log(data.status)
             }
         })
-         // ask back end for post
     }, [])
-
 
     return (
     <div className="flex flex-col mt-5 pt-5"> 
@@ -125,7 +112,6 @@ function Homepage(props) {
         }
     </div>
     );
-
 }
 
 function NoPosts() {

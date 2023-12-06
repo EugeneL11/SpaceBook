@@ -4,7 +4,6 @@ import {serverpath} from "../Path.js";
 import axios from 'axios'
 function Person(props) {
     const recieverID = props.userID
-    const user_pic_url = props.user_pic_url
     const toggleDMMessage = props.toggleDMMessage
     //clicking the profile should toggle to the dm message page with that user, while also posting the following
     // const path = `/newdm/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.username)}`
@@ -23,6 +22,7 @@ function Person(props) {
         })
         toggleDMMessage(props.userID, props.username)
     }
+
     return (
         <div onClick={ handleNewDM }
         
@@ -40,11 +40,6 @@ function Person(props) {
 }
 
 function NewDM(props) {
-    const samplePeople = [
-        {username: "Vic", user_pic_url: "./jupiter.jpg"},
-        {username: "Kevin", user_pic_url: "./jupiter.jpg"}
-    ]
-
     const toggleHomepage = props.toggleHomepage
     const toggleDMMessage = props.toggleDMMessage
     const toggleDMList = props.toggleDMList
@@ -57,7 +52,6 @@ function NewDM(props) {
 
     useEffect(() => {
         // ask back end for top 10
-
         const path = `/getallnewdm/${currentUser.userID}`
         axios.get(`${serverpath}${path}`).then(res => {
             const data = res.data
