@@ -6,9 +6,11 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/EugeneL11/SpaceBook/pkg"
 	"github.com/gin-gonic/gin"
+	"github.com/gocql/gocql"
 )
 
 // Add new non-admin user to SQL db, returning error message if unsuccessful
@@ -52,7 +54,7 @@ func RegisterUser(fullName string, password string, email string, username strin
 	if err != nil {
 		return "unable to connect to db"
 	}
-	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "/images/utilities/pp.png", false, "test bio")
+	_, err = stmt.Exec(fullName, username, email, hashedPassword, "Earth", "/images/utilities/pp.png", false, " ")
 	if err != nil {
 		fmt.Println("Could not execute insert into users")
 		return "unable to connect to db"
@@ -91,13 +93,25 @@ func RegisterHandler(ctx *gin.Context) {
 	var user User
 	err := RegisterUser(fullName, password, email, username, postgres, &user)
 	if err == "unable to connect to db" || err == "unable to hash password" {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("unable to create account at this time"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to create account at this time",
+			"user":   nil,
+		})
 	} else if err == "user name taken" {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("user name not available"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "user name not available",
+			"user":   nil,
+		})
 	} else if err == "email taken" {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("email already in use"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "email already in use",
+			"user":   nil,
+		})
 	} else {
-		ctx.JSON(http.StatusOK, GoodUserResponse(user))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "no error!",
+			"user":   user,
+		})
 	}
 }
 
@@ -128,7 +142,7 @@ func LoginCorrect(username string, password string, postgres *sql.DB, user *User
 	// fmt.Println("Entered password", password, "correctly matches hashed password!")
 
 	// Get user's information to give frontend
-	stmt, err = postgres.Prepare("SELECT * FROM users WHERE user_name = $1 and password = $2")
+	stmt, err = postgres.Prepare("SELECT user_id, full_name, user_name, email, home_planet, profile_picture_path, isadmin, bio FROM users WHERE user_name = $1 and password = $2")
 	if err != nil {
 		log.Panic(err)
 		return false
@@ -141,9 +155,10 @@ func LoginCorrect(username string, password string, postgres *sql.DB, user *User
 		return false
 	}
 	if rows.Next() {
+
 		err := rows.Scan(&user.User_id, &user.Full_name, &user.User_name,
-			&user.Email, nil, &user.Home_planet, &user.Profile_picture_path, &user.Admin, &user.Bio)
-		fmt.Println(user.User_name)
+			&user.Email, &user.Home_planet, &user.Profile_picture_path, &user.Admin, &user.Bio)
+		fmt.Println(user)
 		log.Println(err)
 		return true
 
@@ -160,9 +175,15 @@ func LoginHandler(ctx *gin.Context) {
 	var user User
 	correct := LoginCorrect(username, password, postgres, &user)
 	if !correct {
-		ctx.JSON(http.StatusOK, ErrorUserResponse("unable to find User"))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to find User",
+			"user":   nil,
+		})
 	} else {
-		ctx.JSON(http.StatusOK, GoodUserResponse(user))
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "no error!",
+			"user":   user,
+		})
 	}
 }
 
@@ -192,9 +213,24 @@ func UpdateUserProfile(
 	return "no error"
 }
 
-// not done
 // not tested
 func UpdateUserProfileHandler(ctx *gin.Context) {
+	postgres := ctx.MustGet("postgres").(*sql.DB)
+	userID, err1 := strconv.Atoi(ctx.Param("userID"))
+	newName := ctx.Param("newFullName")
+	newPlanet := ctx.Param("newPlanet")
+	newBio := ctx.Param("newBio")
+
+	if err1 != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"status": "unable to parse input",
+		})
+		return
+	}
+	status := UpdateUserProfile(userID, newName, newPlanet, newBio, postgres)
+	ctx.JSON(http.StatusOK, gin.H{
+		"status": status,
+	})
 
 }
 
@@ -238,6 +274,7 @@ func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 
 func GetUserInfoHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
+	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	viewer, err1 := strconv.Atoi(ctx.Param("viewer"))
 	viewed, err2 := strconv.Atoi(ctx.Param("viewed"))
 	if err1 != nil || err2 != nil {
@@ -267,10 +304,22 @@ func GetUserInfoHandler(ctx *gin.Context) {
 		})
 		return
 	}
+	min_time := time.Date(2004, time.January, 1, 0, 0, 0, 0, time.UTC)
+	posts, err := GetNewPostsFromUser(viewed, user.Profile_picture_path, user.User_name, min_time, cassandra)
+	if err != nil {
+		fmt.Println(err)
+		ctx.JSON(http.StatusOK, gin.H{
+			"status":       err,
+			"user":         nil,
+			"friendstatus": nil,
+		})
+		return
+	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":       "no error",
 		"user":         user,
 		"friendstatus": status,
+		"posts":        posts,
 	})
 }
 
@@ -279,30 +328,14 @@ func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
 	if viewer == viewed {
 		return "own profile"
 	}
-	if viewer > viewed {
-		viewer, viewed = viewed, viewer
-	}
-	stmt, err := postgres.Prepare("SELECT * FROM Orbit_buddies WHERE user1_id = $1 and user2_id = $2")
+
+	stmt, err := postgres.Prepare("SELECT * FROM orbit_requests WHERE requested_buddy_id = $1 and requester_id = $2")
 	if err != nil {
 		return "unable to connect to db"
 	}
 	defer stmt.Close()
 
-	rows, err2 := stmt.Query(viewer, viewed)
-	if err2 != nil {
-		return "unable to connect to db"
-	}
-
-	if rows.Next() {
-		return "already friends"
-	}
-	stmt, err = postgres.Prepare("SELECT * FROM orbit_requests WHERE requested_buddy_id = $1 and requester_id = $2")
-	if err != nil {
-		return "unable to connect to db"
-	}
-	defer stmt.Close()
-
-	rows, err2 = stmt.Query(viewed, viewer)
+	rows, err2 := stmt.Query(viewed, viewer)
 	if err2 != nil {
 		return "unable to connect to db"
 	}
@@ -310,6 +343,7 @@ func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
 	if rows.Next() {
 		return "viewer sent request"
 	}
+
 	stmt, err = postgres.Prepare("SELECT * FROM orbit_requests WHERE requested_buddy_id = $1 and requester_id = $2")
 	if err != nil {
 		return "unable to connect to db"
@@ -323,6 +357,23 @@ func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
 
 	if rows.Next() {
 		return "viewed person sent request"
+	}
+	if viewer > viewed {
+		viewer, viewed = viewed, viewer
+	}
+	stmt, err = postgres.Prepare("SELECT * FROM Orbit_buddies WHERE user1_id = $1 and user2_id = $2")
+	if err != nil {
+		return "unable to connect to db"
+	}
+	defer stmt.Close()
+
+	rows, err2 = stmt.Query(viewer, viewed)
+	if err2 != nil {
+		return "unable to connect to db"
+	}
+
+	if rows.Next() {
+		return "already friends"
 	}
 	return "no requests"
 }

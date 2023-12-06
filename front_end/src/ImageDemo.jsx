@@ -1,33 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from 'axios';
+import { serverpath } from "./Path";
 
-function ImageDemo() {
+function ImageDemo(props) {
+    const updateImage = props.setImages;
+
     const [image, setImage] = useState(null);
+    const [previewImage, setPreview] = useState(null)
+    const defaultIMG = (`${serverpath}/images/header.jpg`)
 
-    // change these
-    const localhost = "http://localhost:8080";
-    const path = `/uploadpostimage/${encodeURIComponent("b86e1293-8bee-11ee-b365-0242ac120004")}`;
+    const [imageNum,setImageNum] = useState(0)
 
-    const uploadTest = () => {
-        const formData = new FormData();
-        formData.append("image", image);
+    const [images, setImages] = useState([])
 
-        axios.post(`${localhost}${path}`, formData)
-            .then(response => {
+    const imageUpload = (file) => {
+        const newImages = [...images, file]
+        setImages(newImages)
+        updateImage(newImages)
+        console.log(newImages)
+    };
 
-                console.log(response);
-            })
-            .catch(error => {
+    const saveEvent = imageUpload
 
-                console.error(error);
-            });
+    const toggleNextImage = () =>{
+        let num = imageNum;
+        if(num < images.length-1){
+            num++;
+        }
+        console.log(num)
+
+        setImageNum(num);
+        handleImageChange({target: {files: [images[num]]}})
+    }
+
+    const togglePrevImage = () =>{
+        let num = imageNum;
+        if(num > 0){
+            num--;
+        }
+        console.log(num)
+
+        setImageNum(num);
+        handleImageChange({target: {files: [images[num]]}})
+    }
+
+    const imageIsUploaded = (e) => {
+        const selectedImage = e.target.files[0];
+        setImage(selectedImage);
+        saveEvent(selectedImage)
+
+        handleImageChange(e);
+    }
+
+    const handleImageChange = (e) => {
+
+        const selectedImage = e.target.files[0];
+        console.log(selectedImage)
+
+        // Read and set the preview image
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreview(reader.result);
+        };
+        if (selectedImage) {
+            reader.readAsDataURL(selectedImage);
+    }
     };
 
     return (
         <div>
-            <h1>Click Below to upload image</h1>
-            <input type="file" onChange={(e) => setImage(e.target.files[0])} />
-            <button onClick={uploadTest}>Send post message to server</button>
+            <input type="file" onChange={imageIsUploaded} />
+
+            <div className="relative w-100 h-100 mt-4 border-black border-2">
+
+            <img src= {previewImage ? previewImage: defaultIMG} className="my-4 mx-auto h-40  object-contain"></img>
+
+            </div>
+            <div className="flex justify-center gap-10">
+                {imageNum > 0 ? <button onClick={togglePrevImage} className="hover:text-gray-300"> Back </button> : null}
+                {imageNum < images.length - 1 ? <button onClick={toggleNextImage} className="hover:text-gray-300"> Next </button> : null}
+            </div>
+
+            {/* <button onClick={uploadTest}>Send post message to server</button> */}
         </div>
     );
 }

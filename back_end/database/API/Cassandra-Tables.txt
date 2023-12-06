@@ -1,3 +1,5 @@
+CREATE KEYSPACE cassandra WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+
 CREATE TABLE cassandra.POST(
     postID UUID PRIMARY KEY,
     authorID int,
@@ -14,6 +16,8 @@ CREATE TABLE cassandra.DMTABLE(
     messageChunks list<UUID>,
     PRIMARY KEY (user1, user2)
 );
+
+CREATE INDEX ON cassandra.DMTABLE (user2);
 
 CREATE TABLE cassandra.DMSUBSET(
     subsetID UUID PRIMARY KEY,

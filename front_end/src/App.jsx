@@ -1,4 +1,4 @@
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Login from "./Login/login";
 import Register from "./Login/register";
 import Homepage from "./Homepage/homepage";
@@ -13,11 +13,14 @@ import Navbar from "./Navbar/navbar";
 import Background from "./Background/background";
 import FriendsList from "./Buddies/FriendsList";
 import ImageDemo from "./ImageDemo";
+import { serverpath } from "./Path";
+import axios from 'axios'
+import currentUser from "./Static";
 import { TorusKnotGeometry } from "three";
 
 function App() {
     const [navBar, setNavBar] = useState(false);
-    const [screen, setScreen] = useState(<Login toggleHomepage={showHomeScreen} toggleRegister={showRegisterScreen} />);
+    const [screen, setScreen] = useState(null);
     const clickHandlers = {
         toggleProfile: showMyProfile,
         toggleNewPost: showNewPost,
@@ -34,7 +37,7 @@ function App() {
     };
     function showOtherProfile(personID, backEvent) {
         showNavBar();
-        setScreen(<OtherProfile toggleHomepage={showHomeScreen} userID={personID} goBackScreen={backEvent} goDMList={showDMList} />);
+        setScreen(<OtherProfile togglePost={expandPost} toggleHomepage={showHomeScreen} userID={personID} goBackScreen={backEvent} goDMList={showDMList} />);
     }
     function showLoginScreen() {
         hideNavBar();
@@ -60,20 +63,21 @@ function App() {
     }
     function expandPost(postID) {
         hideNavBar();
+        console.log(postID)
         setScreen(
             <ExpandedPost
-                postID={postID}
+                post_id = {postID}
                 toggleHomepage={showHomeScreen}
                 toggleOtherProfile={showOtherProfile}
                 toggleExpandPost={expandPost}
             />
         );
     }
-    function showDMList(wormhole=false) {
+    function showDMList() {
         showNavBar();
         setScreen(null);
         setTimeout(() => {
-            setScreen(<DMController toggleHomepage={showHomeScreen} wormhole={wormhole}/>);
+            setScreen(<DMController toggleHomepage={showHomeScreen} wormhole={false}/>);
         }, 0);
     }
     function showMyProfile() {
@@ -81,7 +85,7 @@ function App() {
         setScreen(null);
         // set timeout of 1 ms
         setTimeout(() => {
-            setScreen(<ProfileController toggleLogin={showLoginScreen} toggleHomepage={showHomeScreen} />);
+            setScreen(<ProfileController togglePost={expandPost} toggleLogin={showLoginScreen} toggleHomepage={showHomeScreen} />);
         }, 0);
     }
     function showSearchUser() {
@@ -94,11 +98,7 @@ function App() {
             />
         );
     }
-    function showFriendsList() {
-        // victor fix
-        hideNavBar();
-        setScreen(<FriendsList toggleOtherProfile={showOtherProfile} toggleHomepage={showHomeScreen} />);
-    }
+
     function showNotifications() {
         showNavBar();
         setScreen(
@@ -109,13 +109,34 @@ function App() {
             />
         );
     }
+    useEffect(()=>{
+        const path = `/getcookie`
+        axios.get(`${serverpath}${path}`).then(res =>{
+            if (res.data.status === "no user"){
+                showLoginScreen()
+            }
+            else if(res.data.status === "user found"){
+                currentUser.userID = res.data.user.id;
+                currentUser.userName = res.data.user.user_name;
+                currentUser.planet = res.data.user.planet
+                currentUser.pfp = res.data.user.profile_picture_path;
+                currentUser.bio = res.data.user.bio;
+                currentUser.full_name = res.data.user.full_name;
+                currentUser.admin = res.data.admin
+                showHomeScreen()
+            }
+            else{
+                showLoginScreen()
+            }
+        })
+    },[])
     return (
         <div>
             <Background className="!-z-20" />
             {navBar ? <Navbar clickHandlers={clickHandlers} /> : null}
             <div className={navBar ? "mt-20" : "mt=0"}>{screen}</div>
         </div>
-        // <ImageDemo/>
+
     );
 }
 

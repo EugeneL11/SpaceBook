@@ -6,9 +6,10 @@ import OtherProfile from "./OtherProfile";
 function ProfileController(props) {
     const toggleLogin = props.toggleLogin
     const toggleHomepage = props.toggleHomepage
-    const [profileState,setProfileState] = useState(<MyProfile toggleHomepage = {toggleHomepage} toggleFriendsList={toggleFriendsList} toggleSettings ={toggleSettings}/>)
+    const togglePost = props.togglePost
+    const [profileState,setProfileState] = useState(<MyProfile togglePost={togglePost} toggleHomepage = {toggleHomepage} toggleFriendsList={toggleFriendsList} toggleSettings ={toggleSettings}/>)
     function toggleMyProfile(){
-        setProfileState(<MyProfile toggleHomepage = {toggleHomepage} toggleFriendsList={toggleFriendsList} toggleSettings ={toggleSettings}/>)
+        setProfileState(<MyProfile togglePost={togglePost} toggleHomepage = {toggleHomepage} toggleFriendsList={toggleFriendsList} toggleSettings ={toggleSettings}/>)
     }
     function toggleFriendsList(){
         setProfileState(<FriendsList toggleOtherProfile = {toggleOtherProfile} toggleMyProfile ={toggleMyProfile} toggleFriendsList = {toggleFriendsList}/>)
@@ -17,7 +18,7 @@ function ProfileController(props) {
         setProfileState(<Settings toggleMyProfile={toggleMyProfile} toggleLogin = {toggleLogin}/>);
     }
     function toggleOtherProfile(userID, backEvent){
-        setProfileState(<OtherProfile userID ={userID} goBackScreen ={backEvent}/>);
+        setProfileState(<OtherProfile togglePost={togglePost} userID ={userID} goBackScreen ={backEvent}/>);
     }
     return (<div>{profileState}</div>);
 

@@ -4,8 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
+	"mime"
 	"mime/multipart"
+	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -16,12 +19,34 @@ import (
 )
 
 func DeleteImage(filepath string) error {
-	err := os.Remove(filepath)
+
+	err := os.Remove(filepath[1:])
 	return err
+}
+func getFileExtension(file multipart.File) string {
+	fileHeader := make([]byte, 512) // Read the first 512 bytes to detect the file type
+	_, err := file.Read(fileHeader)
+	if err != nil {
+		fmt.Println("Error reading file header:", err)
+		return ""
+	}
+
+	fileType := http.DetectContentType(fileHeader)
+	switch fileType {
+	case "image/jpeg":
+		return "jpg"
+	case "image/png":
+		return "png"
+	// Add more cases for other file types if needed
+	default:
+		// If the file type is not recognized, you can use the file name to extract the extension
+		_, fileHeaderParams, _ := mime.ParseMediaType(fileType)
+		return path.Ext(fileHeaderParams["name"])
+	}
 }
 
 // straight from the big gpt
-func generateUniqueFilename() string {
+func generateUniqueFilename(ext string) string {
 	// Generate a unique identifier (UUID)
 	uniqueID := uuid.New()
 
@@ -29,16 +54,16 @@ func generateUniqueFilename() string {
 	timestamp := time.Now().Unix()
 
 	// Combine the unique identifier and timestamp to create a unique filename
-	uniqueFilename := fmt.Sprintf("%s_%d.txt", uniqueID, timestamp)
+	uniqueFilename := fmt.Sprintf("%s_%d.%s", uniqueID, timestamp, ext)
 
 	return uniqueFilename
 }
 
-func UploadPic(file multipart.File, dir string) (bool, string) {
+func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (bool, string) {
 	// make random somehow
-	filename := filepath.Join("images", dir, generateUniqueFilename())
+	fileExt := filepath.Ext(header.Filename)
 
-	// Create the file on the server
+	filename := filepath.Join("images", dir, generateUniqueFilename(fileExt))
 	out, err := os.Create(filename)
 	if err != nil {
 		return false, ""
@@ -57,43 +82,47 @@ func UploadPic(file multipart.File, dir string) (bool, string) {
 func UpdateProfilePath(userID int, newPath string, postgres *sql.DB) bool {
 	stmt, err := postgres.Prepare("Select Profile_picture_path from Users WHERE user_id = $1")
 	if err != nil {
+		fmt.Println("1")
 		return false
 	}
 	defer stmt.Close()
 
 	row, err := stmt.Query(userID)
 	if err != nil {
+		fmt.Println("2")
 		return false
 	}
 
 	if row.Next() {
 		var path string
 		row.Scan(&path)
-		if path == "/images/utilties/pp.png" {
+		if path == "/images/utilities/pp.png" {
 
 		} else if DeleteImage(path) != nil {
+			fmt.Println("3")
 			return false
 		}
 	} else {
+		fmt.Println("4")
 		return false
 	}
 	stmt, err = postgres.Prepare("Update Users set Profile_picture_path = $1 WHERE user_id = $2")
 	if err != nil {
+		fmt.Println("5")
 		return false
 	}
 	defer stmt.Close()
 
 	_, err = stmt.Exec(newPath, userID)
 	if err != nil {
+		fmt.Println("6")
 		return false
 	}
 	return true
 }
 
-// not done
 // not tested
-// not documented
-// TODO: Rename files to match user ID
+// Handles API call for changing a user's pfp
 func ProfilePicHandler(ctx *gin.Context) {
 	// Parse the form data, limit to 10 MB
 	userID, err := strconv.Atoi(ctx.Param("userID"))
@@ -117,13 +146,13 @@ func ProfilePicHandler(ctx *gin.Context) {
 	defer file.Close()
 
 	// Create a unique filename for the uploaded file
-	success, file_name := UploadPic(file, "users")
+	success, file_name := UploadPic(file, header, "users")
 	if !success {
 		ctx.String(500, "Internal Server Error")
 		return
 	}
-	if !UpdateProfilePath(userID, file_name, postgres) {
-		ctx.String(500, "Internal Server Error")
+	if !UpdateProfilePath(userID, "/"+file_name, postgres) {
+		ctx.String(500, "Internal Server Error Whasupp")
 	}
 
 	ctx.String(200, fmt.Sprintf("File %s uploaded successfully!", header.Filename))
@@ -161,7 +190,7 @@ func UploadImagePost(ctx *gin.Context) {
 		return
 	}
 	defer file.Close()
-	success, filename := UploadPic(file, "posts")
+	success, filename := UploadPic(file, header, "posts")
 	if !success {
 		ctx.String(400, "Bad Request")
 		return
@@ -171,9 +200,9 @@ func UploadImagePost(ctx *gin.Context) {
 		ctx.String(400, "Bad Request")
 		return
 	}
-	success = UpdatePostPath(uuid, filename, cassandra)
+	success = UpdatePostPath(uuid, "/"+filename, cassandra)
 	if !success {
-		ctx.String(400, "Bad Rdsdfsdfdsequest")
+		ctx.String(400, "Bad Request")
 		return
 	}
 

@@ -1,9 +1,9 @@
 import { React, useState,useEffect } from "react";
 import axios from 'axios'
+import currentUser from "../Static";
+import { serverpath } from "../Path";
 function Friend(props) {
-    const removeFriendEvent = () => {
-        props.removeFriend(props.username)
-    }
+    const removeFriendEvent = props.removeFriend
     const othersProfileEvent = props.toggleOtherProfile
     console.log(othersProfileEvent)
     return (
@@ -35,33 +35,33 @@ function FriendsList(props) {
     const toggleFriendsList = props.toggleFriendsList
     const toggleOtherProfile = props.toggleOtherProfile
     useEffect(() =>{
-        const friendstest = [{
-            username: "Gene",
-            user_pic_url: "./jupiter.jpg"
-        },
-        {
-            username: "Raine",
-            user_pic_url: "./jupiter.jpg"
-        },
-        {
-            username: "Omar",
-            user_pic_url: "./jupiter.jpg"
-        },
-        {
-            username: "Kevin",
-            user_pic_url: "./jupiter.jpg"
-        },
-
-    ] // placeholder for back-end data
+    // placeholder for back-end data
+        const path = `/friends/${encodeURIComponent(currentUser.userID)}`
+        axios.get(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            console.log(data)
+            if (data.error === "no error") {
+                setFriends(data.users)
+            } else {
+                console.log("ERROR")
+            }
+        })
 
         // ask back-end for friends list
-        setFriends(friendstest)
     },[])
-    const removeFriend = (friendtoRemove) => {
-        const newFriendlist = friends.filter(
-            (friend) => friend.username !== friendtoRemove
-        );
-        setFriends(newFriendlist);
+    const removeFriend = (friendToRemove) => {
+        const path = `/removefriend/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(friendToRemove)}`
+        axios.delete(`${serverpath}${path}`).then((res) => {
+            const data = res.data
+            if (data.status === "no error") {
+                const newFriendlist = friends.filter(
+                    (friend) => friend.user_id !== friendToRemove
+                );
+                setFriends(newFriendlist);
+            } else {
+                console.log(data.status)
+            }
+        })
         // do back-end stuff
     }
     
@@ -75,10 +75,10 @@ function FriendsList(props) {
                     (friend, index) => (
                         <div key={index} className="flex flex-col items-center mb-8">
                             <Friend 
-                                username={friend.username} 
-                                user_pic_url={friend.user_pic_url}
-                                removeFriend = {removeFriend}
-                                toggleOtherProfile = {() => {toggleOtherProfile(friend.username,toggleFriendsList)}}
+                                username={friend.user_name} 
+                                user_pic_url={serverpath + friend.profile_picture_path}
+                                removeFriend = {() => removeFriend(friend.user_id)}
+                                toggleOtherProfile = {() => {toggleOtherProfile(friend.user_id, toggleFriendsList)}}
                             ></Friend>
                         </div>
                     )

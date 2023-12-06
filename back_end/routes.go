@@ -11,7 +11,7 @@ func setupRoutes(server *gin.Engine) {
 	setupFriends(server)
 	setupPosts(server)
 	setupDMs(server)
-
+	setupCookies(server)
 }
 
 func setupAccount(server *gin.Engine) {
@@ -21,6 +21,7 @@ func setupAccount(server *gin.Engine) {
 	server.GET("/getuserinfo/:viewer/:viewed", handlers.GetUserInfoHandler)
 	server.POST("/uploadprofileimage/:userID", handlers.ProfilePicHandler)
 	server.DELETE("/deleteuser/:userID", handlers.DeleteUserHandler)
+	server.PUT("/updateuserprofile/:userID/:newFullName/:newPlanet/:newBio", handlers.UpdateUserProfileHandler)
 }
 
 func setupFriends(server *gin.Engine) {
@@ -46,15 +47,15 @@ func setupPosts(server *gin.Engine) {
 func setupDMs(server *gin.Engine) {
 	// only returns most recent 20-40 messages at size 1, returns 40-60 messages at size 2 etc
 	// will return whether or all the messages have been returned
-	server.GET("/getmessages/:user1/:user2/subset_size", handlers.GetMessagesHandler)
-	server.PUT("/sendmessage/:sender/:reciever/:message", handlers.SendDMHandler)
-	server.GET("/getallchats/:userID", handlers.GetDMHandler)
-	server.POST("/createdm/:user1/:user2", handlers.CreateNewDMHandler)
-
-	// gets all friends who you do not have a dm with
-	// idk wtf to name this
-	server.GET("/getallnewDM/:userID", handlers.NewDMListHandler)
+	server.GET("/getmessages/:user1/:user2/:subset_size", handlers.GetMessagesHandler)
+	server.POST("/newdm/:user1/:user2", handlers.CreateNewDMHandler)
 	server.POST("/senddm/:senderID/:receiverID/:message", handlers.SendDMHandler)
-	server.GET("/getalldm/:userID", handlers.GetDMHandler)
-	server.GET("/newdmlist/:userID", handlers.NewDMListHandler)
+	server.GET("/userdms/:userID", handlers.GetDMHandler)
+	// gets all friends who you do not have a dm with
+	server.GET("/getallnewdm/:userID", handlers.NewDMListHandler)
+}
+func setupCookies(server *gin.Engine) {
+	server.POST("/setcookie/:userID", handlers.SetCookieHandler)
+	server.GET("/getcookie", handlers.GetCookieHandler)
+	server.DELETE("/removecookie", handlers.RemoveCookieHandler)
 }

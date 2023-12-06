@@ -10,26 +10,35 @@ function Login(props) {
     const [password, setPassword] = useState("");
 
     const [errorMessage, setError] = useState("");
-    const loginAction = () => {
+
+    const setCookie = () =>{
+        const path = `/setcookie/${encodeURIComponent( currentUser.userID)}`
+        axios.post(`${serverpath}${path}`)
+    }
+    const loginAction = async () => {
         //ask backend
         if (username == "" || password == "") {
             setError("Please Enter Something");
-            return;
-        } 
-        else {
-            const path = `/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`;
-            console.log(`${serverpath}${path}`)
-            axios.get(`${serverpath}${path}`).then(res => {
-                const data = res.data;
-                console.log(res);
-                if (data.error == "unable to find User") {
-                    setError("username or password incorrect");
-                } else {
-                    currentUser.userID = data.id;
-                    console.log(currentUser.userID);
-                    toggleHomepage();
-                }
-            })
+        } else {
+            const res = await axios.get(
+                `${serverpath}/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
+            );
+            const data = res.data;
+            console.log(data);
+            if (data.status == "unable to find User") {
+                setError("username or password incorrect");
+            } else {
+                currentUser.userID = data.user.id;
+                currentUser.userName = data.user.user_name;
+                currentUser.planet = data.user.planet
+                currentUser.pfp = data.user.profile_picture_path;
+                currentUser.bio = data.user.bio;
+                currentUser.full_name = data.user.full_name;
+                currentUser.admin = data.user.admin
+                setCookie()
+                toggleHomepage();
+            }
+
         }
     };
 

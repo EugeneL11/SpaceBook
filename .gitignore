@@ -1,5 +1,9 @@
 /auth/
 
+// keep images locally only
+/back_end/images/*
+
+/.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

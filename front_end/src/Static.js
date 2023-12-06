@@ -1,7 +1,13 @@
 class User {
     constructor(){
         this.userID = null;
-        this.admin = true;
+        this.admin = false;
+        this.pfp = null;
+        this.userName = null;
+        this.email = null;
+        this.planet = null;
+        this.bio = null;
+        this.full_name = null;
     }
 }
 

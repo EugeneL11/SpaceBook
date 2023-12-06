@@ -16,7 +16,7 @@ func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID,
 	postID := gocql.TimeUUID()
 	time := time.Now()
 	insertStmt := cassandra.Query(`INSERT INTO Post (postID, caption, authorID, comments, date_posted, imagepaths, 
-		likes, numbercomments, numberlikes) VALUES (?, ?, ?, {}, ?, [], {}, 0, 0 )`)
+		likes) VALUES (?, ?, ?, {}, ?, [], {} )`)
 
 	if err := insertStmt.Bind(postID, caption, userID, time).Exec(); err != nil {
 		return gocql.UUID{}, "unable to connect to db"
@@ -41,7 +41,7 @@ func MakePostHandler(ctx *gin.Context) {
 // Used by homepage handler (below)
 func GetNewPostsFromUser(userID int, userProfilePath string, userName string, date time.Time, cassandra *gocql.Session) ([]PostPreview, error) {
 	// Define the SELECT statement
-	selectStmt := cassandra.Query("SELECT postID, imagePaths,caption, date_posted FROM post WHERE authorID = ? AND date_posted > ? ALLOW FILTERING")
+	selectStmt := cassandra.Query("SELECT postID, imagePaths, caption, date_posted FROM post WHERE authorID = ? AND date_posted > ? ALLOW FILTERING")
 
 	// Bind the parameters and execute the query
 	iter := selectStmt.Bind(userID, date).Iter()
@@ -71,7 +71,7 @@ func GetNewPostsFromUser(userID int, userProfilePath string, userName string, da
 
 func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *gocql.Session) ([]PostPreview, string) {
 	stmt, err := postgres.Prepare(`Select user2_id from orbit_buddies where user1_id = $1 union 
-	select user2_id from orbit_buddies where user1_id = $1`)
+	select user1_id from orbit_buddies where user2_id = $1`)
 	if err != nil {
 		return nil, "unable to connect to db"
 	}
@@ -133,7 +133,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 	iter := stmt.Bind(postID).Iter()
 	post.PostID = postID
 	var likes []int
-	var comments []int
+	var comments []gocql.UUID
 	var postDate time.Time
 	if iter.Scan(&post.AuthorID, &post.Caption, &post.Images,
 		&postDate, &comments, &likes) {
@@ -143,7 +143,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 			}
 		}
 		post.NumLikes = len(likes)
-		stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
+		stmt, err := postgres.Prepare("select user_name, profile_picture_path from users where user_id = $1")
 		if err != nil {
 			return "unable to connect to db 1"
 		}
@@ -161,32 +161,37 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 		post.AuthorName = userName
 		post.AuthorProfilePath = profilePath
 		post.Date = postDate.Format(time.RFC3339)
-		for _, key := range comments {
-			stmt := cassandra.Query("Select * from comment where commentID = ?")
-			iter := stmt.Bind(key).Iter()
+		for i := range comments {
+
+			stmt := cassandra.Query("Select commenter, content, time from comment where commentID = ?")
+			iter2 := stmt.Bind(comments[i]).Iter()
 			var comment Comment
 			var commentDate time.Time
-			for iter.Scan(nil, &comment.CommenterID, &comment.Content, &commentDate) {
-				stmt, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
+			if iter2.Scan(&comment.CommenterID, &comment.Content, &commentDate) {
+				fmt.Println("sup")
+				getuserInfo, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
 				if err != nil {
 					return "unable to connect to db 4"
 				}
-				defer stmt.Close()
-				userInfo, err := stmt.Query(post.AuthorID)
+				defer userInfo.Close()
+				userInfo, err := getuserInfo.Query(&comment.CommenterID)
 				if err != nil {
 					return "unable to connect to db 5"
 				}
 				userName, profilePath := "", ""
 				if userInfo.Next() {
-					userInfo.Scan(&userName, &profilePath)
+					userInfo.Scan(&profilePath, &userName)
 				} else {
 					return "unable to connect to db 6"
 				}
 				comment.CommenterName = userName
-				comment.CommenterName = profilePath
+				comment.CommenterProfilePath = profilePath
 				comment.Date = commentDate.Format(time.RFC3339)
 				post.Comments = append(post.Comments, comment)
+			} else {
+				return "unable to connect to db 8"
 			}
+			fmt.Println(comment.Content, comments[i])
 		}
 	} else {
 		return "unable to connect to db 7"
@@ -242,18 +247,6 @@ func LikePostHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": status,
 	})
-}
-
-// not done
-// not tested
-func UnlikePost(userID int, postID int) string {
-	return "no error"
-}
-
-// not done
-// not tested
-func UnlikePostHandler(ctx *gin.Context) {
-
 }
 
 func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql.Session) bool {
