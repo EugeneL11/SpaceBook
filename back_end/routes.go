@@ -55,6 +55,7 @@ func setupDMs(server *gin.Engine) {
 	server.POST("/getallnewdm/:userID", handlers.NewDMListHandler)
 }
 func setupCookies(server *gin.Engine) {
+	server.POST("/createcookie", handlers.CreateCookieHandler)
 	server.POST("/setcookie/:userID", handlers.SetCookieHandler)
 	server.POST("/getcookie", handlers.GetCookieHandler)
 	server.DELETE("/removecookie", handlers.RemoveCookieHandler)
