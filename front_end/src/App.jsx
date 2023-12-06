@@ -16,6 +16,7 @@ import ImageDemo from "./ImageDemo";
 import { serverpath } from "./Path";
 import axios from 'axios'
 import currentUser from "./Static";
+import Cookie from 'js-cookies'
 import { TorusKnotGeometry } from "three";
 
 function App() {
@@ -122,7 +123,7 @@ function App() {
                 currentUser.pfp = res.data.user.profile_picture_path;
                 currentUser.bio = res.data.user.bio;
                 currentUser.full_name = res.data.user.full_name;
-                currentUser.admin = res.data.admin
+                currentUser.admin = res.data.user.admin
                 showHomeScreen()
             }
             else{

@@ -3,6 +3,7 @@ import backPic from '../images/back.png';
 import axios, { formToJSON } from 'axios'
 import currentUser from "../Static";
 import { serverpath } from "../Path";
+import Cookie from 'js-cookies'
 function Settings(props) {
     const toggleLogin = props.toggleLogin
     const toggleMyProfile = props.toggleMyProfile
@@ -55,7 +56,8 @@ function Settings(props) {
         const path = `/deleteuser/${encodeURIComponent(currentUser.userID)}`
         axios.delete(`${serverpath}${path}`).then(res => {
             if (res.data.status == "no error"){
-                const path = `/removecookie`
+                const cookie = Cookie.getItem("cookie")
+                const path = `/removecookie/${cookie ? encodeURIComponent(cookie) : "empty"}`
                 axios.delete(`${serverpath}${path}`)
                 toggleLogin()
             }
@@ -65,7 +67,8 @@ function Settings(props) {
         })
     }
     const logout = () =>{
-        const path = `/removecookie`
+        const cookie = Cookie.getItem("cookie")
+        const path = `/removecookie/${cookie ? encodeURIComponent(cookie) : "empty"}`
         axios.delete(`${serverpath}${path}`)
         toggleLogin()
     }
