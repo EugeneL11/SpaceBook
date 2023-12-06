@@ -78,7 +78,6 @@ func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (b
 	return true, filename
 }
 
-// not tested
 func UpdateProfilePath(userID int, newPath string, postgres *sql.DB) bool {
 	stmt, err := postgres.Prepare("Select Profile_picture_path from Users WHERE user_id = $1")
 	if err != nil {
@@ -121,7 +120,6 @@ func UpdateProfilePath(userID int, newPath string, postgres *sql.DB) bool {
 	return true
 }
 
-// not tested
 // Handles API call for changing a user's pfp
 func ProfilePicHandler(ctx *gin.Context) {
 	// Parse the form data, limit to 10 MB
@@ -173,7 +171,6 @@ func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) bo
 	return true
 }
 
-// not documented
 func UploadImagePost(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	err := ctx.Request.ParseMultipartForm(10 << 20)

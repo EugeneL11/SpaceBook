@@ -115,14 +115,36 @@ Go to Sign Up page and create 3 accounts with the following example credentials.
 
 ## 4. Making Posts
 
--   Make a post with no images
--   Make a post with over 20 images
--   Use images with wrong file extension
--   Use images that are large in size
+-   Victor clicks on the new post button (found from the homepage)
+    -   E: Victor is brought to a page where they can type their caption and insert pictures from their device
+-   Victor tries to make posts in the following scenarios:
+    1. Victor makes a post with no caption and no image
+        - E: Victor remains on the new post screen and is notified by the application that he needs to add either a picture or caption (or both) to post.
+    2. Victor makes a post with only an image(s)
+        - E: Victor is brought to his profile page and can see his own post listed there. The post contains just an image, but there are still visual elements that allow him to see the number of likes, and also view comments.
+    3. Victor makes a post with only a caption
+        - E: Similar case, but the post is scaled accordingly to the caption (may be smaller in height than the post in case #2 as a result), and only text is displayed. On his profile page Victor can still see the post, along with likes and comments.
+    4. Victor makes a post with a caption and image
+        - E: Post is created with image and a caption either above or below it. The rest is similar (likes/comments visible).
+    5. Victor makes a post with over X number of images (where X is some "large" number like 10 or 50)
+        - E: The application responds with error notifying user that they can only upload at most X images at a time, and no post is created (remain on post create screen).
+    6. Victor tries to upload a file of wrong file type as an image (ex. .mp4 or .wav)
+        - E: The application responds with error notifying user that they must submit .png/.jpg or any other popular image formats, and no post is created.
+    7. Victor tries to upload a file of large size (ex. 100MB+) as an image for post
+        - E: Another error case, but user is notified that they must submit a smaller file under X MB in size, for some X (ex. 8MB).
 
-### Example to follow using the following format:
+## 5. Commenting
 
--   "{User1} clicks on the new post button (on the home page?)"
-    -   E: {User1} is brought to a page where they can type their caption, insert pictures..."
--   User1 tries to make a post with ... {something to do with the inputs; using .png/.jpg (correct) or .wav (error), or trying to make post with no image, etc.}
-    -   E: Expected result, or what our project currently does (if its a reasonable approach)
+-   Omar wants to be able to comment on one of Victor's posts. He clicks/taps on a button below the post to view the comments and add a comment of his own.
+    -   E: Any existing comments are listed, and Omar has a message box and send button to allow him to comment.
+-   Omar now tries to press the send comment button without writing a message yet
+    -   E: Nothing happens, or optionally the message box is highlighted in a colour to indicate to the user that a message needs to be typed before sending comment.
+-   Omar writes a message of moderate length and presses send
+    -   E: The message box is emptied and the comment with Omar's message can be seen now. If there is a comment # counter on the post details, it is incremented by 1.
+
+## 6. Liking
+
+-   Eugene wants to like one of Victor's posts. When viewing the post he presses the like button (indicated by some symbol like a heart for example).
+    -   E: The symbol should change to indicate a successful like, and the like # counter on the post details should increment by one. Other users like Omar or Victor himself should be able to see this updated counter.
+-   Eugene changes his mind and decides to unlike Victor's post. He presses the updated symbol.
+    -   E: The symbol should revert back to its original appearance, and the counter should decrement by one. Other users should see this change reflected in the counter as well.

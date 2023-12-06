@@ -14,7 +14,6 @@ import (
 	"github.com/gocql/gocql"
 )
 
-// not tested
 func CreateNewDM(user1 int, user2 int, cassandra *gocql.Session) bool {
 	subsetID := gocql.TimeUUID()
 	emptyMessages := []gocql.Session{}
@@ -38,7 +37,6 @@ func CreateNewDM(user1 int, user2 int, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not tested
 func CreateNewDMHandler(ctx *gin.Context) {
 	user1, err1 := strconv.Atoi(ctx.Param("user1"))
 	user2, err2 := strconv.Atoi(ctx.Param("user2"))
@@ -244,7 +242,6 @@ func SendDMHandler(ctx *gin.Context) {
 	})
 }
 
-// not tested
 func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMPreview, string) {
 
 	var user1 int
@@ -376,7 +373,6 @@ func GetAllDM(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserDMP
 	return allDMRes, "no error"
 }
 
-// not tested
 func GetDMHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
@@ -397,7 +393,6 @@ func GetDMHandler(ctx *gin.Context) {
 	})
 }
 
-// not tested
 func newDMList(userID int, postgres *sql.DB, cassandra *gocql.Session) ([]UserPreview, string) {
 
 	// get all friends
@@ -466,7 +461,6 @@ func NewDMListHandler(ctx *gin.Context) {
 	})
 }
 
-// not tested
 // Returns a bool to indicate success, and a slice of Message structs (allDMS is updated by reference)
 func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session, allDMS *bool) (bool, []Message) {
 	var allMessages []Message
@@ -503,7 +497,6 @@ func GetMessages(user1 int, user2 int, subsetSize int, cassandra *gocql.Session,
 	return true, allMessages
 }
 
-// not tested
 func GetMessagesHandler(ctx *gin.Context) {
 	user1, err1 := strconv.Atoi(ctx.Param("user1"))
 	user2, err2 := strconv.Atoi(ctx.Param("user2"))
