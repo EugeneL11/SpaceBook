@@ -151,6 +151,7 @@ function MyProfile(props) {
 
                     <div className="flex flex-col ml-4 justify-center align-middle">
                         <p className="text-xl">{user.user_name}</p>
+                        <p>{user.full_name}</p>
                         <p>from {user.planet}</p>
                     </div>
 
