@@ -46,7 +46,9 @@ function PlanetCanvas ({ planet }) {
 
     return (
         <Canvas className="cursor-pointer pt-5 lg:pt-0">
+
             <Planet planet={planet}/>
+
             <ResizingCanvas className=" translate-x-full"/>
         </Canvas>
     );

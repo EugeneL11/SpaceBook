@@ -10,6 +10,7 @@ function Login(props) {
     const [password, setPassword] = useState("");
 
     const [errorMessage, setError] = useState("");
+
     const setCookie = () =>{
         const path = `/setcookie/${encodeURIComponent( currentUser.userID)}`
         axios.post(`${serverpath}${path}`)
@@ -37,6 +38,7 @@ function Login(props) {
                 setCookie()
                 toggleHomepage();
             }
+
         }
     };
 
