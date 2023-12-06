@@ -6,11 +6,12 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
-// not tested
+// returns all friends (including the info needed to display them) given a user id
 func GetFriends(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 	stmt, err := postgres.Prepare(`
 		SELECT 
@@ -56,7 +57,7 @@ func GetFriends(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 	return mySlice, "no error"
 }
 
-// not tested
+// processes get all friends relations given a user id
 func GetFriendsHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	user_id, err := strconv.Atoi(ctx.Param("user_id"))
@@ -86,6 +87,7 @@ func GetFriendsHandler(ctx *gin.Context) {
 	}
 }
 
+// removes a friend relation given the two users
 func RemoveFriend(user1_id int, user2_id int, postgres *sql.DB) string {
 	if user1_id > user2_id {
 		temp := user1_id
@@ -110,6 +112,7 @@ func RemoveFriend(user1_id int, user2_id int, postgres *sql.DB) string {
 	return "no error"
 }
 
+// processes requets to remove friends
 func RemoveFriendHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	user1_id, err1 := strconv.Atoi(ctx.Param("id1"))
@@ -126,6 +129,7 @@ func RemoveFriendHandler(ctx *gin.Context) {
 	})
 }
 
+// either creates a request from one user to another or accepts a request
 func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) string {
 	stmt, err := postgres.Prepare("Select * from Orbit_Requests WHERE requester_id = $1 AND requested_buddy_id = $2")
 	if err != nil {
@@ -184,6 +188,7 @@ func SendFriendRequest(sender_id int, receiver_id int, postgres *sql.DB) string 
 	return "no error"
 }
 
+// processes the request
 func SendFriendRequestHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	sender, err1 := strconv.Atoi(ctx.Param("sender_user_id"))
@@ -235,6 +240,7 @@ func RejectFriendRequestHandler(ctx *gin.Context) {
 
 }
 
+// returns all requests to a friend given a user id
 func GetFriendRequests(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 	stmt, err := postgres.Prepare(`
 	SELECT u.user_id, u.full_name, u.user_name, u.profile_picture_path
@@ -272,6 +278,7 @@ func GetFriendRequests(user_id int, postgres *sql.DB) ([]UserPreview, string) {
 
 }
 
+// processes request of getting all friend requests
 func GetFriendRequestsHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	user, err := strconv.Atoi(ctx.Param("user_id"))
@@ -303,7 +310,9 @@ func GetFriendRequestsHandler(ctx *gin.Context) {
 	}
 }
 
+// gets a list of people based on a prefix, cannot return own account
 func SearchPeople(userID int, searchTerm string, postgres *sql.DB) (string, []UserPreview) {
+	searchTerm = strings.ToLower(searchTerm)
 	stmt, err := postgres.Prepare(`SELECT user_id, full_name, user_name, profile_picture_path FROM USERS
 	WHERE (user_name LIKE $1 OR user_name = $2) and not user_id = $3
 	LIMIT 20`)
@@ -330,6 +339,7 @@ func SearchPeople(userID int, searchTerm string, postgres *sql.DB) (string, []Us
 	return "no error", users
 }
 
+// processes request to see all users with a certain prefix
 func SearchPeopleHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	userID, err := strconv.Atoi(ctx.Param("user_id"))

@@ -10,6 +10,7 @@ import (
 	"github.com/gocql/gocql"
 )
 
+// Returns a user based on the cookie
 func GetCookie(ID gocql.UUID, cassandra *gocql.Session, postgres *sql.DB, user *User) bool {
 	var userID int
 	if err := cassandra.Query("Select userID from Cookie where machineID = ?", ID).Scan(&userID); err != nil {
@@ -21,6 +22,7 @@ func GetCookie(ID gocql.UUID, cassandra *gocql.Session, postgres *sql.DB, user *
 	return true
 }
 
+// Processes request to get a user given a cookie
 func GetCookieHandler(ctx *gin.Context) {
 	cookieID := ctx.Param("CookieID")
 
@@ -55,6 +57,7 @@ func GetCookieHandler(ctx *gin.Context) {
 	})
 }
 
+// Associates a cookie ID with a user
 func SetupCookie(ID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 	if err := cassandra.Query("Insert Into Cookie (machineID, userID) Values (? , ?)", ID, userID).Exec(); err != nil {
 		fmt.Println(err)
@@ -62,6 +65,8 @@ func SetupCookie(ID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 	}
 	return true
 }
+
+// Processes request to associate cookie with a user
 func SetCookieHandler(ctx *gin.Context) {
 	cookieID := ctx.Param("CookieID")
 	ID, err := gocql.ParseUUID(cookieID)
@@ -88,12 +93,16 @@ func SetCookieHandler(ctx *gin.Context) {
 	ctx.String(200, "success")
 
 }
+
+// Removes saved information given a cookie
 func RemoveCookie(ID gocql.UUID, cassandra *gocql.Session) bool {
 	if err := cassandra.Query("Delete From Cookie Where MachineID = ?", ID).Exec(); err != nil {
 		return false
 	}
 	return true
 }
+
+// Processes request to remove a cookie
 func RemoveCookieHandler(ctx *gin.Context) {
 	cookieID := ctx.Param("CookieID")
 	ID, err := gocql.ParseUUID(cookieID)
@@ -115,6 +124,8 @@ func RemoveCookieHandler(ctx *gin.Context) {
 	ctx.String(200, "success")
 
 }
+
+// Gives the server a cookie to store
 func CreateCookieHandler(ctx *gin.Context) {
 	// Generate a unique ID for the cookie
 	cookieID := gocql.TimeUUID()

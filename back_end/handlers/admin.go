@@ -15,7 +15,7 @@ import (
 func DeleteComments(postID gocql.UUID, cassandra *gocql.Session) bool {
 	comments := []gocql.UUID{}
 	if err := cassandra.Query("Select comments from post where postid = ?", postID).Iter().Scan(&comments); !err {
-
+		return false
 	}
 	for i := range comments {
 		if err2 := cassandra.Query("DELETE FROM COMMENT WHERE commentID = ?", comments[i]).Exec(); err2 != nil {
@@ -23,7 +23,6 @@ func DeleteComments(postID gocql.UUID, cassandra *gocql.Session) bool {
 			return false
 		}
 	}
-
 	return true
 }
 
@@ -52,7 +51,7 @@ func DeletePost(postID gocql.UUID, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not tested
+// deletes everything associated with a post ID
 func DeletePostHandler(ctx *gin.Context) {
 	postID, err := gocql.ParseUUID(ctx.Param("postID"))
 	if err != nil {
@@ -76,7 +75,7 @@ func DeletePostHandler(ctx *gin.Context) {
 	})
 }
 
-// DeleteUserComments deletes all comments made by a user
+// deletes all comments made by a user
 func DeleteUserComments(userID int, cassandra *gocql.Session) bool {
 	postToComment := make(map[gocql.UUID][]gocql.UUID)
 	rows := cassandra.Query("SELECT commentID, postID FROM COMMENT WHERE commenter = ? ALLOW FILTERING", userID).Iter()
@@ -110,6 +109,7 @@ func DeleteUserComments(userID int, cassandra *gocql.Session) bool {
 	return true
 }
 
+// removes all likes a user has made
 func DeleteUserLikes(userID int, session *gocql.Session) bool {
 	// Retrieve all post IDs where the likes set contains the specified userID
 	var postIDs []gocql.UUID
@@ -149,6 +149,8 @@ func DeleteUserLikes(userID int, session *gocql.Session) bool {
 	return true
 }
 
+// deletes all posts associated with a user
+// the comments and images with that post will be removed too
 func DeleteUserPosts(userID int, cassandra *gocql.Session) bool {
 	// Retrieve postIDs made by the user
 	var postIDs []gocql.UUID
@@ -176,6 +178,7 @@ func DeleteUserPosts(userID int, cassandra *gocql.Session) bool {
 	return true
 }
 
+// deletes all messages associated with a user
 func DeleteUserDM(userID int, cassandra *gocql.Session) bool {
 	user1Keys := []int{}
 	user2Keys := []int{}
@@ -200,10 +203,8 @@ func DeleteUserDM(userID int, cassandra *gocql.Session) bool {
 	for iter.Scan(&user1, &user2, &chunkKey) {
 		user1Keys = append(user1Keys, user1)
 		user2Keys = append(user2Keys, user2)
-		fmt.Println(user1, user2, chunkKey)
 		chunkKeys = append(chunkKeys, chunkKey)
 	}
-	fmt.Println(chunkKeys)
 	if err := iter.Close(); err != nil {
 		fmt.Println("Error retrieving user posts:", err)
 		return false
@@ -215,7 +216,6 @@ func DeleteUserDM(userID int, cassandra *gocql.Session) bool {
 				fmt.Println("Error deleting subsets:", err)
 				return false
 			}
-			fmt.Println("hi")
 		}
 		if err := cassandra.Query("Delete From DMTABLE WHERE user1 = ? and user2 = ?", user1Keys[i], user2Keys[i]).Exec(); err != nil {
 			fmt.Println("Error deleting user dms:", err)
@@ -225,7 +225,7 @@ func DeleteUserDM(userID int, cassandra *gocql.Session) bool {
 	return true
 }
 
-// not tested
+// deletes all friend requests associated with a user
 func DeleteUserRequests(userID int, postgres *sql.DB) bool {
 	stmt, err := postgres.Prepare("DELETE FROM Orbit_requests WHERE requester_id = $1 OR requested_buddy_id = $1")
 	if err != nil {
@@ -239,7 +239,7 @@ func DeleteUserRequests(userID int, postgres *sql.DB) bool {
 	return true
 }
 
-// not tested
+// deletes all friend relations of a user
 func DeleteUserFriends(userID int, postgres *sql.DB) bool {
 	stmt, err := postgres.Prepare("DELETE FROM Orbit_buddies WHERE user1_id = $1 OR user2_id = $1")
 	if err != nil {
@@ -255,7 +255,8 @@ func DeleteUserFriends(userID int, postgres *sql.DB) bool {
 	return true
 }
 
-// not tested
+// deletes the image associated with a user
+// deletes user row
 func DeleteUser(user_id int, postgres *sql.DB) bool {
 	stmt, err := postgres.Prepare("Select Profile_picture_path from Users WHERE user_id = $1")
 	if err != nil {
@@ -298,7 +299,7 @@ type CTXStatus struct {
 	Status string `json:"status"`
 }
 
-// not tested
+// Deletes everything associated with a certain user
 func DeleteUserHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	postgres := ctx.MustGet("postgres").(*sql.DB)

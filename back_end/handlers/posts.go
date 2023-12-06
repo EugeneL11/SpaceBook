@@ -12,6 +12,7 @@ import (
 	"github.com/gocql/gocql"
 )
 
+// creates a new post and associates it with a user
 func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID, string) {
 	postID := gocql.TimeUUID()
 	time := time.Now()
@@ -24,6 +25,7 @@ func MakePost(userID int, caption string, cassandra *gocql.Session) (gocql.UUID,
 	return postID, "no error"
 }
 
+// processes request to create the new post
 func MakePostHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	userID, err1 := strconv.Atoi(ctx.Param("user_id"))
@@ -38,12 +40,10 @@ func MakePostHandler(ctx *gin.Context) {
 	})
 }
 
-// Used by homepage handler (below)
+// Selects all posts given an associated user, also filters by time
 func GetNewPostsFromUser(userID int, userProfilePath string, userName string, date time.Time, cassandra *gocql.Session) ([]PostPreview, error) {
-	// Define the SELECT statement
 	selectStmt := cassandra.Query("SELECT postID, imagePaths, caption, date_posted FROM post WHERE authorID = ? AND date_posted > ? ALLOW FILTERING")
 
-	// Bind the parameters and execute the query
 	iter := selectStmt.Bind(userID, date).Iter()
 	var posts []PostPreview
 
@@ -69,6 +69,7 @@ func GetNewPostsFromUser(userID int, userProfilePath string, userName string, da
 	return posts, nil
 }
 
+// Select all posts from friends given a user and a time cutoff
 func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *gocql.Session) ([]PostPreview, string) {
 	stmt, err := postgres.Prepare(`Select user2_id from orbit_buddies where user1_id = $1 union 
 	select user1_id from orbit_buddies where user2_id = $1`)
@@ -97,7 +98,7 @@ func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *go
 		if err != nil {
 			return nil, "unable to connect to db"
 		}
-		userName, profilePath := "", "" // TODO
+		userName, profilePath := "", ""
 		if userInfo.Next() {
 			userInfo.Scan(&profilePath, &userName)
 		} else {
@@ -112,6 +113,7 @@ func GetHomePagePost(userID int, date time.Time, postgres *sql.DB, cassandra *go
 	return posts, "no error"
 }
 
+// Processes request to see all posts on homepage
 func HomepageHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
@@ -128,6 +130,7 @@ func HomepageHandler(ctx *gin.Context) {
 	})
 }
 
+// Extracts the row and appends associated comments with that post
 func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandra *gocql.Session, postgres *sql.DB) string {
 	stmt := cassandra.Query("select authorID, caption, imagepaths, date_posted, comments, likes from post where postID = ?")
 	iter := stmt.Bind(postID).Iter()
@@ -168,7 +171,6 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 			var comment Comment
 			var commentDate time.Time
 			if iter2.Scan(&comment.CommenterID, &comment.Content, &commentDate) {
-				fmt.Println("sup")
 				getuserInfo, err := postgres.Prepare("select profile_picture_path, user_name from users where user_id = $1")
 				if err != nil {
 					return "unable to connect to db 4"
@@ -191,7 +193,6 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 			} else {
 				return "unable to connect to db 8"
 			}
-			fmt.Println(comment.Content, comments[i])
 		}
 	} else {
 		return "unable to connect to db 7"
@@ -199,6 +200,7 @@ func GetPostDetails(postID gocql.UUID, viewingUser int, post *FullPost, cassandr
 	return "no error"
 }
 
+// processes request to see all details of a post
 func PostDetailsHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	postgres := ctx.MustGet("postgres").(*sql.DB)
@@ -218,6 +220,7 @@ func PostDetailsHandler(ctx *gin.Context) {
 	})
 }
 
+// appends a user to the likes list of a post
 func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 	if err := cassandra.Query("UPDATE POST SET likes = likes + ? WHERE postID = ?",
 		[]int{userID}, postID).Exec(); err != nil {
@@ -227,6 +230,7 @@ func LikePost(postID gocql.UUID, userID int, cassandra *gocql.Session) bool {
 	return true
 }
 
+// handles request to like a post
 func LikePostHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	userID, err := strconv.Atoi(ctx.Param("userID"))
@@ -249,6 +253,7 @@ func LikePostHandler(ctx *gin.Context) {
 	})
 }
 
+// appends a comment to a post
 func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql.Session) bool {
 	currTime := time.Now()
 	commentID := gocql.TimeUUID()
@@ -271,6 +276,7 @@ func CommentPost(comment string, userID int, postID gocql.UUID, cassandra *gocql
 	return true
 }
 
+// handles request to make a comment
 func CommentHandler(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	userID, err := strconv.Atoi(ctx.Param("userID"))

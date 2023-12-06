@@ -187,7 +187,7 @@ func LoginHandler(ctx *gin.Context) {
 	}
 }
 
-// not tested
+// updates the user row based on id
 func UpdateUserProfile(
 	user_id int, new_fullname string,
 	new_home_planet string,
@@ -213,7 +213,7 @@ func UpdateUserProfile(
 	return "no error"
 }
 
-// not tested
+// processes request to update user row
 func UpdateUserProfileHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	userID, err1 := strconv.Atoi(ctx.Param("userID"))
@@ -234,6 +234,7 @@ func UpdateUserProfileHandler(ctx *gin.Context) {
 
 }
 
+// extracts the User row given an id
 func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 	stmt, err := postgres.Prepare(`
 		SELECT 
@@ -268,10 +269,9 @@ func GetUserInfo(user_id int, postgres *sql.DB, userInfo *User) string {
 	} else {
 		return "invalid user"
 	}
-
-	//return "no error"
 }
 
+// Processes request to get the user row
 func GetUserInfoHandler(ctx *gin.Context) {
 	postgres := ctx.MustGet("postgres").(*sql.DB)
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
@@ -323,7 +323,7 @@ func GetUserInfoHandler(ctx *gin.Context) {
 	})
 }
 
-// Used by GetUserInfoHandler to determine friend status
+// Used by GetUserInfoHandler to determine whether a request is pending or sent, or if the users are friends
 func FriendStatus(viewer int, viewed int, postgres *sql.DB) string {
 	if viewer == viewed {
 		return "own profile"

@@ -30,3 +30,7 @@ func RemoveSubset(originalSlice []gocql.UUID, subset []gocql.UUID) []gocql.UUID 
 
 	return resultSlice
 }
+
+// func SortByTime([]PostPreview) {
+
+// }

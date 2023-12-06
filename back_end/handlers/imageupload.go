@@ -18,11 +18,15 @@ import (
 	"github.com/google/uuid"
 )
 
+// removes an image from our file system
 func DeleteImage(filepath string) error {
 
 	err := os.Remove(filepath[1:])
 	return err
 }
+
+// taken from chatGPT
+// extracts the file extension
 func getFileExtension(file multipart.File) string {
 	fileHeader := make([]byte, 512) // Read the first 512 bytes to detect the file type
 	_, err := file.Read(fileHeader)
@@ -45,7 +49,8 @@ func getFileExtension(file multipart.File) string {
 	}
 }
 
-// straight from the big gpt
+// taken from chatGPT
+// ensures a unique name for each file
 func generateUniqueFilename(ext string) string {
 	// Generate a unique identifier (UUID)
 	uniqueID := uuid.New()
@@ -59,6 +64,7 @@ func generateUniqueFilename(ext string) string {
 	return uniqueFilename
 }
 
+// uploads an image to our file
 func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (bool, string) {
 	// make random somehow
 	fileExt := filepath.Ext(header.Filename)
@@ -78,6 +84,7 @@ func UploadPic(file multipart.File, header *multipart.FileHeader, dir string) (b
 	return true, filename
 }
 
+// Updates the the users profile picture to point to a correct path in file system
 func UpdateProfilePath(userID int, newPath string, postgres *sql.DB) bool {
 	stmt, err := postgres.Prepare("Select Profile_picture_path from Users WHERE user_id = $1")
 	if err != nil {
@@ -156,6 +163,7 @@ func ProfilePicHandler(ctx *gin.Context) {
 	ctx.String(200, fmt.Sprintf("File %s uploaded successfully!", header.Filename))
 }
 
+// Adds a path to a post object
 func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) bool {
 	pathSlice := []string{path}
 
@@ -171,6 +179,7 @@ func UpdatePostPath(postID gocql.UUID, path string, cassandra *gocql.Session) bo
 	return true
 }
 
+// Uploads an image with an associated post
 func UploadImagePost(ctx *gin.Context) {
 	cassandra := ctx.MustGet("cassandra").(*gocql.Session)
 	err := ctx.Request.ParseMultipartForm(10 << 20)
