@@ -26,7 +26,7 @@ If `SELECT * FROM users;` displays `t` under the isadmin column for the row with
 ## Test Admin Functionality
 
 Test following features (initial v1.0 release):
-Explain where an admin could take action against a user (ex. on a user's post, or their profile), and what this would look like for the admin's end and the user's end (person being banned, or having post removed))
+Explain where an admin could take action against a user (ex. on a user's post, or their profile), and what this would look like for the admin's end and the user's end (person being banned, or having post removed)
 
 Go to Sign Up page and create 2 accounts with the following example credentials to be used for testing admin functionalities.
 1. Eugene
