@@ -17,8 +17,6 @@ function Post(props) {
         if(num < props.images.length-1){
             num++;
         }
-        console.log(num)
-
         setImageNum(num);
     }
 
@@ -27,8 +25,6 @@ function Post(props) {
         if(num > 0){
             num--;
         }
-        console.log(num)
-
         setImageNum(num);
     }
     return(
@@ -103,7 +99,6 @@ function Homepage(props) {
         const path = `/homepageposts/${encodeURIComponent(currentUser.userID)}`
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
-            console.log(data)
             if (data.status === "no error") {
                 setPosts(data.posts)
             } else {

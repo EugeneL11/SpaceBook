@@ -5,8 +5,6 @@ import axios from 'axios'
 import { serverpath } from "../Path.js";
 function ExpandedPost(props) {
     const postID = props.post_id
-    console.log(postID)
-   
     const toggleHomepage = props.toggleHomepage
     const toggleOtherProfile = props.toggleOtherProfile
     const togglePost = () => props.toggleExpandPost(postID)
@@ -33,7 +31,6 @@ function ExpandedPost(props) {
         const path = `/postdetails/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
         axios.get(`${serverpath}${path}`).then((res) => {
             const data = res.data
-            console.log(data)
             setPost(data.post)
             setUserComment(data.post.comments);
             setNumLikes(data.post.num_likes)
@@ -52,17 +49,17 @@ function ExpandedPost(props) {
         }
     };
     const makeComment = () => {
-        console.log("the comment is " + userCommentValue)
         const commentPath = `/makecomment/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(userCommentValue)}`
         axios.post(`${serverpath}${commentPath}`).then((res) => {
             const data = res.data
-            console.log(data)
-            const userCommentArr = userComment || [];
-            console.log(userCommentArr)
-            const newArr = [{commenter_name: currentUser.userName, content: userCommentValue}, ...userCommentArr]
-            setUserComment(newArr)
-            console.log(userComment)
-            setUserCommentValue("")
+            if (data.status === "no error") {
+                const userCommentArr = userComment || [];
+                const newArr = [{commenter_name: currentUser.userName, content: userCommentValue}, ...userCommentArr]
+                setUserComment(newArr)
+                setUserCommentValue("")
+            } else {
+                console.log(data.status)
+            }
         })
     };
     
@@ -72,7 +69,9 @@ function ExpandedPost(props) {
         const path = `/deletepost/${postID}`
         axios.delete(`${serverpath}${path}`).then((res) => {
             const data = res.data
-            console.log(data)
+            if (data.status !== "no error") {
+                console.log(data)
+            }
         })
 
         // ask back end
@@ -87,10 +86,11 @@ function ExpandedPost(props) {
         // Perform any additional actions when liked
             const path  = `/likepost/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
             axios.put(`${serverpath}${path}`).then(res =>{
-                console.log(res.data)
-                if (res.data.status == "no error") {
+                if (res.data.status === "no error") {
                     setNumLikes(numLikes + 1)
                     setIsLiked(true)
+                } else {
+                    console.log(data.status)
                 }
             })
         }
@@ -103,8 +103,6 @@ function ExpandedPost(props) {
         if(num < post.images.length-1){
             num++;
         }
-        console.log(num)
-
         setImageNum(num);
     }
 
@@ -113,8 +111,6 @@ function ExpandedPost(props) {
         if(num > 0){
             num--;
         }
-        console.log(num)
-
         setImageNum(num);
     }
 

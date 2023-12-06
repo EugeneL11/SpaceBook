@@ -111,20 +111,15 @@ function OtherProfile(props) {
     const back = props.goBackScreen
     const personID = props.userID
     const togglePost = props.togglePost
-    console.log(personID)
     const [user, setUser] = useState(null)
     const [posts, setPosts] = useState(null)
-
     const [friendStatus, setFriendStatus] = useState("")
 
     useEffect(() => {
         // ask bak end for user
         const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(personID)}`
-        console.log(path)
         axios.get(`${serverpath}${path}`).then(res => {
             const data = res.data
-            console.log(currentUser.userID)
-            console.log(data)
             setUser(data.user)
             setFriendStatus(data.friendstatus)
             setPosts(data.posts)
@@ -135,10 +130,10 @@ function OtherProfile(props) {
     const removeUser = () =>{
         const path = `/deleteuser/${encodeURIComponent(personID)}`
         axios.delete(`${serverpath}${path}`).then(res => {
-            if (res.data.status == "no error"){
+            if (res.data.status == "no error") {
                 back()
             }
-            else{
+            else {
                 console.log(res.data.status)
             }
         })
@@ -148,10 +143,10 @@ function OtherProfile(props) {
         const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
         axios.post(`${serverpath}${path}`).then(res => {
             const data = res.data
-            console.log(data)
-            console.log("sendobrit")
             if (data.status === "no error") {
                 setFriendStatus("viewer sent request")
+            } else {
+                console.log(data.status)
             }
         })
     }
@@ -160,10 +155,10 @@ function OtherProfile(props) {
         const path = `/removefriend/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
         axios.delete(`${serverpath}${path}`).then(res => {
             const data = res.data
-            console.log(data)
-            console.log("unorbit")
             if (data.status === "no error") {
                 setFriendStatus("no requests")
+            } else {
+                console.log(data.status)
             }
         })
     }
@@ -172,10 +167,10 @@ function OtherProfile(props) {
         const path = `/rejectfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
         axios.delete(`${serverpath}${path}`).then(res => {
             const data = res.data
-            console.log(data)
-            console.log("rejobrit")
             if (data.status === "no error") {
                 setFriendStatus("no requests")
+            } else {
+                console.log(data.status)
             }
         })
     }
@@ -184,10 +179,10 @@ function OtherProfile(props) {
         const path = `/sendfriendreq/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(props.userID)}`
         axios.post(`${serverpath}${path}`).then(res => {
             const data = res.data
-            console.log(data)
-            console.log("accobrit")
             if (data.status === "no error") {
                 setFriendStatus("already friends")
+            } else {
+                console.log(data.status)
             }
         })
     }

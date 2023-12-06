@@ -29,9 +29,7 @@ function DMList(props) {
             const path = `/userdms/${encodeURIComponent(currentUser.userID)}`
             axios.get(`${serverpath}${path}`).then((res) => {
                 const data = res.data
-                console.log(data)
                 if (data.status === "no error") {
-                    console.log("WHASUDS")
                     setMsgs(data.all_dms)
                 } else {
                     console.log(data.status)

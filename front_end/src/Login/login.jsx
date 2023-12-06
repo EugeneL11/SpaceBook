@@ -26,7 +26,6 @@ function Login(props) {
                 `${serverpath}/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
             );
             const data = res.data;
-            console.log(data);
             if (data.status == "unable to find User") {
                 setError("username or password incorrect");
             } else {

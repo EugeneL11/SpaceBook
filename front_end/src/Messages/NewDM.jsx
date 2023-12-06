@@ -17,7 +17,9 @@ function Person(props) {
         const path = `/newdm/${currentUser.userID}/${recieverID}`
         axios.post(`${serverpath}${path}`).then((res) => {
             const data = res.data
-            console.log(data)
+            if (data.status !== "no error") {
+                console.log(data.status)
+            }
         })
         toggleDMMessage(props.userID, props.username)
     }
@@ -59,10 +61,10 @@ function NewDM(props) {
         const path = `/getallnewdm/${currentUser.userID}`
         axios.get(`${serverpath}${path}`).then(res => {
             const data = res.data
-            console.log(data)
             if (data.status === "no error") {
-                console.log(data.newDMRes)
                 setPeople(data.newDMRes)
+            } else {
+                console.log(data.status)
             }
         })
 
@@ -82,9 +84,7 @@ function NewDM(props) {
         setNoMatch("")
         axios.get(`${serverpath}/search/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(searchTerm)}`).then(res => {
             const data = res.data
-            console.log(data)
             if (data.error === "no error") {
-                console.log(data.userPreviews[0].profile_picture_path)
                 setPeople(data.userPreviews)
                 setNoMatch("")
             } else if (data.error === "no users found") {

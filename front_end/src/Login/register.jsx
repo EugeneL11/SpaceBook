@@ -36,7 +36,6 @@ function Register(props) {
                 } else if (data.status === "user name not available") {
                     setError(data.status);
                 } else {
-                    console.log(data)
                     currentUser.userID = data.user.id;
                     currentUser.userName = data.user.user_name;
                     currentUser.planet = data.user.planet

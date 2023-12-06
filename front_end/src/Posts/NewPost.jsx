@@ -33,7 +33,6 @@ function NewPost(props) {
    
     const handleCaption = (event) => {
       setCaption(event.target.value);
-      console.log(caption)
     };
 
 
@@ -42,7 +41,6 @@ function NewPost(props) {
         const res = await axios.post(`${serverpath}${path}`)
         const data = res.data
         if (data.status === "no error") {
-            console.log(data.post_id)
             setPostID(data.post_id)
         } else {
             console.log(data.status)
@@ -54,7 +52,6 @@ function NewPost(props) {
                 const imagePath = `/uploadpostimage/${encodeURIComponent(data.post_id)}`
                 const imageRes = await axios.post(`${serverpath}${imagePath}`, formData)
                 const imageData = imageRes.data
-                console.log(imageData)
             }
         }
         toggleHomepage();

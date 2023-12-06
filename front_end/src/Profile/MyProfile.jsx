@@ -125,7 +125,6 @@ function MyProfile(props) {
         const path = `/getuserinfo/${encodeURIComponent(currentUser.userID)}/${encodeURIComponent(currentUser.userID)}`
         axios.get(`${serverpath}${path}`).then(res => {
             const data = res.data
-            console.log(data)
             if ((data.status === "no error") && (data.friendstatus === "own profile")) {
                 setUser(data.user)
                 setPosts(data.posts)
