@@ -41,6 +41,6 @@ CREATE TABLE cassandra.WORMHOLE(
     PRIMARY KEY (user1, user2)
 );
 CREATE TABLE cassandra.COOKIE(
-    machineID text PRIMARY KEY,
+    machineID UUID PRIMARY KEY,
     userID int
 );

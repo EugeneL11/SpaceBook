@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import currentUser from "../Static.js";
 import axios from 'axios'
 import {serverpath} from "../Path.js";
-
+import Cookie from 'js-cookies'
 function Login(props) {
     const toggleHomepage = props.toggleHomepage;
     const toggleRegister = props.toggleRegister;
@@ -12,7 +12,8 @@ function Login(props) {
     const [errorMessage, setError] = useState("");
 
     const setCookie = () =>{
-        const path = `/setcookie/${encodeURIComponent( currentUser.userID)}`
+        const cookie = Cookie.getItem("cookie")
+        const path = `/setcookie/${cookie ? encodeURIComponent(cookie) : "empty"}/${encodeURIComponent( currentUser.userID)}`
         axios.post(`${serverpath}${path}`)
     }
     const loginAction = async () => {
@@ -20,6 +21,7 @@ function Login(props) {
         if (username == "" || password == "") {
             setError("Please Enter Something");
         } else {
+            
             const res = await axios.get(
                 `${serverpath}/login/${encodeURIComponent(username)}/${encodeURIComponent(password)}`
             );
