@@ -205,6 +205,10 @@ function ExpandedPost(props) {
                         </div>)
                     ) : null}
                 </div>
+                {(currentUser.userID === post.author_id) ? 
+                    <button className="mx-auto p-2 w-fit h-12 bg-red-200 hover:bg-red-400 rounded-md" onClick={removePost}>Delete Post</button> : 
+                    null
+                }
             </div>
         </div>
     )}
