@@ -74,6 +74,7 @@ function ExpandedPost(props) {
             const path  = `/likepost/${encodeURIComponent(postID)}/${encodeURIComponent(currentUser.userID)}`
             axios.put(`${serverpath}${path}`).then(res =>{
                 //update likes details
+                const data = res.data
                 if (res.data.status === "no error") {
                     setNumLikes(numLikes + 1)
                     setIsLiked(true)
