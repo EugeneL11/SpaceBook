@@ -1,8 +1,8 @@
 # SpaceBook
 
-### How to Run this Project
+### How to Build and Run this Project
 
-Please refer to commands.md to learn more about how to use Docker to setup and run the project container.
+Please refer to ```commands.md``` to learn more about how to use Docker to setup and run the project container.
 
 ### About HTTPS and SSL
 
