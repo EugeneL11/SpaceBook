@@ -1,5 +1,9 @@
 # SpaceBook
 
+### How to Run this Project
+
+Please refer to commands.md to learn more about how to use Docker to setup and run the project container.
+
 ### About HTTPS and SSL
 
 While in development stage, localhost and HTTP are being used for testing, and HTTPS/SSL will not be enabled at the moment. In the future, SSL certificates and keys should be mounted into Docker and used by Go server.
